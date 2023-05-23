@@ -14,11 +14,7 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
@@ -36,3 +32,34 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+## Features
+
+- [x] **Authentication**: User profile to keep track of orders and profile information (Firebase authentication)
+- [ ] **Storage**: Store all product images and relevant files (Firebase storage)
+- [ ] **Database**: Store all relevant products, categories, users information (Firebase firestore)
+- [ ] **Payment**: Integrate payment gateway for purchasing products (Stripe)
+- [ ] **Hosting**: Deploy and host application on Vercel
+- [ ] **Design**: Mobile responsive UI design
+- [ ] **Admin**: Create an admin panel for store configurations like adding new products or vice versa
+
+## Todo
+
+### Priority: HIGH
+- [ ] Setup dynamic routes and handle non-existent routes
+- [ ] Create UI for the rest of the pages
+- [x] Create user registration form
+- [x] Setup authentication with Firebase authentication
+- [ ] Create admin panel for creating new products, uploading images, etc 
+- [ ] Handle user actions: add to card, checkout, save cart, adjustable quantity, etc
+- [ ] Integrate Stripe payment gateway
+- [ ] Setup testing environment for Firebase collections and Firebase storage
+### Priority: MEDIUM
+- [ ] Create user profile information (delivery status, track orders, pending orders, order history)
+- [ ] Ensure all components and pages are mobile-friendly
+- [ ] Change current product list UI (create custom slider or wrapper for the list of products)
+- [ ] Show similar products based on the categories attached to the product from product details page
+
+### Priority: LOW
+- [ ] Create feedback section where users can rate products and write comments
