@@ -67,7 +67,6 @@ type MODAL_STATE = "login" | "sign up";
 const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
-  const drawerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
   const [openPopup, setOpenPopup] = useState<boolean>(false);
@@ -140,7 +139,6 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
               initial={{ width: "0" }}
               animate={{ width: "auto" }}
               exit={{ width: "0" }}
-              ref={drawerRef}
             >
               <DrawerContents>
                 <Button

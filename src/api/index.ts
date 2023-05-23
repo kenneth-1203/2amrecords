@@ -16,7 +16,7 @@ import db from "@/lib/index";
 import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
 
 const collectionPrefix =
-  process.env.NEXT_PUBLIC_ENVIRONMENT === "development" ? "dev-" : "prod-";
+  process.env.NEXT_PUBLIC_ENVIRONMENT === "production" ? "prod-" : "dev-";
 
 export const getDocuments = async (collectionName: string) => {
   try {

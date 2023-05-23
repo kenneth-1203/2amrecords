@@ -4,6 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import {
   ModalBackdrop,
   ModalContainer,
+  ModalPopup,
   ModalHeader,
   ModalBody,
 } from "./styles";
@@ -27,34 +28,32 @@ const Modal: React.FC<PropTypes> = ({
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <ModalBackdrop
-            onClick={clickOutside ? onClose : undefined}
-            {...props}
+        <ModalContainer>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <ModalContainer
-              initial={{ y: 20 }}
-              animate={{ y: 0 }}
-              exit={{ y: -20 }}
-            >
-              <ModalHeader>
-                <Typography variant="h3" fontWeight={500}>
-                  {title}
-                </Typography>
-                <FontAwesomeIcon
-                  icon={faXmark}
-                  onClick={onClose}
-                  style={{ cursor: "pointer", fontSize: "1.2rem" }}
-                />
-              </ModalHeader>
-              <ModalBody>{children}</ModalBody>
-            </ModalContainer>
-          </ModalBackdrop>
-        </motion.div>
+            <ModalBackdrop onClick={clickOutside ? onClose : undefined} />
+          </motion.div>
+          <ModalPopup
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+          >
+            <ModalHeader>
+              <Typography variant="h3" fontWeight={500}>
+                {title}
+              </Typography>
+              <FontAwesomeIcon
+                icon={faXmark}
+                onClick={onClose}
+                style={{ cursor: "pointer", fontSize: "1.2rem" }}
+              />
+            </ModalHeader>
+            <ModalBody>{children}</ModalBody>
+          </ModalPopup>
+        </ModalContainer>
       )}
     </AnimatePresence>
   );

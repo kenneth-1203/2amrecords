@@ -1,21 +1,29 @@
 import { motion } from "framer-motion";
 import styled, { css } from "styled-components";
 
+export const ModalContainer = styled.div`
+  position: fixed;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  z-index: 1000;
+`;
+
 export const ModalBackdrop = styled.div`
   position: fixed;
   display: flex;
   width: 100%;
   height: 100vh;
   background: ${(props) => props.theme.colors.primary[600]};
-  z-index: 1000;
 `;
 
-export const ModalContainer = styled(motion.div)`
+export const ModalPopup = styled(motion.div)`
   width: 20rem;
   height: fit-content;
   margin: auto;
   background: ${(props) => props.theme.colors.secondary.main};
   border-radius: 4px;
+  z-index: 1;
 `;
 
 export const ModalHeader = styled.div`
