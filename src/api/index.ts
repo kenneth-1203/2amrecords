@@ -13,7 +13,6 @@ import {
   AuthErrorCodes,
 } from "firebase/auth";
 import db from "@/lib/index";
-import { AxiosError } from "axios";
 import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
 
 const collectionPrefix =
@@ -69,8 +68,7 @@ export const createDocument = async (collectionName: string, docData: any) => {
     const results = response;
     return results;
   } catch (error) {
-    const err = error as AxiosError;
-    return err.response;
+    return error;
   }
 };
 
