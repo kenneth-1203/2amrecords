@@ -1,4 +1,4 @@
-export function formatTimeDiff(timestamp: string) {
+export const formatTimeDiff = (timestamp: string) => {
   const now = Date.now();
   const diffMs = now - new Date(timestamp).getTime();
 
@@ -25,4 +25,8 @@ export function formatTimeDiff(timestamp: string) {
   // Otherwise, show the date and time of the comment
   const date = new Date(timestamp);
   return date.toLocaleDateString();
+}
+
+export const removeFileExtension = (fileName: string) => {
+  return fileName.replace(/\.(png|jpeg)$/i, '');
 }

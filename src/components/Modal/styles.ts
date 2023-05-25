@@ -18,7 +18,7 @@ export const ModalBackdrop = styled.div`
 `;
 
 export const ModalPopup = styled(motion.div)`
-  width: 20rem;
+  min-width: 20rem;
   height: fit-content;
   margin: auto;
   background: ${(props) => props.theme.colors.secondary.main};

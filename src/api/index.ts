@@ -4,8 +4,10 @@ import {
   getDoc,
   setDoc,
   addDoc,
+  updateDoc,
   doc,
 } from "firebase/firestore";
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -14,15 +16,14 @@ import {
 } from "firebase/auth";
 import db from "@/lib/index";
 import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
+import { removeFileExtension } from "@/shared/utils";
 
-const collectionPrefix =
+const prefix =
   process.env.NEXT_PUBLIC_ENVIRONMENT === "production" ? "prod-" : "dev-";
 
 export const getDocuments = async (collectionName: string) => {
   try {
-    const response = await getDocs(
-      collection(db, collectionPrefix + collectionName)
-    );
+    const response = await getDocs(collection(db, prefix + collectionName));
     const results: any = [];
     response.forEach((doc: any) => {
       results.push(doc.data());
@@ -38,9 +39,7 @@ export const getDocument = async (
   documentId: string
 ) => {
   try {
-    const snapshot = await getDoc(
-      doc(db, collectionPrefix + collectionName, documentId)
-    );
+    const snapshot = await getDoc(doc(db, prefix + collectionName, documentId));
     let results;
     if (snapshot.exists()) {
       results = snapshot.data();
@@ -56,14 +55,11 @@ export const createDocument = async (collectionName: string, docData: any) => {
     let response;
     if (docData.id) {
       response = await setDoc(
-        doc(db, collectionPrefix + collectionName, docData.id),
+        doc(db, prefix + collectionName, docData.id),
         docData
       );
     } else {
-      response = await addDoc(
-        collection(db, collectionPrefix + collectionName),
-        docData
-      );
+      response = await addDoc(collection(db, prefix + collectionName), docData);
     }
     const results = response;
     return results;
@@ -72,10 +68,45 @@ export const createDocument = async (collectionName: string, docData: any) => {
   }
 };
 
+export const getFileURLs = async (path: string) => {
+  try {
+    const storage = getStorage();
+    const folderRef = ref(storage, prefix + path);
+    const { items } = await listAll(folderRef);
+    const downloadURLs = await Promise.all(
+      items.map(async (item) => {
+        const url = await getDownloadURL(item);
+        return {
+          url,
+          sort: Number(removeFileExtension(item.name)),
+        };
+      })
+    );
+    return { results: downloadURLs };
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const getFileURL = async (path: string) => {
+  try {
+    const storage = getStorage();
+    const fileRef = ref(storage, prefix + path);
+    const downloadURL = await getDownloadURL(fileRef);
+    return { results: downloadURL };
+  } catch (error) {
+    return { error };
+  }
+};
+
 export const signIn = async ({ email, password }: ILoginForm) => {
   const auth = getAuth();
   try {
     const response = await signInWithEmailAndPassword(auth, email, password);
+    const document = doc(db, "Users", response.user.uid);
+    await updateDoc(document, {
+      lastSignedIn: new Date(),
+    });
     const results = response.user;
     return { results };
   } catch (error: any) {

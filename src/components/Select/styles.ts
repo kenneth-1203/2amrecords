@@ -1,15 +1,20 @@
 import styled, { css } from "styled-components";
 import { motion } from "framer-motion";
 
-export const SelectContainer = styled.div<{ disabled: boolean }>`
-  width: 8rem;
+export const SelectContainer = styled.div<{
+  disabled: boolean;
+  fullWidth: boolean;
+}>`
+  width: ${({ fullWidth }) => (fullWidth ? `100%` : `max-content`)};
   position: relative;
   margin-bottom: 1px;
 
-  ${({ disabled }) => disabled && css`
-    opacity: 0.4;
-    pointer-events: none;
-  `}
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      opacity: 0.4;
+      pointer-events: none;
+    `}
 `;
 
 export const SelectComponent = styled(motion.ul)`
@@ -17,8 +22,8 @@ export const SelectComponent = styled(motion.ul)`
   background: ${(props) => props.theme.colors.secondary.main};
   top: 100%;
   width: inherit;
-  max-height: 6.2rem;
-  border: 1px solid ${(props) => props.theme.colors.primary[400]};
+  max-height: 98px;
+  border: 1px solid ${(props) => props.theme.colors.primary[200]};
   border-top: none;
   overflow-y: auto;
   z-index: 10;
@@ -28,12 +33,18 @@ export const SelectLabel = styled.label`
   width: inherit;
   display: flex;
   padding: 0.4rem;
-  border: 1px solid ${(props) => props.theme.colors.primary[400]};
+  gap: 0.4rem;
+  border: 1px solid ${(props) => props.theme.colors.primary[600]};
   justify-content: space-between;
 `;
 
+export const SelectWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
 export const SelectIconWrapper = styled(motion.span)`
-  color: ${(props) => props.theme.colors.primary[400]};
+  color: ${(props) => props.theme.colors.primary[600]};
 `;
 
 export const SelectOption = styled.li`
@@ -43,7 +54,7 @@ export const SelectOption = styled.li`
   user-select: none;
 
   :not(:last-child) {
-    border-bottom: 1px solid ${(props) => props.theme.colors.primary[400]};
+    border-bottom: 1px solid ${(props) => props.theme.colors.primary[200]};
   }
 
   :hover {

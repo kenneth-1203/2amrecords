@@ -1,14 +1,20 @@
-import { ProductSize, ProductStock } from "./types";
+export type Size = "S" | "M" | "L" | "XL";
+
+export type Stock = {
+  size: Size;
+  quantity: number;
+};
 
 export interface IProductData {
   id: number;
   name: string;
   description: string;
-  variants: Array<string>;
-  sizes: Array<ProductSize>;
-  stock: Array<ProductStock>;
+  variant: string;
+  sizes: Size[];
+  stock: Stock[];
   totalQuantity: number;
-  price: number;
+  discountedPrice: number;
+  originalPrice: number;
   category: Array<string>;
 }
 

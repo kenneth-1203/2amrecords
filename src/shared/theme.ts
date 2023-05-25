@@ -30,7 +30,7 @@ export const theme = {
   sizes: {
     desktop: "@media screen and (max-width: 1600px)",
     tabLand: "@media screen and (max-width: 1200px)",
-    tabPort: "@media screen and (max-width: 800px)",
-    mobile: "@media screen and (max-width: 500px)",
+    tabPort: "@media screen and (max-width: 900px)",
+    mobile: "@media screen and (max-width: 600px)",
   },
 };

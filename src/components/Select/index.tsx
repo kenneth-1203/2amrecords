@@ -6,6 +6,7 @@ import Typography from "@/components/Typography";
 import {
   SelectContainer,
   SelectLabel,
+  SelectWrapper,
   SelectIconWrapper,
   SelectComponent,
   SelectOption,
@@ -21,6 +22,7 @@ interface PropTypes extends React.CSSProperties {
   value?: OptionValue;
   label?: string;
   disabled?: boolean;
+  fullWidth?: boolean;
   onChange?: (value: OptionValue) => void;
 }
 
@@ -29,6 +31,7 @@ const Select: React.FC<PropTypes> = ({
   value,
   label,
   disabled = false,
+  fullWidth = false,
   onChange,
   ...props
 }) => {
@@ -45,7 +48,11 @@ const Select: React.FC<PropTypes> = ({
   };
 
   return (
-    <SelectContainer disabled={disabled} style={{ ...props }}>
+    <SelectContainer
+      disabled={disabled}
+      fullWidth={fullWidth}
+      style={{ ...props }}
+    >
       <SelectLabel onClick={() => setShow(!show)}>
         <Typography variant="p" textOverflow="ellipsis" overflow="hidden">
           {findLabelByValue(value)}
@@ -56,20 +63,22 @@ const Select: React.FC<PropTypes> = ({
       </SelectLabel>
       <AnimatePresence>
         {show ? (
-          <SelectComponent
-            initial={{ height: "0" }}
-            animate={{ height: "auto" }}
-            exit={{ height: "0" }}
-          >
-            {options.map((option, i) => (
-              <SelectOption
-                key={i}
-                onClick={() => handleSelectOption(option.value)}
-              >
-                {option.label}
-              </SelectOption>
-            ))}
-          </SelectComponent>
+          <SelectWrapper>
+            <SelectComponent
+              initial={{ height: "0" }}
+              animate={{ height: "auto" }}
+              exit={{ height: "0" }}
+            >
+              {options.map((option, i) => (
+                <SelectOption
+                  key={i}
+                  onClick={() => handleSelectOption(option.value)}
+                >
+                  {option.label}
+                </SelectOption>
+              ))}
+            </SelectComponent>
+          </SelectWrapper>
         ) : null}
       </AnimatePresence>
     </SelectContainer>

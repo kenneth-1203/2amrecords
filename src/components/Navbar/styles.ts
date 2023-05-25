@@ -13,7 +13,7 @@ export const Container = styled.nav`
 export const NavbarContainer = styled.div`
   color: ${(props) => props.theme.colors.primary.main};
   width: 100%;
-  padding: 0 24px;
+  padding: 0 1rem;
   margin: 0 auto;
   // box-shadow: 0 2px 4px 0 ${(props) => props.theme.colors.primary[100]},
   //   0 1px 2px 0 ${(props) => props.theme.colors.primary[50]};

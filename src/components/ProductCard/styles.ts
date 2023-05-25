@@ -16,6 +16,7 @@ export const CardBody = styled.div`
 export const CardImage = styled.div`
   height: 60%;
   width: 100%;
+  position: relative;
 `;
 
 export const CardContent = styled.div`
@@ -26,4 +27,13 @@ export const CardContent = styled.div`
 
 export const Container = styled.div`
   padding: 1rem;
+`;
+
+export const ProductPrice = styled.div`
+  display: flex;
+  gap: .4rem;
+
+  & > :last-child {
+    opacity: .3;
+  }
 `;

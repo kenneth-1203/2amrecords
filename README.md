@@ -40,7 +40,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [ ] **Storage**: Store all product images and relevant files (Firebase storage)
 - [ ] **Database**: Store all relevant products, categories, users information (Firebase firestore)
 - [ ] **Payment**: Integrate payment gateway for purchasing products (Stripe)
-- [ ] **Hosting**: Deploy and host application on Vercel
+- [x] **Hosting**: Deploy and host application on Vercel
 - [ ] **Design**: Mobile responsive UI design
 - [ ] **Admin**: Create an admin panel for store configurations like adding new products or vice versa
 
@@ -52,9 +52,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [x] Create user registration form
 - [x] Setup authentication with Firebase authentication
 - [ ] Create admin panel for creating new products, uploading images, etc 
-- [ ] Handle user actions: add to card, checkout, save cart, adjustable quantity, etc
+- [ ] Handle user actions: add to cart, checkout, save cart, adjustable quantity, etc
 - [ ] Integrate Stripe payment gateway
-- [ ] Setup testing environment for Firebase collections and Firebase storage
+- [x] Setup testing environment for Firebase collections and Firebase storage
 ### Priority: MEDIUM
 - [ ] Create user profile information (delivery status, track orders, pending orders, order history)
 - [ ] Ensure all components and pages are mobile-friendly
@@ -63,3 +63,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ### Priority: LOW
 - [ ] Create feedback section where users can rate products and write comments
+- [ ] Trigger an email to user upon completing a purchase
+- [ ] Change image load behavior to increase performance

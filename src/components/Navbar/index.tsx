@@ -219,23 +219,26 @@ const LoginForm: React.FC<{
         type="email"
         id="email"
         label="Email"
+        fullWidth
       />
       <InputField
         onChange={(e) => handleChange(e)}
         type="password"
         id="password"
         label="Password"
+        fullWidth
       />
       <Typography variant="small" marginBottom={".4rem"} color="red">
         {error}
       </Typography>
-      <Button onClick={loginWithEmail} variant="contained" center>
+      <Button onClick={loginWithEmail} variant="contained" center fullWidth>
         <Typography fontWeight={500}>Login</Typography>
       </Button>
       <Button
         onClick={() => setModalState("sign up")}
         variant="contained"
         center
+        fullWidth
       >
         <Typography fontWeight={500}>Sign up</Typography>
       </Button>
@@ -247,6 +250,7 @@ const LoginForm: React.FC<{
         variant="contained"
         startIcon={<FontAwesomeIcon icon={faGoogle} fontSize={"1rem"} />}
         center
+        fullWidth
       >
         <Typography fontWeight={500}>Login with Google</Typography>
       </Button>
@@ -294,32 +298,36 @@ const SignUpForm: React.FC<{
         type="text"
         id="fullName"
         label="Full name"
+        fullWidth
       />
       <InputField
         onChange={(e) => handleChange(e)}
         type="email"
         id="email"
         label="Email"
+        fullWidth
       />
       <InputField
         onChange={(e) => handleChange(e)}
         type="password"
         id="password"
         label="Password"
+        fullWidth
       />
       <InputField
         onChange={(e) => handleChange(e)}
         type="password"
         id="confirmPassword"
         label="Confirm password"
+        fullWidth
       />
       <Typography variant="small" marginBottom={".4rem"} color="red">
         {error}
       </Typography>
-      <Button onClick={signUpWithEmail} variant="contained" center>
+      <Button onClick={signUpWithEmail} variant="contained" center fullWidth>
         <Typography fontWeight={500}>Submit</Typography>
       </Button>
-      <Button onClick={() => setModalState("login")} variant="contained" center>
+      <Button onClick={() => setModalState("login")} variant="contained" center fullWidth>
         <Typography fontWeight={500}>Go back</Typography>
       </Button>
     </FormContainer>

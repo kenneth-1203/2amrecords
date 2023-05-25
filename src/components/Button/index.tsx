@@ -7,19 +7,21 @@ interface PropTypes extends React.HTMLProps<HTMLButtonElement> {
   children?: React.ReactNode;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
+  fullWidth?: boolean;
 }
 
 const Button: React.FC<PropTypes> = ({
   children,
   variant = "text",
   center = false,
+  fullWidth = false,
   startIcon,
   endIcon,
   ...props
 }) => {
   return (
     //  @ts-ignore
-    <StyledButton variant={variant} {...props}>
+    <StyledButton variant={variant} fullWidth={fullWidth} {...props}>
       {startIcon && <IconWrapper>{startIcon}</IconWrapper>}
       {center ? (
         <span

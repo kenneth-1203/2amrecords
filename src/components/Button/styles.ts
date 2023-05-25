@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 
-export const StyledButton = styled.button<{ variant: string }>`
+export const StyledButton = styled.button<{ variant: string, fullWidth: boolean }>`
+  width: ${({ fullWidth }) => fullWidth ? `100%` : `max-content`};
   outline: none;
   border: none;
   border-width: 1px;
@@ -13,6 +14,11 @@ export const StyledButton = styled.button<{ variant: string }>`
   gap: 8px;
   transition: all 0.2s;
 
+  :disabled {
+    pointer-events: none;
+    opacity: 0.2;
+  }
+
   ${({ variant }) =>
     variant === "outlined"
       ? css`
@@ -23,12 +29,6 @@ export const StyledButton = styled.button<{ variant: string }>`
           &:active {
             color: ${(props) => props.theme.colors.primary[500]};
             border-color: ${(props) => props.theme.colors.primary[500]};
-          }
-
-          &:disabled {
-            color: ${(props) => props.theme.colors.primary[200]};
-            border-color: ${(props) => props.theme.colors.primary[200]};
-            cursor: default;
           }
         `
       : variant === "contained"
@@ -45,12 +45,6 @@ export const StyledButton = styled.button<{ variant: string }>`
             background: ${(props) => props.theme.colors.secondary.main};
             color: ${(props) => props.theme.colors.primary.main};
           }
-
-          &:disabled {
-            color: ${(props) => props.theme.colors.primary[200]};
-            border-color: ${(props) => props.theme.colors.primary[200]};
-            cursor: default;
-          }
         `
       : css`
           background: ${(props) => props.theme.colors.secondary.main};
@@ -58,11 +52,6 @@ export const StyledButton = styled.button<{ variant: string }>`
 
           &:active {
             color: ${(props) => props.theme.colors.primary[600]};
-          }
-
-          &:disabled {
-            color: ${(props) => props.theme.colors.primary[200]};
-            cursor: default;
           }
         `}
 `;

@@ -5,25 +5,15 @@ import {
   FooterContainer,
   FooterSection,
   FooterAbout,
-  SocialHandle,
 } from "./styles";
-import { motion } from "framer-motion";
 
 const Footer: React.FC = () => {
   return (
     <FooterContainer>
       <FooterSection whileHover={{ width: "160px" }}>
-        <Image src={"/instagram.png"} alt="" width={28} height={28} />
-        <motion.div
-          initial={{ width: "0%" }}
-          animate={{ width: "100%" }}
-          transition={{ duration: 0.3 }}
-          style={{ overflow: "hidden" }}
-        >
-          <Link href={"https://www.instagram.com/2amrecords_/"} target="_blank">
-            <SocialHandle>{`@2amrecords_`}</SocialHandle>
-          </Link>
-        </motion.div>
+        <Link href={"https://www.instagram.com/2amrecords_/"} target="_blank">
+          <Image src={"/instagram.png"} alt="" width={28} height={28} />
+        </Link>
       </FooterSection>
       <FooterAbout>
         <Typography variant="small" paddingBottom={"1rem"}>
