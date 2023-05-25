@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
@@ -38,22 +39,33 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Drawer open={openDrawer} onClose={toggleDrawer} />
-      <NavbarContainer>
-        <NavbarWrapper>
-          <NavbarTitleWrapper>
-            <Link href={"/"} replace>
-              <NavbarTitle>2AMRECORDS</NavbarTitle>
-              <NavbarSubtitle>EST. 2022</NavbarSubtitle>
-            </Link>
-          </NavbarTitleWrapper>
-          <Button variant="text" onClick={toggleDrawer}>
-            <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
-          </Button>
-        </NavbarWrapper>
-      </NavbarContainer>
-    </Container>
+    <>
+      <Head>
+        {openDrawer && (
+          <style>{`
+          body {
+            overflow: hidden;
+          }
+        `}</style>
+        )}
+      </Head>
+      <Container>
+        <Drawer open={openDrawer} onClose={toggleDrawer} />
+        <NavbarContainer>
+          <NavbarWrapper>
+            <NavbarTitleWrapper>
+              <Link href={"/"} replace>
+                <NavbarTitle>2AMRECORDS</NavbarTitle>
+                <NavbarSubtitle>EST. 2022</NavbarSubtitle>
+              </Link>
+            </NavbarTitleWrapper>
+            <Button variant="text" onClick={toggleDrawer}>
+              <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
+            </Button>
+          </NavbarWrapper>
+        </NavbarContainer>
+      </Container>
+    </>
   );
 };
 
@@ -327,7 +339,12 @@ const SignUpForm: React.FC<{
       <Button onClick={signUpWithEmail} variant="contained" center fullWidth>
         <Typography fontWeight={500}>Submit</Typography>
       </Button>
-      <Button onClick={() => setModalState("login")} variant="contained" center fullWidth>
+      <Button
+        onClick={() => setModalState("login")}
+        variant="contained"
+        center
+        fullWidth
+      >
         <Typography fontWeight={500}>Go back</Typography>
       </Button>
     </FormContainer>

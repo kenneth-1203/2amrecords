@@ -30,6 +30,10 @@ a:visited {
   color: inherit;
 }
 
+.svg-inline--fa {
+  color: black !important;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
