@@ -44,7 +44,7 @@ export const NavbarWrapper = styled.div`
   justify-content: space-between;
 `;
 
-export const DrawerBackdrop = styled.div`
+export const DrawerBackdrop = styled(motion.div)`
   position: absolute;
   top: 0;
   width: 100%;
@@ -54,9 +54,10 @@ export const DrawerBackdrop = styled.div`
 `;
 
 export const DrawerContainer = styled(motion.div)`
-  position: fixed;
+  position: absolute;
   right: 0;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
   width: 20rem;
   background: ${(props) => props.theme.colors.secondary.main};
   z-index: 1000;

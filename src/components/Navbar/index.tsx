@@ -139,14 +139,13 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
       </Modal>
       <AnimatePresence>
         {open && (
-          <div>
-            <motion.div
+          <>
+            <DrawerBackdrop
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-            >
-              <DrawerBackdrop onClick={onClose} />
-            </motion.div>
+              onClick={onClose}
+            />
             <DrawerContainer
               initial={{ width: "0" }}
               animate={{ width: "auto" }}
@@ -185,7 +184,7 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
                 </DrawerBody>
               </DrawerContents>
             </DrawerContainer>
-          </div>
+          </>
         )}
       </AnimatePresence>
     </>
