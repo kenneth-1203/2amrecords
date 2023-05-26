@@ -55,6 +55,7 @@ export const DrawerBackdrop = styled(motion.div)`
 
 export const DrawerContainer = styled(motion.div)`
   position: absolute;
+  top: 0;
   right: 0;
   height: 100vh;
   overflow: hidden;
