@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import styled, { css } from "styled-components";
 
 export const ModalContainer = styled.div`
-  position: fixed;
+  position: absolute;
+  top: 0;
   display: flex;
   width: 100%;
   height: 100vh;
@@ -10,7 +11,8 @@ export const ModalContainer = styled.div`
 `;
 
 export const ModalBackdrop = styled.div`
-  position: fixed;
+  position: absolute;
+  top: 0;
   display: flex;
   width: 100%;
   height: 100vh;

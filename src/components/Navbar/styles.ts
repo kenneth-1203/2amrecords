@@ -45,7 +45,8 @@ export const NavbarWrapper = styled.div`
 `;
 
 export const DrawerBackdrop = styled.div`
-  position: fixed;
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 100vh;
   background: ${(props) => props.theme.colors.primary[600]};

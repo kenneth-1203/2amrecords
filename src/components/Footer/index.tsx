@@ -10,7 +10,7 @@ import {
 const Footer: React.FC = () => {
   return (
     <FooterContainer>
-      <FooterSection whileHover={{ width: "160px" }}>
+      <FooterSection>
         <Link href={"https://www.instagram.com/2amrecords_/"} target="_blank">
           <Image src={"/instagram.png"} alt="" width={28} height={28} />
         </Link>

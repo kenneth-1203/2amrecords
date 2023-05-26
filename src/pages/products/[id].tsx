@@ -100,7 +100,7 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
                     alt=""
                     placeholder="blur"
                     blurDataURL="iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII="
-                    quality={75}
+                    quality={25}
                   />
                 </ProductImageSmall>
               ))}
