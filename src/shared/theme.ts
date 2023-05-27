@@ -32,5 +32,6 @@ export const theme = {
     tabLand: "@media screen and (max-width: 1200px)",
     tabPort: "@media screen and (max-width: 900px)",
     mobile: "@media screen and (max-width: 600px)",
+    smallMobile: "@media screen and (max-width: 420px)",
   },
 };

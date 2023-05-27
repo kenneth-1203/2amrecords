@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NextPage } from "next/types";
+import MediaQuery from 'react-responsive'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { getDocument, getDocuments, getFileURLs } from "@/api/index";
 import { IProductData } from "@/shared/interfaces";
@@ -158,9 +159,19 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
               </DiscountPrice>
             )}
           </ProductPrice>
-          <Button variant="contained" disabled={selectedSize === -1}>
-            <Typography variant="p">ADD TO BAG</Typography>
-          </Button>
+          <MediaQuery maxWidth={600}>
+            {(matches) =>
+              matches ? (
+                <Button variant="contained" disabled={selectedSize === -1} fullWidth center>
+                  <Typography variant="p">ADD TO BAG</Typography>
+                </Button>
+              ) : (
+                <Button variant="contained" disabled={selectedSize === -1}>
+                  <Typography variant="p">ADD TO BAG</Typography>
+                </Button>
+              )
+            }
+          </MediaQuery>
         </ProductDetails>
       </Container>
     </Section>

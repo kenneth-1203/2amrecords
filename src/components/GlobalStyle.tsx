@@ -17,6 +17,7 @@ body {
   box-sizing: border-box;
   font-family: 'Inter', sans-serif;
   font-weight: 300;
+  overflow: overlay;
 }
 
 a {
@@ -60,7 +61,7 @@ a:visited {
 /* tablet landscape */
 @media screen and (max-width: 1200px) {
   html {
-    font-size: 80%;
+    font-size: 85%;
   }
 }
 

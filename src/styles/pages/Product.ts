@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const MAIN_IMAGE_WIDTH = "35rem";
-const MAIN_IMAGE_HEIGHT = "50rem";
+const MAIN_IMAGE_HEIGHT = "52rem";
 const SMALL_IMAGE_WIDTH = "5rem";
 const SMALL_IMAGE_HEIGHT = "8rem";
 const GAP_SIZE = "2rem";
@@ -21,7 +21,7 @@ export const Section = styled.section`
   }
 
   ${(props) => props.theme.sizes.mobile} {
-    margin: 2rem;
+    margin: 0;
   }
 `;
 
@@ -42,6 +42,7 @@ export const Container = styled.div`
 
   ${(props) => props.theme.sizes.tabPort} {
     grid-template-columns: 1fr;
+    gap: 0;
   }
 `;
 
@@ -57,14 +58,21 @@ export const ProductDisplay = styled.div`
     height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
   }
 
+  ${(props) => props.theme.sizes.tabPort} {
+    width: calc((${TOTAL_WIDTH} + ${GAP_SIZE}) / 1.2);
+    height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
+  }
+
   ${(props) => props.theme.sizes.mobile} {
     flex-direction: column;
-    width: calc(${MAIN_IMAGE_WIDTH} / 1.25);
-    height: calc((${TOTAL_HEIGHT}) / 1.25);
+    width: 100%;
+    height: calc(${MAIN_IMAGE_HEIGHT} / 1.2);
+    align-items: center;
   }
 `;
 
 export const MainImage = styled.div`
+  overflow: hidden;
 `;
 
 export const ImageList = styled.div`
@@ -76,10 +84,15 @@ export const ImageList = styled.div`
   ${(props) => props.theme.sizes.mobile} {
     flex-direction: row;
   }
+
+  ${(props) => props.theme.sizes.mobile} {
+    height: calc(${SMALL_IMAGE_HEIGHT});
+  }
 `;
 
 export const ProductImage = styled.div`
   position: relative;
+  display: inline-flex;
   width: ${MAIN_IMAGE_WIDTH};
   height: ${MAIN_IMAGE_HEIGHT};
   & > img {
@@ -93,6 +106,11 @@ export const ProductImage = styled.div`
 
   ${(props) => props.theme.sizes.tabPort} {
     height: calc(${MAIN_IMAGE_HEIGHT} / 1.25);
+  }
+
+  ${(props) => props.theme.sizes.mobile} {
+    width: calc(${MAIN_IMAGE_WIDTH} / 1.4);
+    height: calc(${MAIN_IMAGE_HEIGHT} * 1.25);
   }
 `;
 
@@ -116,6 +134,10 @@ export const ProductDetails = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  ${(props) => props.theme.sizes.mobile} {
+    margin: 1rem;
+  }
 `;
 
 export const DiscountPrice = styled.div`

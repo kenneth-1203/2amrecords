@@ -81,7 +81,7 @@ const ProductCard: React.FC<IProductData> = (props) => {
             <Typography>{description}</Typography>
           </ProductDescription>
           <ProductPrice>
-            <Typography variant="h3">
+            <Typography variant="h3" fontWeight={500}>
               RM{" "}
               {discountedPrice
                 ? discountedPrice.toFixed(2)
