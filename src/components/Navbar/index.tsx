@@ -22,6 +22,7 @@ import {
   NavbarTitle,
   NavbarSubtitle,
   NavbarWrapper,
+  SidebarWrapper,
   DrawerBackdrop,
   DrawerContainer,
   DrawerContents,
@@ -59,9 +60,11 @@ const Navbar: React.FC = () => {
                 <NavbarSubtitle>EST. 2022</NavbarSubtitle>
               </Link>
             </NavbarTitleWrapper>
-            <Button variant="text" onClick={toggleDrawer}>
-              <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
-            </Button>
+            <SidebarWrapper>
+              <Button variant="text" onClick={toggleDrawer}>
+                <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
+              </Button>
+            </SidebarWrapper>
           </NavbarWrapper>
         </NavbarContainer>
       </Container>

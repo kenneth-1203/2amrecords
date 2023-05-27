@@ -40,8 +40,15 @@ export const NavbarSubtitle = styled.div`
 export const NavbarWrapper = styled.div`
   display: flex;
   align-items: center;
-  min-height: 4rem;
   justify-content: space-between;
+  position: relative;
+  margin: .8rem 0;
+`;
+
+export const SidebarWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
 `;
 
 export const DrawerBackdrop = styled(motion.div)`

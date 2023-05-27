@@ -65,19 +65,6 @@ export const ProductDisplay = styled.div`
 `;
 
 export const MainImage = styled.div`
-  position: relative;
-  width: ${MAIN_IMAGE_WIDTH};
-  height: ${MAIN_IMAGE_HEIGHT};
-
-  ${(props) => props.theme.sizes.tabLand} {
-    width: calc(${MAIN_IMAGE_WIDTH} / 1.2);
-    height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
-  }
-
-  ${(props) => props.theme.sizes.mobile} {
-    width: calc(${MAIN_IMAGE_WIDTH} / 1.25);
-    height: calc((${MAIN_IMAGE_HEIGHT}) / 1.25);
-  }
 `;
 
 export const ImageList = styled.div`
@@ -85,7 +72,6 @@ export const ImageList = styled.div`
   flex-direction: column;
   gap: 0.4rem;
   padding: 0.2rem;
-  overflow-y: auto;
 
   ${(props) => props.theme.sizes.mobile} {
     flex-direction: row;
@@ -94,13 +80,15 @@ export const ImageList = styled.div`
 
 export const ProductImage = styled.div`
   position: relative;
+  width: ${MAIN_IMAGE_WIDTH};
   height: ${MAIN_IMAGE_HEIGHT};
   & > img {
     object-fit: cover;
   }
 
-  ${(props) => props.theme.sizes.tabPort} {
-    height: calc(${MAIN_IMAGE_HEIGHT} / 1.2);
+  ${(props) => props.theme.sizes.tabLand} {
+    width: calc(${MAIN_IMAGE_WIDTH} / 1.2);
+    height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
   }
 
   ${(props) => props.theme.sizes.tabPort} {
@@ -122,11 +110,6 @@ export const ProductImageSmall = styled.div<{ selected: boolean }>`
     width: calc(${SMALL_IMAGE_WIDTH} / 1.2);
     height: calc((${SMALL_IMAGE_HEIGHT}) / 1.2);
   }
-
-  ${(props) => props.theme.sizes.tabLand} {
-    width: calc(${SMALL_IMAGE_WIDTH} / 1.25);
-    height: calc((${SMALL_IMAGE_HEIGHT}) / 1.25);
-  }
 `;
 
 export const ProductDetails = styled.div`
@@ -135,11 +118,11 @@ export const ProductDetails = styled.div`
   gap: 1rem;
 `;
 
+export const DiscountPrice = styled.div`
+  opacity: 0.3;
+`;
+
 export const ProductPrice = styled.div`
   display: flex;
   gap: 0.4rem;
-
-  & > :last-child {
-    opacity: 0.3;
-  }
 `;

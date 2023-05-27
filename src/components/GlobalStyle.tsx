@@ -53,7 +53,7 @@ a:visited {
 /* desktop */
 @media screen and (max-width: 1600px) {
   html {
-    font-size: 80%;
+    font-size: 90%;
   }
 }
 
@@ -67,14 +67,14 @@ a:visited {
 /* tablet portrait */
 @media screen and (max-width: 900px) {
   html {
-    font-size: 70%;
+    font-size: 80%;
   }
 }
 
 /* mobile */
 @media screen and (max-width: 600px) {
   html {
-    font-size: 70%;
+    font-size: 90%;
   }
 }
 `;

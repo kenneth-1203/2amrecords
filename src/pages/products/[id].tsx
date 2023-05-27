@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { NextPage } from "next/types";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { getDocument, getDocuments, getFileURLs } from "@/api/index";
 import { IProductData } from "@/shared/interfaces";
-import Select from "@/components/Select";
 import Image from "next/image";
 import Typography from "@/components/Typography";
 import {
@@ -15,6 +15,7 @@ import {
   ProductImageSmall,
   ProductDetails,
   ProductPrice,
+  DiscountPrice,
 } from "@/styles/pages/Product";
 import Button from "@/components/Button";
 import List from "@/components/List";
@@ -46,22 +47,26 @@ export const getStaticProps = async (context: any) => {
   };
 };
 
+interface IProductImage {
+  url: string;
+  sort: number;
+}
+
+const blurDataURL =
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=";
 interface PropTypes {
   productDetails: IProductData;
-  productImages: Array<{
-    url: string;
-    sort: number;
-  }>;
+  productImages: IProductImage[];
 }
 
 const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
-  const [selectedImage, setSelectedImage] = useState<string>(
-    productImages[0].url
+  const [selectedImage, setSelectedImage] = useState<IProductImage>(
+    productImages[0]
   );
   const [selectedSize, setSelectedSize] = useState<number>(-1);
 
-  const handleSelectImage = (url: string) => {
-    setSelectedImage(url);
+  const handleSelectImage = (img: IProductImage) => {
+    setSelectedImage(img);
   };
 
   const handleSelectSize = (index: number) => {
@@ -73,25 +78,38 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
       <Container>
         <ProductDisplay>
           <MainImage>
-            <ProductImage>
-              <Image
-                src={selectedImage}
-                fill
-                sizes="(max-width: 1200px) 35rem, 55rem"
-                alt=""
-                placeholder="blur"
-                blurDataURL="iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII="
-                quality={75}
-              />
-            </ProductImage>
+            <TransformWrapper>
+              <TransformComponent>
+                <ProductImage>
+                  {productImages &&
+                    productImages.map((image, i) => (
+                      <Image
+                        style={
+                          selectedImage.url !== image.url
+                            ? { display: "none" }
+                            : {}
+                        }
+                        key={i}
+                        src={image.url}
+                        fill
+                        sizes="(max-width: 1200px) 35rem, 55rem"
+                        alt=""
+                        placeholder="blur"
+                        blurDataURL={blurDataURL}
+                        quality={100}
+                      />
+                    ))}
+                </ProductImage>
+              </TransformComponent>
+            </TransformWrapper>
           </MainImage>
           <ImageList>
             {productImages &&
               productImages.map((image, i) => (
                 <ProductImageSmall
                   key={i}
-                  onClick={() => handleSelectImage(image.url)}
-                  selected={selectedImage === image.url}
+                  onClick={() => handleSelectImage(image)}
+                  selected={selectedImage.url === image.url}
                 >
                   <Image
                     src={image.url}
@@ -99,7 +117,7 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
                     sizes="(max-width: 1200px) 5rem, 8rem"
                     alt=""
                     placeholder="blur"
-                    blurDataURL="iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII="
+                    blurDataURL={blurDataURL}
                     quality={25}
                   />
                 </ProductImageSmall>
@@ -125,20 +143,21 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
             })}
             fullWidth
           />
-          {productDetails.discountedPrice ? (
-            <ProductPrice>
-              <Typography variant="h3">
-                RM {productDetails.discountedPrice.toFixed(2)}
-              </Typography>
-              <Typography variant="h3" textDecoration={"line-through"}>
-                RM {productDetails.originalPrice.toFixed(2)}
-              </Typography>
-            </ProductPrice>
-          ) : (
+          <ProductPrice>
             <Typography variant="h3">
-              RM {productDetails.originalPrice.toFixed(2)}
+              RM{" "}
+              {productDetails.discountedPrice
+                ? productDetails.discountedPrice.toFixed(2)
+                : productDetails.originalPrice.toFixed(2)}
             </Typography>
-          )}
+            {productDetails.discountedPrice && (
+              <DiscountPrice>
+                <Typography variant="h3" textDecoration={"line-through"}>
+                  RM {productDetails.originalPrice.toFixed(2)}
+                </Typography>
+              </DiscountPrice>
+            )}
+          </ProductPrice>
           <Button variant="contained" disabled={selectedSize === -1}>
             <Typography variant="p">ADD TO BAG</Typography>
           </Button>

@@ -4,6 +4,7 @@ export const FooterContainer = styled.footer`
   width: 100%;
   height: 100%;
   background-color: ${(props) => props.theme.colors.primary[900]};
+  margin-top: 2rem;
   padding: 2rem 4rem;
   color: ${(props) => props.theme.colors.secondary[500]};
 `;

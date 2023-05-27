@@ -1,7 +1,8 @@
-import "swiper/css";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { useRef, useEffect, useState } from "react";
+import styled from "styled-components";
 import ProductCard from "@/components/ProductCard";
 import { IProductData } from "@/shared/interfaces";
+import { motion } from "framer-motion";
 
 interface PropTypes {
   list: IProductData[];
@@ -9,15 +10,23 @@ interface PropTypes {
 }
 
 const ProductList: React.FC<PropTypes> = ({ list, slidesPerView = 3 }) => {
+  const listRef = useRef(null);
+
   return (
-    <Swiper slidesPerView={slidesPerView} spaceBetween={40}>
-      {list.map((product) => (
-        <SwiperSlide key={product.id}>
-          <ProductCard {...product} />
-        </SwiperSlide>
-      ))}
-    </Swiper>
+    <motion.div ref={listRef}>
+      <ProductListWrapper drag={"x"} dragConstraints={listRef}>
+        {list.map((product, i) => (
+          <ProductCard key={i} {...product} />
+        ))}
+      </ProductListWrapper>
+    </motion.div>
   );
 };
 
 export default ProductList;
+
+export const ProductListWrapper = styled(motion.div)`
+  min-width: 100%;
+  display: inline-flex;
+  justify-content: center;
+`;

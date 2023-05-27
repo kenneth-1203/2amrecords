@@ -2,19 +2,18 @@ import { NextPage } from "next/types";
 import Head from "next/head";
 import _ from "lodash";
 import { motion } from "framer-motion";
-import { ICategoryData, IProductData } from "@/shared/interfaces";
 import { getDocuments } from "@/api/index";
+import { PAGES_TITLE } from "@/shared/enums";
+import { ICategoryData, IProductData } from "@/shared/interfaces";
 import Typography from "@/components/Typography";
-import Chip from "@/components/Chip";
 import ProductList from "@/components/ProductList";
+import Chip from "@/components/Chip";
 import {
   Categories,
   Background,
   Section,
-  Featured,
-  Header,
-  Line,
-  HeaderList,
+  CategorySelection,
+  ProductSelection,
 } from "@/styles/pages/Home";
 
 export const getStaticProps = async () => {
@@ -37,7 +36,7 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
   return (
     <>
       <Head>
-        <title>Create Next App</title>
+        <title>{PAGES_TITLE.Home}</title>
       </Head>
       <main>
         <Landing />
@@ -82,72 +81,26 @@ interface CollectionProps {
 
 function Collection(props: CollectionProps) {
   const { categoryList, productList } = props;
+
   return (
-    <Section>
-      {categoryList
-        ? categoryList.map((category) => {
-            const pl = productList.filter((product) =>
-              product.category.some((p) => p === category.id)
-            );
-            const categoryName = !_.isEmpty(category.name) ?? category.name;
-            const categoryTitle = !_.isEmpty(category.title) ?? category.title;
-            const categoryDescription =
-              !_.isEmpty(category.description) ?? category.description;
-            return (
-              <Featured key={category.id}>
-                <Header>
-                  {categoryName && (
-                    <motion.div whileHover={{ letterSpacing: ".2rem" }}>
-                      <Typography
-                        variant="h2"
-                        fontWeight={500}
-                        textOverflow="clip"
-                        whiteSpace="nowrap"
-                        paddingBottom=".4rem"
-                      >
-                        {category.name}
-                      </Typography>
-                    </motion.div>
-                  )}
-                  {categoryTitle && (
-                    <motion.div whileHover={{ letterSpacing: ".2rem" }}>
-                      <Typography
-                        variant="h2"
-                        fontWeight={300}
-                        textOverflow="clip"
-                        whiteSpace="nowrap"
-                        paddingBottom=".4rem"
-                      >
-                        {category.title}
-                      </Typography>
-                    </motion.div>
-                  )}
-                  {categoryDescription && (
-                    <motion.div whileHover={{ letterSpacing: ".2rem" }}>
-                      <Typography
-                        variant="h2"
-                        fontWeight={300}
-                        textOverflow="clip"
-                        whiteSpace="nowrap"
-                        paddingBottom=".4rem"
-                      >
-                        {category.description}
-                      </Typography>
-                    </motion.div>
-                  )}
-                </Header>
-                <Line></Line>
-                <HeaderList>
-                  <ProductList
-                    list={pl}
-                    slidesPerView={pl.length > 3 ? 3 : pl.length}
-                  />
-                </HeaderList>
-              </Featured>
-            );
-          })
-        : null}
-    </Section>
+    <>
+      {categoryList &&
+        categoryList.map((category, i) => {
+          const list = productList.filter((product) =>
+            product.category.some((p) => p === category.id)
+          );
+          return (
+            <Section key={i}>
+              <CategorySelection>
+                <Typography variant="h3">{category.name}</Typography>
+              </CategorySelection>
+              <ProductSelection>
+                <ProductList list={list} slidesPerView={list.length} />
+              </ProductSelection>
+            </Section>
+          );
+        })}
+    </>
   );
 }
 
