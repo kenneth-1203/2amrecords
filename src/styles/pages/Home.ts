@@ -56,7 +56,7 @@ export const ProductSelection = styled.div`
 
 export const Categories = styled.nav`
   position: sticky;
-  top: 3rem;
+  top: 3.6rem;
   background-color: ${(props) => props.theme.colors.secondary.main};
   border-bottom: 1px solid ${(props) => props.theme.colors.primary[200]};
   z-index: 10;

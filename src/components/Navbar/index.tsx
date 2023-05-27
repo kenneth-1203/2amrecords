@@ -170,29 +170,23 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
                 </Button>
                 <DrawerBody>
                   {!user ? (
-                    <DrawerAction
-                      onClick={togglePopup}
-                      whileHover={{ letterSpacing: ".2rem" }}
-                    >
-                      <Typography variant="h3">login / signup</Typography>
+                    <DrawerAction onClick={togglePopup}>
+                      <Typography variant="h2">login / signup</Typography>
                     </DrawerAction>
                   ) : (
                     <>
-                      <DrawerAction whileHover={{ letterSpacing: ".2rem" }}>
-                        <Typography variant="h3">profile</Typography>
+                      <DrawerAction>
+                        <Typography variant="h2">profile</Typography>
                       </DrawerAction>
-                      <DrawerAction whileHover={{ letterSpacing: ".2rem" }}>
-                        <Typography variant="h3">orders</Typography>
+                      <DrawerAction>
+                        <Typography variant="h2">orders</Typography>
                       </DrawerAction>
                       <Line />
-                      <DrawerAction whileHover={{ letterSpacing: ".2rem" }}>
-                        <Typography variant="h3">settings</Typography>
+                      <DrawerAction>
+                        <Typography variant="h2">settings</Typography>
                       </DrawerAction>
-                      <DrawerAction
-                        onClick={handleLogout}
-                        whileHover={{ letterSpacing: ".2rem" }}
-                      >
-                        <Typography variant="h3">log off</Typography>
+                      <DrawerAction onClick={handleLogout}>
+                        <Typography variant="h2">log off</Typography>
                       </DrawerAction>
                     </>
                   )}

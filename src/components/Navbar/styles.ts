@@ -66,31 +66,43 @@ export const DrawerContainer = styled(motion.div)`
   right: 0;
   height: 100vh;
   overflow: hidden;
-  width: 20rem;
   background: ${(props) => props.theme.colors.secondary.main};
   z-index: 1000;
 `;
 
 export const DrawerContents = styled.div`
   overflow: hidden;
-  width: 20rem;
+  width: 28rem;
+
+  ${props => props.theme.sizes.mobile} {
+    width: 20rem;
+  }
 `;
 
 export const DrawerBody = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
 `;
 
 export const DrawerAction = styled(motion.div)`
   cursor: pointer;
-  padding: 0 1.2rem;
+  padding: 1rem 1.2rem;
+  transition: .2s;
+
+  &:hover {
+    background: ${props => props.theme.colors.primary[50]};
+  }
+
+  &:active {
+    background: ${props => props.theme.colors.primary[100]};
+  }
 `;
 
 export const Line = styled.span`
   display: flex;
   width: 100%;
   border-bottom: 1px solid ${(props) => props.theme.colors.primary[300]};
+  margin-top: 2rem;
 `;
 
 export const FormContainer = styled(motion.div)`

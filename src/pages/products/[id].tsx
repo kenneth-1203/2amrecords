@@ -136,6 +136,7 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
             onSelect={handleSelectSize}
             value={selectedSize}
             items={productDetails.sizes.map((size) => {
+              console.log(selectedSize)
               const inStock = productDetails.stock.find((s) => s.size === size);
               return {
                 label: size,

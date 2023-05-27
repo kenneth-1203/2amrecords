@@ -110,7 +110,7 @@ function Collection(props: CollectionProps) {
               <ScrollTo id={category.id} />
               <Section>
                 <CategorySelection>
-                  <Typography variant="h3">{category.name}</Typography>
+                  <Typography variant="h2">{category.name}</Typography>
                 </CategorySelection>
                 <ProductSelection>
                   <ProductList list={list} slidesPerView={list.length} />
