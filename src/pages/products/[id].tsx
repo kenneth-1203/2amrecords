@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NextPage } from "next/types";
-import MediaQuery from 'react-responsive'
+import MediaQuery from "react-responsive";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { getDocument, getDocuments, getFileURLs } from "@/api/index";
 import { IProductData } from "@/shared/interfaces";
@@ -86,9 +86,9 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
                     productImages.map((image, i) => (
                       <Image
                         style={
-                          selectedImage.url !== image.url
-                            ? { display: "none" }
-                            : {}
+                          selectedImage.url === image.url
+                            ? { opacity: 1, transition: ".3s" }
+                            : { opacity: 0, transition: ".3s" }
                         }
                         key={i}
                         src={image.url}
@@ -162,7 +162,12 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
           <MediaQuery maxWidth={600}>
             {(matches) =>
               matches ? (
-                <Button variant="contained" disabled={selectedSize === -1} fullWidth center>
+                <Button
+                  variant="contained"
+                  disabled={selectedSize === -1}
+                  fullWidth
+                  style={{ justifyContent: "center" }}
+                >
                   <Typography variant="p">ADD TO BAG</Typography>
                 </Button>
               ) : (

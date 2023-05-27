@@ -245,14 +245,19 @@ const LoginForm: React.FC<{
       <Typography variant="small" marginBottom={".4rem"} color="red">
         {error}
       </Typography>
-      <Button onClick={loginWithEmail} variant="contained" center fullWidth>
+      <Button
+        onClick={loginWithEmail}
+        variant="contained"
+        fullWidth
+        style={{ justifyContent: "center" }}
+      >
         <Typography fontWeight={500}>Login</Typography>
       </Button>
       <Button
         onClick={() => setModalState("sign up")}
         variant="contained"
-        center
         fullWidth
+        style={{ justifyContent: "center" }}
       >
         <Typography fontWeight={500}>Sign up</Typography>
       </Button>
@@ -263,8 +268,8 @@ const LoginForm: React.FC<{
         onClick={loginWithGoogle}
         variant="contained"
         startIcon={<FontAwesomeIcon icon={faGoogle} fontSize={"1rem"} />}
-        center
         fullWidth
+        style={{ justifyContent: "center" }}
       >
         <Typography fontWeight={500}>Login with Google</Typography>
       </Button>
@@ -338,14 +343,19 @@ const SignUpForm: React.FC<{
       <Typography variant="small" marginBottom={".4rem"} color="red">
         {error}
       </Typography>
-      <Button onClick={signUpWithEmail} variant="contained" center fullWidth>
+      <Button
+        onClick={signUpWithEmail}
+        variant="contained"
+        fullWidth
+        style={{ justifyContent: "center" }}
+      >
         <Typography fontWeight={500}>Submit</Typography>
       </Button>
       <Button
         onClick={() => setModalState("login")}
         variant="contained"
-        center
         fullWidth
+        style={{ justifyContent: "center" }}
       >
         <Typography fontWeight={500}>Go back</Typography>
       </Button>

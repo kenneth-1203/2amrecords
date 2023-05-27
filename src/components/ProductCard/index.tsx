@@ -36,6 +36,7 @@ const ProductCard: React.FC<IProductData> = (props) => {
         setImageUrl(data.results);
       }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDrag = (e: React.DragEvent<HTMLElement>) => {
