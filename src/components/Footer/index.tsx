@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
         <Typography variant="small" paddingBottom={"1rem"}>
           {`PRODUCT ALL MADE FOR UNISEX`}
         </Typography>
-        <Typography variant="small" paddingBottom={"1rem"}>
+        <Typography variant="small" paddingBottom={"1rem"} textAlign="justify">
           {`2AMRECORDS IS ESTABILISED IN 2022 AND IT'S A BRAND BASED ON FASHION AND
         CULTURAL COMMUNICATION. WE USE FEELING AND EMOTION AS SOURCES OF
         INSPIRATION WHEN DEVELOPING OUR PRODUCTS. THE PRODUCT ARE MADE TO

@@ -5,7 +5,7 @@ export const FooterContainer = styled.footer`
   height: 100%;
   background-color: ${(props) => props.theme.colors.primary[900]};
   margin-top: 2rem;
-  padding: 2rem 4rem;
+  padding: 2rem;
   color: ${(props) => props.theme.colors.secondary[500]};
 `;
 
@@ -20,7 +20,7 @@ export const FooterSection = styled.div`
 `;
 
 export const FooterAbout = styled.div`
-  width: 32rem;
+  max-width: 52rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;

@@ -65,4 +65,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ### Priority: LOW
 - [ ] Create feedback section where users can rate products and write comments
 - [ ] Trigger an email to user upon completing a purchase
-- [ ] Change image load behavior to increase performance
+- [x] Change image load behavior to increase performance

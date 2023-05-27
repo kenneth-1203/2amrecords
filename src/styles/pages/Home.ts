@@ -67,6 +67,6 @@ export const ScrollTo = styled.span`
   margin-top: -8rem;
 
   ${(props) => props.theme.sizes.mobile} {
-    margin-top: -6rem;
+    margin-top: -4rem;
   }
 `;
