@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { AnimatePresence, motion } from "framer-motion";
@@ -29,6 +29,7 @@ import {
   DrawerBody,
   DrawerAction,
   FormContainer,
+  Line,
 } from "./styles";
 
 const Navbar: React.FC = () => {
@@ -112,7 +113,7 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
 
   const handleLogout = () => {
     auth.signOut();
-    router.refresh();
+    router.replace(router.pathname);
     onClose();
   };
 
@@ -157,9 +158,8 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
               <DrawerContents>
                 <Button
                   style={{
-                    padding: 0,
+                    padding: "1.2rem",
                     fontSize: "1.2rem",
-                    marginBottom: "1.2rem",
                   }}
                 >
                   <FontAwesomeIcon
@@ -177,12 +177,24 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
                       <Typography variant="h3">login / signup</Typography>
                     </DrawerAction>
                   ) : (
-                    <DrawerAction
-                      onClick={handleLogout}
-                      whileHover={{ letterSpacing: ".2rem" }}
-                    >
-                      <Typography variant="h3">log off</Typography>
-                    </DrawerAction>
+                    <>
+                      <DrawerAction whileHover={{ letterSpacing: ".2rem" }}>
+                        <Typography variant="h3">profile</Typography>
+                      </DrawerAction>
+                      <DrawerAction whileHover={{ letterSpacing: ".2rem" }}>
+                        <Typography variant="h3">orders</Typography>
+                      </DrawerAction>
+                      <Line />
+                      <DrawerAction whileHover={{ letterSpacing: ".2rem" }}>
+                        <Typography variant="h3">settings</Typography>
+                      </DrawerAction>
+                      <DrawerAction
+                        onClick={handleLogout}
+                        whileHover={{ letterSpacing: ".2rem" }}
+                      >
+                        <Typography variant="h3">log off</Typography>
+                      </DrawerAction>
+                    </>
                   )}
                 </DrawerBody>
               </DrawerContents>

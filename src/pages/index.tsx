@@ -1,3 +1,4 @@
+import React from "react";
 import { NextPage } from "next/types";
 import Head from "next/head";
 import _ from "lodash";
@@ -52,10 +53,12 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
         <Landing />
         <Categories>
           <Wrapper>
-          {categoryList &&
-            categoryList.map((category: ICategoryData) => (
-              <Chip key={category.id} to={`#${category.id}`}>{category.name}</Chip>
-            ))}
+            {categoryList &&
+              categoryList.map((category: ICategoryData) => (
+                <Chip key={category.id} to={`#${category.id}`}>
+                  {category.name}
+                </Chip>
+              ))}
           </Wrapper>
           <LinearProgress style={{ scaleX }} />
         </Categories>
@@ -103,17 +106,17 @@ function Collection(props: CollectionProps) {
             product.category.some((p) => p === category.id)
           );
           return (
-            <>
-            <ScrollTo id={category.id} />
-            <Section key={i}>
-              <CategorySelection>
-                <Typography variant="h3">{category.name}</Typography>
-              </CategorySelection>
-              <ProductSelection>
-                <ProductList list={list} slidesPerView={list.length} />
-              </ProductSelection>
-            </Section>
-            </>
+            <React.Fragment key={i}>
+              <ScrollTo id={category.id} />
+              <Section>
+                <CategorySelection>
+                  <Typography variant="h3">{category.name}</Typography>
+                </CategorySelection>
+                <ProductSelection>
+                  <ProductList list={list} slidesPerView={list.length} />
+                </ProductSelection>
+              </Section>
+            </React.Fragment>
           );
         })}
     </>

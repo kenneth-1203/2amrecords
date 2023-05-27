@@ -7,7 +7,7 @@ export const Container = styled.nav`
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: ${props => props.theme.colors.secondary.main};
+  background-color: ${(props) => props.theme.colors.secondary.main};
 `;
 
 export const NavbarContainer = styled.div`
@@ -34,7 +34,7 @@ export const NavbarTitle = styled.div`
 
 export const NavbarSubtitle = styled.div`
   text-align: center;
-  font-size: .8rem;
+  font-size: 0.8rem;
 `;
 
 export const NavbarWrapper = styled.div`
@@ -42,7 +42,7 @@ export const NavbarWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   position: relative;
-  margin: .8rem 0;
+  margin: 0.8rem 0;
 `;
 
 export const SidebarWrapper = styled.div`
@@ -74,17 +74,23 @@ export const DrawerContainer = styled(motion.div)`
 export const DrawerContents = styled.div`
   overflow: hidden;
   width: 20rem;
-  padding: 1.2rem;
 `;
 
 export const DrawerBody = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 `;
 
 export const DrawerAction = styled(motion.div)`
   cursor: pointer;
+  padding: 0 1.2rem;
+`;
+
+export const Line = styled.span`
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid ${(props) => props.theme.colors.primary[300]};
 `;
 
 export const FormContainer = styled(motion.div)`

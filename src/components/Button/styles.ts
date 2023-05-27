@@ -1,7 +1,10 @@
 import styled, { css } from "styled-components";
 
-export const StyledButton = styled.button<{ variant: string, fullWidth: boolean }>`
-  width: ${({ fullWidth }) => fullWidth ? `100%` : `max-content`};
+export const StyledButton = styled.button<{
+  variant: string;
+  fullWidth: boolean;
+}>`
+  width: ${({ fullWidth }) => (fullWidth ? `100%` : `max-content`)};
   outline: none;
   border: none;
   border-width: 1px;
@@ -35,7 +38,7 @@ export const StyledButton = styled.button<{ variant: string, fullWidth: boolean 
       ? css`
           background: ${(props) => props.theme.colors.primary.main};
           border-color: ${(props) => props.theme.colors.primary.main};
-          color: ${(props) => props.theme.colors.secondary.main};
+          color: ${(props) => props.theme.colors.secondary.main} !important;
 
           &:hover {
             background: ${(props) => props.theme.colors.primary[800]};
@@ -47,6 +50,7 @@ export const StyledButton = styled.button<{ variant: string, fullWidth: boolean 
           }
         `
       : css`
+          color: ${(props) => props.theme.colors.primary.main} !important;
           background: ${(props) => props.theme.colors.secondary.main};
           border-color: transparent;
 

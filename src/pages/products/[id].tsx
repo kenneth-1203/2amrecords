@@ -40,6 +40,7 @@ export const getStaticProps = async (context: any) => {
   const id = context.params.id;
   const productDetails = await getDocument("Products", id);
   const { results: productImages } = await getFileURLs(`Products/${id}`);
+
   return {
     props: {
       productDetails,
