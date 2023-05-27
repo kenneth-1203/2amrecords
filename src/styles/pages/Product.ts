@@ -109,8 +109,8 @@ export const ProductImage = styled.div`
   }
 
   ${(props) => props.theme.sizes.mobile} {
-    width: calc(${MAIN_IMAGE_WIDTH} / 1.4);
-    height: calc(${MAIN_IMAGE_HEIGHT} * 1.25);
+    width: 25rem;
+    height: 35rem;
   }
 `;
 

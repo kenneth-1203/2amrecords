@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 export const Background = styled.section`
@@ -21,6 +22,26 @@ export const Section = styled.section`
   height: 100%;
 `;
 
+export const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 1.4rem 4rem;
+
+  ${(props) => props.theme.sizes.tabPort} {
+    padding: 1.4rem 2rem;
+  }
+
+  ${(props) => props.theme.sizes.mobile} {
+    padding: 1rem;
+  }
+`;
+
+export const LinearProgress = styled(motion.div)`
+  height: 4px;
+  background: ${props => props.theme.colors.primary.main};
+  transform-origin: 0%;
+`;
+
 export const CategorySelection = styled.div`
   text-align: center;
   padding: 2rem 4rem;
@@ -39,7 +60,13 @@ export const Categories = styled.nav`
   background-color: ${(props) => props.theme.colors.secondary.main};
   border-bottom: 1px solid ${(props) => props.theme.colors.primary[200]};
   z-index: 10;
-  display: flex;
-  padding: 1.4rem 4rem;
-  justify-content: center;
+`;
+
+export const ScrollTo = styled.span`
+  position: absolute;
+  margin-top: -8rem;
+
+  ${(props) => props.theme.sizes.mobile} {
+    margin-top: -6rem;
+  }
 `;

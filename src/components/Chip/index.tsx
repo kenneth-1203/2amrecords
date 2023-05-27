@@ -1,10 +1,25 @@
+import Link from "next/link";
 import { ChipContainer, ChipLabel } from "./styles";
 
-const Chip: React.FC<React.PropsWithChildren> = ({ children }) => {
+interface PropTypes extends React.PropsWithChildren {
+  to?: string;
+}
+
+const Chip: React.FC<PropTypes> = ({ children, to }) => {
   return (
-    <ChipContainer>
-      <ChipLabel>{children}</ChipLabel>
-    </ChipContainer>
+    <>
+      {to ? (
+        <Link href={to}>
+          <ChipContainer>
+            <ChipLabel>{children}</ChipLabel>
+          </ChipContainer>
+        </Link>
+      ) : (
+        <ChipContainer>
+          <ChipLabel>{children}</ChipLabel>
+        </ChipContainer>
+      )}
+    </>
   );
 };
 
