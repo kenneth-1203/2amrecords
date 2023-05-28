@@ -37,3 +37,18 @@ export interface ILoginForm {
   email: string;
   password: string;
 }
+
+export interface IUserDetails {
+  id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  addressLine1: string;
+  addressLine2: string;
+  state: string;
+  postcode: string;
+  photoURL: string;
+  provider: "google" | null;
+  lastSignedIn: Date;
+  createdAt: Date;
+}

@@ -51,6 +51,11 @@ export const SidebarWrapper = styled.div`
   right: 0;
 `;
 
+export const SidebarButton = styled.div`
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+`;
+
 export const DrawerBackdrop = styled(motion.div)`
   position: absolute;
   top: 0;
@@ -70,6 +75,12 @@ export const DrawerContainer = styled(motion.div)`
   z-index: 1000;
 `;
 
+export const DrawerCloseButton = styled.div`
+  cursor: pointer;
+  padding: 1rem;
+  font-size: 1.4rem;
+`;
+
 export const DrawerContents = styled.div`
   overflow: hidden;
   width: 28rem;
@@ -87,9 +98,10 @@ export const DrawerBody = styled.div`
 export const DrawerAction = styled(motion.div)`
   cursor: pointer;
   padding: 1rem 1.2rem;
-  transition: .2s;
+  transition: .3s;
 
   &:hover {
+    letter-spacing: .8rem;
     background: ${props => props.theme.colors.primary[50]};
   }
 

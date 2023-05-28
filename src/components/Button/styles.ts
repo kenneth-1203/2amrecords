@@ -5,17 +5,22 @@ export const StyledButton = styled.button<{
   fullWidth: boolean;
 }>`
   width: ${({ fullWidth }) => (fullWidth ? `100%` : `max-content`)};
+  position: relative;
   outline: none;
   border: none;
   border-width: 1px;
   border-style: solid;
-  padding: 0.4rem 0.8rem;
+  padding: 0.8rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   min-height: 2.4rem;
   gap: 8px;
   transition: all 0.2s;
+
+  & > :last-child {
+    width: ${({ fullWidth }) => (fullWidth ? `100%` : `max-content`)};
+  }
 
   :disabled {
     pointer-events: none;
@@ -57,9 +62,13 @@ export const StyledButton = styled.button<{
           &:active {
             color: ${(props) => props.theme.colors.primary[600]};
           }
+
+          &:hover {
+            background: ${props => props.theme.colors.primary[50]};
+          }
         `}
 `;
 
 export const IconWrapper = styled.span`
-  display: flex;
+  position: absolute;
 `;

@@ -1,3 +1,13 @@
+import { createGlobalStyle } from "styled-components";
+
+const sizes = {
+  desktop: "@media screen and (max-width: 1600px)",
+  tabLand: "@media screen and (max-width: 1200px)",
+  tabPort: "@media screen and (max-width: 900px)",
+  mobile: "@media screen and (max-width: 600px)",
+  smallMobile: "@media screen and (max-width: 420px)",
+};
+
 export const theme = {
   colors: {
     primary: {
@@ -27,11 +37,88 @@ export const theme = {
       50: "rgba(255, 255, 255, .05)",
     },
   },
-  sizes: {
-    desktop: "@media screen and (max-width: 1600px)",
-    tabLand: "@media screen and (max-width: 1200px)",
-    tabPort: "@media screen and (max-width: 900px)",
-    mobile: "@media screen and (max-width: 600px)",
-    smallMobile: "@media screen and (max-width: 420px)",
-  },
+  sizes: sizes,
 };
+
+export const GlobalStyle = createGlobalStyle`
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  overflow: overlay;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:link,
+a:hover,
+a:active,
+a:visited {
+  color: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,.5); 
+}
+
+/* desktop */
+${sizes.desktop} {
+  html {
+    font-size: 90%;
+  }
+}
+
+/* tablet landscape */
+${sizes.tabLand} {
+  html {
+    font-size: 85%;
+  }
+}
+
+/* tablet portrait */
+${sizes.tabPort} {
+  html {
+    font-size: 80%;
+  }
+}
+
+/* mobile */
+${sizes.mobile} {
+  html {
+    font-size: 90%;
+  }
+}
+
+/* small mobile */
+${sizes.smallMobile} {
+  html {
+    font-size: 90%;
+  }
+}
+`;

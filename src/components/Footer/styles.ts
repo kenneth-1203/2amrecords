@@ -2,9 +2,8 @@ import styled from "styled-components";
 
 export const FooterContainer = styled.footer`
   width: 100%;
-  height: 100%;
   background-color: ${(props) => props.theme.colors.primary[900]};
-  margin-top: 2rem;
+  margin-top: 4rem;
   padding: 2rem;
   color: ${(props) => props.theme.colors.secondary[500]};
 `;

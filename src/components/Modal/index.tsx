@@ -52,13 +52,13 @@ const Modal: React.FC<PropTypes> = ({
               exit={{ opacity: 0, y: 20 }}
             >
               <ModalHeader>
-                <Typography variant="h3" fontWeight={500}>
+                <Typography variant="h2" fontWeight={500}>
                   {title}
                 </Typography>
                 <FontAwesomeIcon
                   icon={faXmark}
                   onClick={onClose}
-                  style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                  style={{ cursor: "pointer", fontSize: "1.4rem" }}
                 />
               </ModalHeader>
               <ModalBody>{children}</ModalBody>

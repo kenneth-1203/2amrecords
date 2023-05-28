@@ -5,6 +5,7 @@ interface PropTypes extends React.HTMLAttributes<HTMLInputElement> {
   label?: string;
   htmlFor?: string;
   fullWidth?: boolean;
+  value?: string | number;
 }
 
 const InputField: React.FC<PropTypes> = ({

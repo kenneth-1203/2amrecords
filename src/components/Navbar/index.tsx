@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { AnimatePresence, motion } from "framer-motion";
+import _ from "lodash";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { AnimatePresence } from "framer-motion";
+import { auth } from "@/lib/firebase";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { initFirebase } from "@/lib/index";
+import {
+  faBars,
+  faChevronLeft,
+  faChevronRight,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { createDocument, signIn, signUp } from "@/api/index";
 import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
 import Button from "@/components/Button";
@@ -23,17 +28,19 @@ import {
   NavbarSubtitle,
   NavbarWrapper,
   SidebarWrapper,
+  SidebarButton,
   DrawerBackdrop,
   DrawerContainer,
+  DrawerCloseButton,
   DrawerContents,
   DrawerBody,
   DrawerAction,
   FormContainer,
   Line,
 } from "./styles";
+import { UserContext } from "@/lib/context";
 
 const Navbar: React.FC = () => {
-  initFirebase();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
   const toggleDrawer = () => {
@@ -62,9 +69,9 @@ const Navbar: React.FC = () => {
               </Link>
             </NavbarTitleWrapper>
             <SidebarWrapper>
-              <Button variant="text" onClick={toggleDrawer}>
+              <SidebarButton onClick={toggleDrawer}>
                 <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
-              </Button>
+              </SidebarButton>
             </SidebarWrapper>
           </NavbarWrapper>
         </NavbarContainer>
@@ -81,10 +88,9 @@ interface PropTypes extends React.HTMLAttributes<HTMLDivElement> {
 type MODAL_STATE = "login" | "sign up";
 
 const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
-  const auth = getAuth();
+  const { user } = useContext(UserContext);
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const [user, loading] = useAuthState(auth);
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [modalState, setModalState] = useState<MODAL_STATE>("login");
 
@@ -105,6 +111,12 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
         createdAt: user.metadata.creationTime,
         lastSignedIn: user.metadata.lastSignInTime,
         provider: "google",
+        phoneNumber: "",
+        addressLine1: "",
+        addressLine2: "",
+        state: "",
+        postcode: "",
+        orderHistory: [],
       });
     } catch (error) {
       console.log(error);
@@ -156,37 +168,34 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
               exit={{ width: "0" }}
             >
               <DrawerContents>
-                <Button
-                  style={{
-                    padding: "1.2rem",
-                    fontSize: "1.2rem",
-                  }}
-                >
+                <DrawerCloseButton>
                   <FontAwesomeIcon
                     icon={faXmark}
                     onClick={onClose}
                     style={{ cursor: "pointer" }}
                   />
-                </Button>
+                </DrawerCloseButton>
                 <DrawerBody>
-                  {!user ? (
+                  {_.isEmpty(user) ? (
                     <DrawerAction onClick={togglePopup}>
                       <Typography variant="h2">login / signup</Typography>
                     </DrawerAction>
                   ) : (
                     <>
-                      <DrawerAction>
-                        <Typography variant="h2">profile</Typography>
-                      </DrawerAction>
-                      <DrawerAction>
+                      <Link href="/profile">
+                        <DrawerAction onClick={onClose}>
+                          <Typography variant="h2">profile</Typography>
+                        </DrawerAction>
+                      </Link>
+                      <DrawerAction onClick={onClose}>
                         <Typography variant="h2">orders</Typography>
                       </DrawerAction>
                       <Line />
-                      <DrawerAction>
+                      <DrawerAction onClick={onClose}>
                         <Typography variant="h2">settings</Typography>
                       </DrawerAction>
                       <DrawerAction onClick={handleLogout}>
-                        <Typography variant="h2">log off</Typography>
+                        <Typography variant="h2">logout</Typography>
                       </DrawerAction>
                     </>
                   )}
@@ -264,6 +273,7 @@ const LoginForm: React.FC<{
         variant="contained"
         fullWidth
         style={{ justifyContent: "center" }}
+        endIcon={<FontAwesomeIcon icon={faChevronRight} />}
       >
         <Typography fontWeight={500}>Sign up</Typography>
       </Button>
@@ -362,6 +372,7 @@ const SignUpForm: React.FC<{
         variant="contained"
         fullWidth
         style={{ justifyContent: "center" }}
+        startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
       >
         <Typography fontWeight={500}>Go back</Typography>
       </Button>

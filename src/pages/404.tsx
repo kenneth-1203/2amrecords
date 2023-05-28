@@ -1,7 +1,7 @@
+import NotFound from "@/components/NotFound";
+
 const Page: React.FC = () => {
-    return (
-        <h1>Page not found</h1>
-    )
-}
+  return <NotFound />;
+};
 
 export default Page;

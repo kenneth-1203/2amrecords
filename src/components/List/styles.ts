@@ -11,7 +11,7 @@ export const ListItemContainer = styled.li<{
   disabled: boolean;
 }>`
   display: flex;
-  padding: 0.4rem;
+  padding: 0.8rem;
   gap: 0.4rem;
   transition: background 0.2s;
   background: ${({ selected }) =>

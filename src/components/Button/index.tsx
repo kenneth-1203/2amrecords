@@ -20,9 +20,9 @@ const Button: React.FC<PropTypes> = ({
   return (
     //  @ts-ignore
     <StyledButton variant={variant} fullWidth={fullWidth} {...props}>
-      {startIcon && <IconWrapper>{startIcon}</IconWrapper>}
+      {startIcon && <IconWrapper style={{ left: "0", margin: "0.8rem" }}>{startIcon}</IconWrapper>}
+      {endIcon && <IconWrapper style={{ right: "0", margin: "0.8rem" }}>{endIcon}</IconWrapper>}
       {children}
-      {endIcon && <IconWrapper>{endIcon}</IconWrapper>}
     </StyledButton>
   );
 };

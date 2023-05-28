@@ -9,21 +9,22 @@ import {
 } from "firebase/firestore";
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import {
-  getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   AuthErrorCodes,
 } from "firebase/auth";
-import db from "@/lib/index";
+import { firestore, auth } from "@/lib/firebase";
 import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
 import { removeFileExtension } from "@/shared/utils";
 
-const prefix =
+export const prefix =
   process.env.NEXT_PUBLIC_ENVIRONMENT === "production" ? "prod-" : "dev-";
 
 export const getDocuments = async (collectionName: string) => {
   try {
-    const response = await getDocs(collection(db, prefix + collectionName));
+    const response = await getDocs(
+      collection(firestore, prefix + collectionName)
+    );
     const results: any = [];
     response.forEach((doc: any) => {
       results.push(doc.data());
@@ -39,8 +40,10 @@ export const getDocument = async (
   documentId: string
 ) => {
   try {
-    const snapshot = await getDoc(doc(db, prefix + collectionName, documentId));
-    let results;
+    const snapshot = await getDoc(
+      doc(firestore, prefix + collectionName, documentId)
+    );
+    let results = null;
     if (snapshot.exists()) {
       results = snapshot.data();
     }
@@ -55,11 +58,14 @@ export const createDocument = async (collectionName: string, docData: any) => {
     let response;
     if (docData.id) {
       response = await setDoc(
-        doc(db, prefix + collectionName, docData.id),
+        doc(firestore, prefix + collectionName, docData.id),
         docData
       );
     } else {
-      response = await addDoc(collection(db, prefix + collectionName), docData);
+      response = await addDoc(
+        collection(firestore, prefix + collectionName),
+        docData
+      );
     }
     const results = response;
     return results;
@@ -100,10 +106,9 @@ export const getFileURL = async (path: string) => {
 };
 
 export const signIn = async ({ email, password }: ILoginForm) => {
-  const auth = getAuth();
   try {
     const response = await signInWithEmailAndPassword(auth, email, password);
-    const document = doc(db, "Users", response.user.uid);
+    const document = doc(firestore, prefix + "Users", response.user.uid);
     await updateDoc(document, {
       lastSignedIn: new Date(),
     });
@@ -126,7 +131,6 @@ export const signUp = async ({
   confirmPassword,
   fullName,
 }: ISignUpForm) => {
-  const auth = getAuth();
   try {
     if (password === confirmPassword) {
       const response = await createUserWithEmailAndPassword(
@@ -135,10 +139,15 @@ export const signUp = async ({
         password
       );
       const results = response.user;
-      await setDoc(doc(db, "Users", results.uid), {
+      await setDoc(doc(firestore, prefix + "Users", results.uid), {
         id: results.uid,
         fullName,
         email,
+        phoneNumber: null,
+        addressLine1: null,
+        addressLine2: null,
+        state: null,
+        postcode: null,
         photoURL: null,
         provider: null,
         orderHistory: [],
