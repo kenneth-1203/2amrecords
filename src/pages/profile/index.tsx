@@ -28,7 +28,7 @@ import {
   Wrapper,
   ButtonsWrapper,
   WelcomeContainer,
-} from "./styles";
+} from "@/styles/Profile";
 
 const Page: React.FC = () => {
   const { user } = useContext(UserContext);

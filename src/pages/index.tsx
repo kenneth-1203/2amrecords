@@ -18,7 +18,7 @@ import {
   Wrapper,
   LinearProgress,
   ScrollTo,
-} from "./styles";
+} from "@/styles/Home";
 
 export const getStaticProps = async () => {
   const productList: IProductData[] = await getDocuments("Products");

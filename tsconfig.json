@@ -19,7 +19,8 @@
       "@/lib/*": ["./src/lib/*"],
       "@/shared/*": ["./src/shared/*"],
       "@/assets/*": ["./src/assets/*"],
-      "@/api/*": ["./src/api/*"]
+      "@/api/*": ["./src/api/*"],
+      "@/styles/*": ["./src/styles/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

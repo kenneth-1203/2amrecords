@@ -6,6 +6,8 @@ import { getDocument, getDocuments, getFileURLs } from "@/api/index";
 import { IProductData } from "@/shared/interfaces";
 import Image from "next/image";
 import Typography from "@/components/Typography";
+import Button from "@/components/Button";
+import List from "@/components/List";
 import {
   Section,
   Container,
@@ -17,9 +19,7 @@ import {
   ProductDetails,
   ProductPrice,
   DiscountPrice,
-} from "./styles";
-import Button from "@/components/Button";
-import List from "@/components/List";
+} from "@/styles/Products";
 
 export const getStaticPaths = async () => {
   const data = await getDocuments("Products");
