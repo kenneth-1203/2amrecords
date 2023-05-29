@@ -7,13 +7,19 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
-import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  listAll,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   AuthErrorCodes,
 } from "firebase/auth";
-import { firestore, auth } from "@/lib/firebase";
+import { firestore, auth, storage } from "@/lib/firebase";
 import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
 import { removeFileExtension } from "@/shared/utils";
 
@@ -74,9 +80,28 @@ export const createDocument = async (collectionName: string, docData: any) => {
   }
 };
 
+export const uploadFile = async (file: File, path: string) => {
+  try {
+    const storageRef = ref(storage, prefix + path);
+    const { ref: fileRef } = await uploadBytes(storageRef, file);
+    return { results: fileRef.bucket };
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const deleteFile = async (path: string) => {
+  try {
+    const storageRef = ref(storage, prefix + path);
+    await deleteObject(storageRef);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 export const getFileURLs = async (path: string) => {
   try {
-    const storage = getStorage();
     const folderRef = ref(storage, prefix + path);
     const { items } = await listAll(folderRef);
     const downloadURLs = await Promise.all(
@@ -96,7 +121,6 @@ export const getFileURLs = async (path: string) => {
 
 export const getFileURL = async (path: string) => {
   try {
-    const storage = getStorage();
     const fileRef = ref(storage, prefix + path);
     const downloadURL = await getDownloadURL(fileRef);
     return { results: downloadURL };
@@ -143,6 +167,7 @@ export const signUp = async ({
         id: results.uid,
         fullName,
         email,
+        country: "Malaysia",
         phoneNumber: "",
         addressLine1: "",
         addressLine2: "",

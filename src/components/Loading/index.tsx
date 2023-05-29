@@ -1,11 +1,13 @@
+import { useContext } from "react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
+import { UserContext } from "@/lib/context";
 import { LoadingWrapper, LoadingText } from "./styles";
 
 const Loading: React.FC = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const { loading, setLoading } = useContext(UserContext);
 
   useEffect(() => {
     const handleStart = (url: string) => setLoading(true);
@@ -20,7 +22,7 @@ const Loading: React.FC = () => {
       router.events.off("routeChangeComplete", handleComplete);
       router.events.off("routeChangeError", handleComplete);
     };
-  }, [router]);
+  }, [router, setLoading]);
 
   return (
     <AnimatePresence>

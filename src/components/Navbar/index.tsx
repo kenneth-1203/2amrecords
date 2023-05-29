@@ -113,6 +113,7 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
             createdAt: user.metadata.creationTime,
             lastSignedIn: user.metadata.lastSignInTime,
             provider: "google",
+            country: "Malaysia",
             phoneNumber: "",
             addressLine1: "",
             addressLine2: "",
@@ -120,10 +121,11 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
             postcode: "",
             orderHistory: [],
           });
-        }).catch((error) => {
+        })
+        .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log(errorCode, errorMessage)
+          console.log(errorCode, errorMessage);
         });
     } catch (error) {
       console.log(error);
@@ -132,7 +134,11 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
 
   const handleLogout = () => {
     auth.signOut();
-    router.replace(router.pathname);
+    if (router.pathname === "/profile") {
+      router.replace("/");
+    } else {
+      router.replace(router.pathname);
+    }
     onClose();
   };
 

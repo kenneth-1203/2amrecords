@@ -19,14 +19,17 @@ export default function App({ Component, pageProps }: AppProps) {
   const auth = getAuth();
   const [user] = useAuthState(auth);
   const [userDetails, setUserDetails] = useState<IUserDetails | {}>({});
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setLoading(true);
     let unsubscribe;
     if (user) {
       const ref = doc(firestore, prefix + "Users", user.uid);
       unsubscribe = onSnapshot(ref, (snapshot) => {
         const data: any = snapshot.data();
         setUserDetails(data);
+        setLoading(false);
       });
     } else {
       setUserDetails({});
@@ -37,7 +40,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <UserContext.Provider value={{ user: userDetails }}>
+        <UserContext.Provider
+          value={{ user: userDetails, loading, setLoading }}
+        >
           <Layout>
             <Component {...pageProps} />
           </Layout>

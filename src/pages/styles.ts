@@ -13,9 +13,25 @@ export const Background = styled.section`
     filter: saturate(0);
     aspect-ratio: 9 / 11;
   }
+
+  ${props => props.theme.sizes.tabPort} {
+    grid-template-columns: 1fr 1fr;
+
+    & > :nth-child(3) {
+      display: none;
+    }
+  }
+
+  ${props => props.theme.sizes.mobile} {
+    grid-template-columns: 1fr;
+
+    & > :not(:first-child) {
+      display: none;
+    }
+  }
 `;
 
-export const Section = styled.section`
+export const Section = styled(motion.section)`
   overflow: hidden;
   display: grid;
   grid-template-columns: 1fr;

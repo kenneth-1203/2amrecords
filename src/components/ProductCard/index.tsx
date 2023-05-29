@@ -36,7 +36,7 @@ const ProductCard: React.FC<IProductData> = (props) => {
         setImageUrl(data.results);
       }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDrag = (e: React.DragEvent<HTMLElement>) => {
@@ -52,7 +52,9 @@ const ProductCard: React.FC<IProductData> = (props) => {
   };
 
   return (
-    <CardContainer>
+    <CardContainer
+      whileTap={{ scale: 0.96, boxShadow: "0 2px 4px -2px rgba(0,0,0,.4)" }}
+    >
       <Link
         href={`/products/${id}`}
         draggable={true}

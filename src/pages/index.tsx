@@ -18,7 +18,7 @@ import {
   Wrapper,
   LinearProgress,
   ScrollTo,
-} from "@/styles/pages/Home";
+} from "./styles";
 
 export const getStaticProps = async () => {
   const productList: IProductData[] = await getDocuments("Products");
@@ -98,6 +98,12 @@ interface CollectionProps {
 function Collection(props: CollectionProps) {
   const { categoryList, productList } = props;
 
+  const variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+  const transition = { duration: 0.5 };
+
   return (
     <>
       {categoryList &&
@@ -108,7 +114,12 @@ function Collection(props: CollectionProps) {
           return (
             <React.Fragment key={i}>
               <ScrollTo id={category.id} />
-              <Section>
+              <Section
+                initial={"hidden"}
+                whileInView={"visible"}
+                variants={variants}
+                transition={transition}
+              >
                 <CategorySelection>
                   <Typography variant="h2">{category.name}</Typography>
                 </CategorySelection>

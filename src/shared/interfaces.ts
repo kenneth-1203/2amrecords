@@ -45,6 +45,7 @@ export interface IUserDetails {
   phoneNumber: string;
   addressLine1: string;
   addressLine2: string;
+  country: string;
   state: string;
   postcode: string;
   photoURL: string;

@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 export const StyledButton = styled.button<{
   variant: string;
   fullWidth: boolean;
+  selected: boolean;
 }>`
   width: ${({ fullWidth }) => (fullWidth ? `100%` : `max-content`)};
   position: relative;
@@ -32,7 +33,7 @@ export const StyledButton = styled.button<{
       ? css`
           background: ${(props) => props.theme.colors.secondary.main};
           border-color: ${(props) => props.theme.colors.primary.main};
-          color: ${(props) => props.theme.colors.primary.main};
+          color: ${(props) => props.theme.colors.primary.main} !important;
 
           &:active {
             color: ${(props) => props.theme.colors.primary[500]};
@@ -56,7 +57,14 @@ export const StyledButton = styled.button<{
         `
       : css`
           color: ${(props) => props.theme.colors.primary.main} !important;
-          background: ${(props) => props.theme.colors.secondary.main};
+          background: ${({ selected }) =>
+            selected
+              ? css`
+                  ${(props) => props.theme.colors.primary[50]}
+                `
+              : css`
+                  ${(props) => props.theme.colors.secondary.main}
+                `};
           border-color: transparent;
 
           &:active {
@@ -64,7 +72,7 @@ export const StyledButton = styled.button<{
           }
 
           &:hover {
-            background: ${props => props.theme.colors.primary[50]};
+            background: ${(props) => props.theme.colors.primary[50]};
           }
         `}
 `;

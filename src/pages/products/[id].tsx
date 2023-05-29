@@ -17,7 +17,7 @@ import {
   ProductDetails,
   ProductPrice,
   DiscountPrice,
-} from "@/styles/pages/Product";
+} from "./styles";
 import Button from "@/components/Button";
 import List from "@/components/List";
 
@@ -54,8 +54,6 @@ interface IProductImage {
   sort: number;
 }
 
-const blurDataURL =
-  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=";
 interface PropTypes {
   productDetails: IProductData;
   productImages: IProductImage[];
@@ -96,8 +94,7 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
                         fill
                         sizes="(max-width: 1200px) 35rem, 55rem"
                         alt=""
-                        placeholder="blur"
-                        blurDataURL={blurDataURL}
+                        priority
                         quality={100}
                       />
                     ))}
@@ -118,8 +115,7 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
                     fill
                     sizes="(max-width: 1200px) 5rem, 8rem"
                     alt=""
-                    placeholder="blur"
-                    blurDataURL={blurDataURL}
+                    priority
                     quality={25}
                   />
                 </ProductImageSmall>
@@ -136,7 +132,6 @@ const Page: NextPage<PropTypes> = ({ productDetails, productImages }) => {
             onSelect={handleSelectSize}
             value={selectedSize}
             items={productDetails.sizes.map((size) => {
-              console.log(selectedSize)
               const inStock = productDetails.stock.find((s) => s.size === size);
               return {
                 label: size,

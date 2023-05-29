@@ -7,6 +7,7 @@ interface PropTypes extends React.HTMLProps<HTMLButtonElement> {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   fullWidth?: boolean;
+  selected?: boolean;
 }
 
 const Button: React.FC<PropTypes> = ({
@@ -15,11 +16,12 @@ const Button: React.FC<PropTypes> = ({
   fullWidth = false,
   startIcon,
   endIcon,
+  selected,
   ...props
 }) => {
   return (
     //  @ts-ignore
-    <StyledButton variant={variant} fullWidth={fullWidth} {...props}>
+    <StyledButton variant={variant} fullWidth={fullWidth} selected={selected} {...props}>
       {startIcon && <IconWrapper style={{ left: "0", margin: "0.8rem" }}>{startIcon}</IconWrapper>}
       {endIcon && <IconWrapper style={{ right: "0", margin: "0.8rem" }}>{endIcon}</IconWrapper>}
       {children}
