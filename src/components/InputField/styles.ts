@@ -30,7 +30,8 @@ export const InputFileWrapper = styled.div<{ disabled: boolean }>`
   position: relative;
   display: flex;
   justify-content: center;
-  width: 12rem;
+  width: 100%;
+  min-width: 4rem;
   border: 1px solid ${(props) => props.theme.colors.primary.main};
   padding: 0.8rem;
   border-radius: 0;

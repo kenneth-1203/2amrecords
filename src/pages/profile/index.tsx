@@ -118,6 +118,7 @@ const Page: React.FC = () => {
                   type="file"
                   onChange={handleUpload}
                   disabled={isUploading}
+                  fullWidth
                   label={
                     isUploading ? (
                       <motion.div
