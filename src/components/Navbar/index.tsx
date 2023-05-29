@@ -4,8 +4,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import _ from "lodash";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { AnimatePresence } from "framer-motion";
 import { auth } from "@/lib/firebase";
+import { AnimatePresence } from "framer-motion";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -102,22 +102,29 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
 
   const loginWithGoogle = async () => {
     try {
-      const { user } = await signInWithPopup(auth, provider);
-      createDocument("Users", {
-        id: user.uid,
-        fullName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        createdAt: user.metadata.creationTime,
-        lastSignedIn: user.metadata.lastSignInTime,
-        provider: "google",
-        phoneNumber: "",
-        addressLine1: "",
-        addressLine2: "",
-        state: "",
-        postcode: "",
-        orderHistory: [],
-      });
+      await signInWithPopup(auth, provider)
+        .then((result) => {
+          const { user } = result;
+          createDocument("Users", {
+            id: user.uid,
+            fullName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            createdAt: user.metadata.creationTime,
+            lastSignedIn: user.metadata.lastSignInTime,
+            provider: "google",
+            phoneNumber: "",
+            addressLine1: "",
+            addressLine2: "",
+            state: "",
+            postcode: "",
+            orderHistory: [],
+          });
+        }).catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage)
+        });
     } catch (error) {
       console.log(error);
     }
