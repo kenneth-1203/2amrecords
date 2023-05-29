@@ -22,7 +22,6 @@ export default function App({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setLoading(true);
     let unsubscribe;
     if (user) {
       const ref = doc(firestore, prefix + "Users", user.uid);
@@ -34,7 +33,7 @@ export default function App({ Component, pageProps }: AppProps) {
     } else {
       setUserDetails({});
     }
-  }, [user]);
+  }, [user, loading]);
 
   return (
     <>
