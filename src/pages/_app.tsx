@@ -31,6 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
         setLoading(false);
       });
     } else {
+      setLoading(false);
       setUserDetails({});
     }
   }, [user, loading]);
