@@ -5,17 +5,24 @@ import { useRouter } from "next/router";
 import _ from "lodash";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBagShopping,
   faBars,
   faChevronLeft,
   faChevronRight,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { createDocument, signIn, signUp } from "@/api/index";
-import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
+import { UserContext } from "@/lib/context";
+import {
+  createDocument,
+  checkDocumentExists,
+  signIn,
+  signUp,
+} from "@/api/index";
+import { ILoginForm, ISignUpForm, IUserDetails } from "@/shared/interfaces";
 import Button from "@/components/Button";
 import Modal from "@/components/Modal";
 import InputField from "@/components/InputField";
@@ -27,6 +34,7 @@ import {
   NavbarTitle,
   NavbarSubtitle,
   NavbarWrapper,
+  ItemCounter,
   SidebarWrapper,
   SidebarButton,
   DrawerBackdrop,
@@ -38,9 +46,9 @@ import {
   FormContainer,
   Line,
 } from "./styles";
-import { UserContext } from "@/lib/context";
 
 const Navbar: React.FC = () => {
+  const { user } = useContext<any>(UserContext);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
   const toggleDrawer = () => {
@@ -59,7 +67,11 @@ const Navbar: React.FC = () => {
         )}
       </Head>
       <Container>
-        <Drawer open={openDrawer} onClose={toggleDrawer} />
+        <Drawer
+          user={user as IUserDetails}
+          open={openDrawer}
+          onClose={toggleDrawer}
+        />
         <NavbarContainer>
           <NavbarWrapper>
             <NavbarTitleWrapper>
@@ -69,6 +81,35 @@ const Navbar: React.FC = () => {
               </Link>
             </NavbarTitleWrapper>
             <SidebarWrapper>
+              <AnimatePresence>
+                {user ? (
+                  <SidebarButton
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <ItemCounter
+                      animate={
+                        _.isEmpty(user.items) ? { opacity: 0 } : { opacity: 1 }
+                      }
+                    >
+                      {user.items?.length}
+                    </ItemCounter>
+                    <motion.span
+                      animate={
+                        _.isEmpty(user.items)
+                          ? { opacity: 0.1 }
+                          : { opacity: 1 }
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={faBagShopping}
+                        fontSize={"1.2rem"}
+                      />
+                    </motion.span>
+                  </SidebarButton>
+                ) : null}
+              </AnimatePresence>
               <SidebarButton onClick={toggleDrawer}>
                 <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
               </SidebarButton>
@@ -81,14 +122,14 @@ const Navbar: React.FC = () => {
 };
 
 interface PropTypes extends React.HTMLAttributes<HTMLDivElement> {
+  user: IUserDetails;
   open: boolean;
   onClose: () => void;
 }
 
 type MODAL_STATE = "login" | "sign up";
 
-const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
-  const { user } = useContext(UserContext);
+const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const [openPopup, setOpenPopup] = useState<boolean>(false);
@@ -103,24 +144,28 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
   const loginWithGoogle = async () => {
     try {
       await signInWithPopup(auth, provider)
-        .then((result) => {
+        .then(async (result) => {
           const { user } = result;
-          createDocument("Users", {
-            id: user.uid,
-            fullName: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL,
-            createdAt: user.metadata.creationTime,
-            lastSignedIn: user.metadata.lastSignInTime,
-            provider: "google",
-            country: "Malaysia",
-            phoneNumber: "",
-            addressLine1: "",
-            addressLine2: "",
-            state: "",
-            postcode: "",
-            orderHistory: [],
-          });
+          const isExistingUser = await checkDocumentExists("Users", user.uid);
+          if (!isExistingUser) {
+            createDocument("Users", {
+              id: user.uid,
+              fullName: user.displayName,
+              email: user.email,
+              photoURL: user.photoURL,
+              createdAt: user.metadata.creationTime,
+              lastSignedIn: user.metadata.lastSignInTime,
+              provider: "google",
+              country: "Malaysia",
+              phoneNumber: "",
+              addressLine1: "",
+              addressLine2: "",
+              state: "",
+              postcode: "",
+              items: [],
+              orderHistory: [],
+            });
+          }
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -134,7 +179,7 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
 
   const handleLogout = () => {
     auth.signOut();
-    if (router.pathname === "/profile") {
+    if (router.pathname !== "/") {
       router.replace("/");
     } else {
       router.replace(router.pathname);

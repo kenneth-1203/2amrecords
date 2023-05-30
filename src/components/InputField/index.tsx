@@ -7,6 +7,7 @@ import {
 
 interface PropTypes extends React.HTMLAttributes<HTMLInputElement> {
   type?: "text" | "email" | "password" | "number" | "file";
+  accept?: string;
   label?: React.ReactNode;
   htmlFor?: string;
   fullWidth?: boolean;

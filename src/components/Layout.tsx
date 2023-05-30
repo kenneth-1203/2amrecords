@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
+import Toast from "@/components/Toast";
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,6 +22,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
         <title>Create Next App</title>
       </Head>
       <Loading />
+      {/* <Toast /> */}
       <Wrapper>
         <Navbar />
         <Main>{children}</Main>

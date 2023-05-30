@@ -3,12 +3,20 @@ import styled from "styled-components";
 
 export const Section = styled.section`
   margin: 2rem;
+
+  ${(props) => props.theme.sizes.mobile} {
+    margin: 0;
+  }
 `;
 
 export const WelcomeContainer = styled(motion.div)`
   text-align: center;
-  padding-bottom: 2rem;
   opacity: 0.3;
+  padding: 0 0 2rem 0;
+
+  ${(props) => props.theme.sizes.mobile} {
+    padding: 1rem 0 0 0;
+  }
 `;
 
 export const Container = styled(motion.div)`
@@ -38,6 +46,10 @@ export const ProfileInfo = styled.div`
     flex-direction: column;
     width: 100%;
   }
+
+  ${(props) => props.theme.sizes.mobile} {
+    padding: 0 2rem;
+  }
 `;
 
 export const ProfilePictureWrapper = styled.div`
@@ -49,6 +61,11 @@ export const ProfilePictureWrapper = styled.div`
   ${(props) => props.theme.sizes.tabPort} {
     align-items: center;
   }
+
+  ${(props) => props.theme.sizes.mobile} {
+    margin: 2rem;
+    border: none;
+  }
 `;
 
 export const ProfilePicture = styled.div`
@@ -56,9 +73,21 @@ export const ProfilePicture = styled.div`
   width: 12rem;
   height: 12rem;
   margin-bottom: 1rem;
+
+  ${(props) => props.theme.sizes.mobile} {
+    width: 18rem;
+    height: 18rem;
+  }
 `;
 
-export const ProfileOptionsWrapper = styled.div``;
+export const ProfileOptionsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  ${(props) => props.theme.sizes.mobile} {
+    flex-direction: row;
+  }
+`;
 
 export const ProfileDetailsWrapper = styled.div`
   display: flex;

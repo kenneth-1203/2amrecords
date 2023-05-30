@@ -49,6 +49,7 @@ export interface IUserDetails {
   state: string;
   postcode: string;
   photoURL: string;
+  items: IProductData[];
   provider: "google" | null;
   lastSignedIn: Date;
   createdAt: Date;

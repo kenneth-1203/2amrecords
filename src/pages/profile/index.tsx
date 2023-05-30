@@ -74,15 +74,15 @@ const Page: React.FC = () => {
 
   const getGreeting = () => {
     const currentHour = new Date().getHours();
-  
+
     if (currentHour >= 5 && currentHour < 12) {
-      return 'Good morning';
+      return "Good morning";
     } else if (currentHour >= 12 && currentHour < 18) {
-      return 'Good afternoon';
+      return "Good afternoon";
     } else {
-      return 'Good evening';
+      return "Good evening";
     }
-  }
+  };
 
   return (
     <Section>
@@ -90,10 +90,12 @@ const Page: React.FC = () => {
         <>
           <WelcomeContainer
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 0.3, y: 0 }}
-            transition={{ delay: .5, duration: .5 }}
+            animate={{ opacity: 0.5, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.3 }}
           >
-            <Typography variant="h2" fontWeight={300}>{getGreeting()}, {userDetails.fullName}</Typography>
+            <Typography variant="h2" fontWeight={300}>
+              {getGreeting()}, {userDetails.fullName}
+            </Typography>
           </WelcomeContainer>
           <Container
             initial={{ opacity: 0, y: 20 }}
@@ -110,12 +112,13 @@ const Page: React.FC = () => {
                     }
                     alt=""
                     fill
-                    sizes="(max-width: 1200px) 12rem, 12rem"
+                    sizes="(max-width: 1200px) 12rem, 12rem, (max-width: 600px) 18rem 18rem"
                     quality={100}
                   />
                 </ProfilePicture>
                 <InputField
                   type="file"
+                  accept="image/*"
                   onChange={handleUpload}
                   disabled={isUploading}
                   fullWidth
@@ -133,7 +136,9 @@ const Page: React.FC = () => {
                         <FontAwesomeIcon icon={faSpinner} />
                       </motion.div>
                     ) : (
-                      "UPLOAD PHOTO"
+                      <Typography variant="p" fontWeight={500} textTransform="uppercase">
+                        Upload photo
+                      </Typography>
                     )
                   }
                 />
@@ -141,7 +146,7 @@ const Page: React.FC = () => {
                   variant="outlined"
                   fullWidth
                   style={{ justifyContent: "center" }}
-                  disabled={isUploading}
+                  disabled={isUploading || !userDetails.photoURL}
                   onClick={handleRemove}
                 >
                   <Typography variant="p" textTransform="uppercase">
@@ -157,7 +162,7 @@ const Page: React.FC = () => {
                   style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
                 >
                   <Typography variant="p" textTransform="uppercase">
-                    Profile details
+                    Profile
                   </Typography>
                 </Button>
                 <Button
@@ -183,8 +188,8 @@ const Page: React.FC = () => {
               </ProfileOptionsWrapper>
             </ProfileSelection>
             {section === 0 && <ProfileDetails userDetails={userDetails} />}
-            {section === 1 && <ProfileDetails userDetails={userDetails} />}
-            {section === 2 && <ProfileDetails userDetails={userDetails} />}
+            {section === 1 && <ProfileOrders />}
+            {section === 2 && <ProfileSettings />}
           </Container>
         </>
       )}
@@ -345,6 +350,14 @@ const ProfileOrders: React.FC = () => {
   return (
     <ProfileInfo>
       <h1>Orders</h1>
+    </ProfileInfo>
+  );
+};
+
+const ProfileSettings: React.FC = () => {
+  return (
+    <ProfileInfo>
+      <h1>Settings</h1>
     </ProfileInfo>
   );
 };
