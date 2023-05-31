@@ -152,7 +152,12 @@ export const ProductPrice = styled.div`
 export const ButtonWrapper = styled.div`
   width: max-content;
 
-  ${props => props.theme.sizes.mobile} {
+  ${(props) => props.theme.sizes.mobile} {
     width: 100%;
   }
-`
+`;
+
+export const CategoriesWrapper = styled.div`
+  display: flex;
+  gap: 0.8rem;
+`;

@@ -50,6 +50,10 @@ import {
 const Navbar: React.FC = () => {
   const { user } = useContext<any>(UserContext);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const variants = {
+    visible: { opacity: 1 },
+    hidden: { opacity: 0 },
+  };
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
@@ -82,32 +86,34 @@ const Navbar: React.FC = () => {
             </NavbarTitleWrapper>
             <SidebarWrapper>
               <AnimatePresence>
-                {user ? (
-                  <SidebarButton
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <ItemCounter
-                      animate={
-                        _.isEmpty(user.items) ? { opacity: 0 } : { opacity: 1 }
-                      }
+                {!_.isEmpty(user) ? (
+                  <Link href={"/bag"}>
+                    <SidebarButton
+                      initial={"hidden"}
+                      animate={"visible"}
+                      exit={"hidden"}
+                      variants={variants}
                     >
-                      {user.items?.length}
-                    </ItemCounter>
-                    <motion.span
-                      animate={
-                        _.isEmpty(user.items)
-                          ? { opacity: 0.1 }
-                          : { opacity: 1 }
-                      }
-                    >
-                      <FontAwesomeIcon
-                        icon={faBagShopping}
-                        fontSize={"1.2rem"}
-                      />
-                    </motion.span>
-                  </SidebarButton>
+                      <ItemCounter
+                        animate={_.isEmpty(user.items) ? "hidden" : "visible"}
+                        variants={variants}
+                      >
+                        {user.items?.length}
+                      </ItemCounter>
+                      <motion.span
+                        animate={
+                          _.isEmpty(user.items)
+                            ? { opacity: 0.1 }
+                            : { opacity: 1 }
+                        }
+                      >
+                        <FontAwesomeIcon
+                          icon={faBagShopping}
+                          fontSize={"1.2rem"}
+                        />
+                      </motion.span>
+                    </SidebarButton>
+                  </Link>
                 ) : null}
               </AnimatePresence>
               <SidebarButton onClick={toggleDrawer}>
@@ -245,13 +251,17 @@ const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
                           <Typography variant="h2">profile</Typography>
                         </DrawerAction>
                       </Link>
-                      <DrawerAction onClick={onClose}>
-                        <Typography variant="h2">orders</Typography>
-                      </DrawerAction>
+                      <Link href="/profile?section=orders">
+                        <DrawerAction onClick={onClose}>
+                          <Typography variant="h2">orders</Typography>
+                        </DrawerAction>
+                      </Link>
+                      <Link href="/profile?section=settings">
+                        <DrawerAction onClick={onClose}>
+                          <Typography variant="h2">settings</Typography>
+                        </DrawerAction>
+                      </Link>
                       <Line />
-                      <DrawerAction onClick={onClose}>
-                        <Typography variant="h2">settings</Typography>
-                      </DrawerAction>
                       <DrawerAction onClick={handleLogout}>
                         <Typography variant="h2">logout</Typography>
                       </DrawerAction>

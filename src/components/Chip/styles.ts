@@ -4,8 +4,6 @@ export const ChipContainer = styled.div`
   border: 1px solid ${(props) => props.theme.colors.primary[500]};
   width: fit-content;
   border-radius: 4px;
-  margin-left: 6px;
-  margin-right: 6px;
 `;
 
 export const ChipLabel = styled.p`

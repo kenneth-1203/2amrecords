@@ -109,7 +109,7 @@ function Collection(props: CollectionProps) {
       {categoryList &&
         categoryList.map((category, i) => {
           const list = productList.filter((product) =>
-            product.category.some((p) => p === category.id)
+            product.category.some((p) => p.id === category.id)
           );
           return (
             <React.Fragment key={i}>

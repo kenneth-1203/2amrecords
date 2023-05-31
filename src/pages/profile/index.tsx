@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import _ from "lodash";
 import { motion } from "framer-motion";
@@ -30,11 +31,22 @@ import {
   WelcomeContainer,
 } from "@/styles/Profile";
 
+type ProfileSections = "profile" | "orders" | "settings";
+
 const Page: React.FC = () => {
+  const router = useRouter();
   const { user } = useContext(UserContext);
+  const { section } = router.query;
   const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [section, setSection] = useState<number>(0);
+  const [currentSection, setCurrentSection] =
+    useState<ProfileSections>("profile");
+
+  useEffect(() => {
+    if (section) {
+      setCurrentSection(section as ProfileSections);
+    }
+  }, [section]);
 
   useEffect(() => {
     if (!_.isEmpty(user)) {
@@ -136,7 +148,11 @@ const Page: React.FC = () => {
                         <FontAwesomeIcon icon={faSpinner} />
                       </motion.div>
                     ) : (
-                      <Typography variant="p" fontWeight={500} textTransform="uppercase">
+                      <Typography
+                        variant="p"
+                        fontWeight={500}
+                        textTransform="uppercase"
+                      >
                         Upload photo
                       </Typography>
                     )
@@ -156,8 +172,8 @@ const Page: React.FC = () => {
               </ProfilePictureWrapper>
               <ProfileOptionsWrapper>
                 <Button
-                  onClick={() => setSection(0)}
-                  selected={section === 0}
+                  onClick={() => setCurrentSection("profile")}
+                  selected={currentSection === "profile"}
                   fullWidth
                   style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
                 >
@@ -166,8 +182,8 @@ const Page: React.FC = () => {
                   </Typography>
                 </Button>
                 <Button
-                  onClick={() => setSection(1)}
-                  selected={section === 1}
+                  onClick={() => setCurrentSection("orders")}
+                  selected={currentSection === "orders"}
                   fullWidth
                   style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
                 >
@@ -176,8 +192,8 @@ const Page: React.FC = () => {
                   </Typography>
                 </Button>
                 <Button
-                  onClick={() => setSection(2)}
-                  selected={section === 2}
+                  onClick={() => setCurrentSection("settings")}
+                  selected={currentSection === "settings"}
                   fullWidth
                   style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
                 >
@@ -187,9 +203,11 @@ const Page: React.FC = () => {
                 </Button>
               </ProfileOptionsWrapper>
             </ProfileSelection>
-            {section === 0 && <ProfileDetails userDetails={userDetails} />}
-            {section === 1 && <ProfileOrders />}
-            {section === 2 && <ProfileSettings />}
+            {currentSection === "profile" && (
+              <ProfileDetails userDetails={userDetails} />
+            )}
+            {currentSection === "orders" && <ProfileOrders />}
+            {currentSection === "settings" && <ProfileSettings />}
           </Container>
         </>
       )}

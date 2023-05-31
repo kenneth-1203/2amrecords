@@ -31,6 +31,7 @@ export const InputFileWrapper = styled.div<{ disabled: boolean }>`
   display: flex;
   justify-content: center;
   width: 100%;
+  height: 100%;
   min-width: 4rem;
   border: 1px solid ${(props) => props.theme.colors.primary.main};
   padding: 0.8rem;
@@ -55,5 +56,7 @@ export const InputFileComponent = styled.input`
   top: 0;
   left: 0;
   width: inherit;
+  height: inherit;
   transition: 0.2s;
+  cursor: pointer;
 `;

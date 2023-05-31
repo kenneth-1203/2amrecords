@@ -14,7 +14,7 @@ export const Background = styled.section`
     aspect-ratio: 9 / 11;
   }
 
-  ${props => props.theme.sizes.tabPort} {
+  ${(props) => props.theme.sizes.tabPort} {
     grid-template-columns: 1fr 1fr;
 
     & > :nth-child(3) {
@@ -22,7 +22,7 @@ export const Background = styled.section`
     }
   }
 
-  ${props => props.theme.sizes.mobile} {
+  ${(props) => props.theme.sizes.mobile} {
     grid-template-columns: 1fr;
 
     & > :not(:first-child) {
@@ -36,12 +36,18 @@ export const Section = styled(motion.section)`
   display: grid;
   grid-template-columns: 1fr;
   height: 100%;
+
+  :not(:last-child) {
+    border-bottom: 1px solid ${(props) => props.theme.colors.primary[200]};
+    padding-bottom: 2rem;
+  }
 `;
 
 export const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   padding: 1.4rem 4rem;
+  gap: 0.8rem;
 
   ${(props) => props.theme.sizes.tabPort} {
     padding: 1.4rem 2rem;
@@ -54,7 +60,7 @@ export const Wrapper = styled.div`
 
 export const LinearProgress = styled(motion.div)`
   height: 4px;
-  background: ${props => props.theme.colors.primary.main};
+  background: ${(props) => props.theme.colors.primary.main};
   transform-origin: 0%;
 `;
 
