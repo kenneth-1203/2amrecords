@@ -68,3 +68,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [ ] Create feedback section where users can rate products and write comments
 - [ ] Trigger an email to user upon completing a purchase
 - [x] Change image load behavior to increase performance
+- [ ] Add a subscribe to newsletter section in homepage

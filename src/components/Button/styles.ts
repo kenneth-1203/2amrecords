@@ -70,7 +70,7 @@ export const StyledButton = styled.button<{
           border-color: transparent;
 
           &:active {
-            color: ${(props) => props.theme.colors.primary[600]};
+            color: ${(props) => props.theme.colors.primary[600]} !important;
           }
 
           &:hover {

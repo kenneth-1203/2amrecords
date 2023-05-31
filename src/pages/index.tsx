@@ -75,16 +75,19 @@ function Landing() {
         src={"/bg-1.png"}
         whileHover={{ scale: 1.05, filter: "saturate(1)" }}
         transition={{ duration: 0.4 }}
+        loading="lazy"
       />
       <motion.img
         src={"/bg-2.png"}
         whileHover={{ scale: 1.05, filter: "saturate(1)" }}
         transition={{ duration: 0.4 }}
+        loading="lazy"
       />
       <motion.img
         src={"/bg-3.png"}
         whileHover={{ scale: 1.05, filter: "saturate(1)" }}
         transition={{ duration: 0.4 }}
+        loading="lazy"
       />
     </Background>
   );

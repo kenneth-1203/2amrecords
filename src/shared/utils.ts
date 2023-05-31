@@ -25,8 +25,15 @@ export const formatTimeDiff = (timestamp: string) => {
   // Otherwise, show the date and time of the comment
   const date = new Date(timestamp);
   return date.toLocaleDateString();
-}
+};
 
 export const removeFileExtension = (fileName: string) => {
-  return fileName.replace(/\.(png|jpeg)$/i, '');
-}
+  return fileName.replace(/\.(png|jpeg)$/i, "");
+};
+
+export const getSizeValue = (size: number) => {
+  if (size === 0) return "S";
+  if (size === 1) return "M";
+  if (size === 2) return "L";
+  if (size === 3) return "XL";
+};

@@ -11,6 +11,7 @@ import {
   getFileURLs,
 } from "@/api/index";
 import { Category, IProductData, Size, Stock } from "@/shared/interfaces";
+import { getSizeValue } from "@/shared/utils";
 import Image from "next/image";
 import Typography from "@/components/Typography";
 import Button from "@/components/Button";
@@ -30,7 +31,12 @@ import {
   DiscountPrice,
   ButtonWrapper,
   CategoriesWrapper,
+  Wrapper,
+  ViewSizeChart,
+  SizeChartWrapper,
+  SizeChartImage,
 } from "@/styles/Products";
+import Modal from "@/components/Modal";
 
 export const getStaticPaths = async () => {
   const data = await getDocuments("Products");
@@ -81,6 +87,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
     productImages[0]
   );
   const [selectedSize, setSelectedSize] = useState<number>(-1);
+  const [showSizeChart, setShowSizeChart] = useState<boolean>(false);
   const [openToast, setOpenToast] = useState<ToastProps>({
     open: false,
     message: "",
@@ -104,11 +111,8 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
     });
   };
 
-  const getSizeValue = (size: number) => {
-    if (size === 0) return "S";
-    if (size === 1) return "M";
-    if (size === 2) return "L";
-    if (size === 3) return "XL";
+  const handleShowSizeChart = () => {
+    setShowSizeChart(!showSizeChart);
   };
 
   const handleAddToBag = async () => {
@@ -117,7 +121,13 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
         // @ts-ignore
         ...user.items,
         {
-          ...productDetails,
+          id: productDetails.id,
+          name: productDetails.name,
+          variant: productDetails.variant,
+          category: productDetails.category,
+          description: productDetails.description,
+          originalPrice: productDetails.originalPrice,
+          discountedPrice: productDetails.discountedPrice,
           size: getSizeValue(selectedSize),
         },
       ];
@@ -163,8 +173,54 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
         onClose={handleOpenToast}
         type={openToast.type}
       >
-        <Typography variant="p">{openToast.message}</Typography>
+        <Typography variant="p" textTransform="uppercase" fontWeight={500}>
+          {openToast.message}
+        </Typography>
       </Toast>
+      <Modal
+        open={showSizeChart}
+        onClose={handleShowSizeChart}
+        title="Size chart"
+      >
+        <SizeChartWrapper>
+          <Typography variant="p" textTransform="uppercase" fontWeight={500}>
+            T-shirt Size Chart (CM)
+          </Typography>
+          <SizeChartImage height={164}>
+            <Image
+              src={"/tshirt-size-chart.jpg"}
+              style={{ objectFit: "cover" }}
+              sizes="100%"
+              alt=""
+              fill
+            />
+          </SizeChartImage>
+          <Typography variant="p" textTransform="uppercase" fontWeight={500}>
+            Sweatshirt Size Chart (CM)
+          </Typography>
+          <SizeChartImage height={191}>
+            <Image
+              src={"/sweatshirt-size-chart.jpg"}
+              style={{ objectFit: "cover" }}
+              sizes="100%"
+              alt=""
+              fill
+            />
+          </SizeChartImage>
+          <Typography variant="p" textTransform="uppercase" fontWeight={500}>
+            Hoodie Size Chart (CM)
+          </Typography>
+          <SizeChartImage height={186}>
+            <Image
+              src={"/hoodie-size-chart.jpg"}
+              style={{ objectFit: "cover" }}
+              sizes="100%"
+              alt=""
+              fill
+            />
+          </SizeChartImage>
+        </SizeChartWrapper>
+      </Modal>
       <Section>
         <Container>
           <ProductDisplay>
@@ -258,17 +314,24 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
                     </DiscountPrice>
                   )}
                 </ProductPrice>
-                <ButtonWrapper>
-                  <Button
-                    variant="contained"
-                    disabled={selectedSize === -1}
-                    style={{ justifyContent: "center" }}
-                    onClick={handleAddToBag}
-                    fullWidth
-                  >
-                    <Typography variant="p">ADD TO BAG</Typography>
-                  </Button>
-                </ButtonWrapper>
+                <Wrapper>
+                  <ButtonWrapper>
+                    <Button
+                      variant="contained"
+                      disabled={selectedSize === -1}
+                      style={{ justifyContent: "center" }}
+                      onClick={handleAddToBag}
+                      fullWidth
+                    >
+                      <Typography variant="p">ADD TO BAG</Typography>
+                    </Button>
+                  </ButtonWrapper>
+                  <ViewSizeChart>
+                    <Button variant="text" onClick={handleShowSizeChart}>
+                      <Typography variant="p">View size chart</Typography>
+                    </Button>
+                  </ViewSizeChart>
+                </Wrapper>
               </>
             )}
           </ProductDetails>

@@ -154,7 +154,7 @@ const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
           const { user } = result;
           const isExistingUser = await checkDocumentExists("Users", user.uid);
           if (!isExistingUser) {
-            createDocument("Users", {
+            await createDocument("Users", {
               id: user.uid,
               fullName: user.displayName,
               email: user.email,
@@ -172,6 +172,7 @@ const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
               orderHistory: [],
             });
           }
+          // TODO: Add a welcome modal/toast
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -184,6 +185,7 @@ const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
   };
 
   const handleLogout = () => {
+    // TODO: Add confirmation modal/toast
     auth.signOut();
     if (router.pathname !== "/") {
       router.replace("/");
@@ -205,6 +207,7 @@ const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
         open={openPopup}
         onClose={() => setOpenPopup(false)}
         title={modalState}
+        position={"absolute"}
       >
         <AnimatePresence>
           {modalState === "login" ? (
@@ -291,10 +294,9 @@ const LoginForm: React.FC<{
     e.preventDefault();
     const { results, error } = await signIn(formData);
     if (results) {
-      console.log(results);
+      // TODO: Add a welcome modal/toast
     }
     if (error) {
-      console.log(error);
       setError(error);
     }
   };
@@ -377,6 +379,7 @@ const SignUpForm: React.FC<{
     if (results) {
       // automatically sign user in
       await signIn({ email: formData.email, password: formData.password });
+      // TODO: Add a welcome modal/toast
     }
     if (error) {
       setError(error);

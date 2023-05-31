@@ -6,7 +6,6 @@ const SMALL_IMAGE_WIDTH = "5rem";
 const SMALL_IMAGE_HEIGHT = "8rem";
 const GAP_SIZE = "2rem";
 const TOTAL_WIDTH = `${MAIN_IMAGE_WIDTH} + ${SMALL_IMAGE_WIDTH} + ${GAP_SIZE}`;
-const TOTAL_HEIGHT = `${MAIN_IMAGE_HEIGHT} + ${SMALL_IMAGE_HEIGHT} + ${GAP_SIZE}`;
 
 export const Section = styled.section`
   margin: 2rem 8rem;
@@ -59,8 +58,7 @@ export const ProductDisplay = styled.div`
   }
 
   ${(props) => props.theme.sizes.tabPort} {
-    width: calc((${TOTAL_WIDTH} + ${GAP_SIZE}) / 1.2);
-    height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
+    height: calc((${MAIN_IMAGE_HEIGHT} - ${GAP_SIZE}) / 1.2);
   }
 
   ${(props) => props.theme.sizes.mobile} {
@@ -135,6 +133,10 @@ export const ProductDetails = styled.div`
   flex-direction: column;
   gap: 1.4rem;
 
+  ${(props) => props.theme.sizes.tabPort} {
+    margin-top: 2rem;
+  }
+
   ${(props) => props.theme.sizes.mobile} {
     margin: 2rem;
   }
@@ -160,4 +162,51 @@ export const ButtonWrapper = styled.div`
 export const CategoriesWrapper = styled.div`
   display: flex;
   gap: 0.8rem;
+`;
+
+export const Wrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  ${(props) => props.theme.sizes.mobile} {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+`;
+
+export const ViewSizeChart = styled.div`
+  & > button > p {
+    color: ${(props) => props.theme.colors.primary[300]};
+    text-transform: uppercase;
+    text-decoration: underline;
+    transition: 0.2s;
+  }
+
+  &:active > button > p {
+    color: ${(props) => props.theme.colors.primary[100]};
+  }
+`;
+
+export const SizeChartWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  text-align: center;
+`;
+
+export const SizeChartImage = styled.div<{ height: number }>`
+  position: relative;
+  width: 420px;
+  height: ${({ height }) => height}px;
+
+  ${(props) => props.theme.sizes.tabPort} {
+    width: calc(420px / 1.2);
+    height: calc(${({ height }) => height}px / 1.2);
+  }
+
+  ${(props) => props.theme.sizes.mobile} {
+    width: calc(420px / 1.4);
+    height: calc(${({ height }) => height}px / 1.4);
+  }
 `;
