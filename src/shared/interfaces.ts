@@ -5,6 +5,11 @@ export type Stock = {
   quantity: number;
 };
 
+export type Category = {
+  id: string;
+  name: string;
+};
+
 export interface IProductData {
   id: number;
   name: string;
@@ -15,7 +20,7 @@ export interface IProductData {
   totalQuantity: number;
   discountedPrice: number;
   originalPrice: number;
-  category: Array<string>;
+  category: Category[];
 }
 
 export interface ICategoryData {
@@ -49,6 +54,7 @@ export interface IUserDetails {
   state: string;
   postcode: string;
   photoURL: string;
+  items: IProductData[];
   provider: "google" | null;
   lastSignedIn: Date;
   createdAt: Date;

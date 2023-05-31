@@ -133,10 +133,10 @@ export const ProductImageSmall = styled.div<{ selected: boolean }>`
 export const ProductDetails = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.4rem;
 
   ${(props) => props.theme.sizes.mobile} {
-    margin: 1rem;
+    margin: 2rem;
   }
 `;
 
@@ -147,4 +147,17 @@ export const DiscountPrice = styled.div`
 export const ProductPrice = styled.div`
   display: flex;
   gap: 0.4rem;
+`;
+
+export const ButtonWrapper = styled.div`
+  width: max-content;
+
+  ${(props) => props.theme.sizes.mobile} {
+    width: 100%;
+  }
+`;
+
+export const CategoriesWrapper = styled.div`
+  display: flex;
+  gap: 0.8rem;
 `;

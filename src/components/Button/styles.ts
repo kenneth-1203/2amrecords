@@ -5,7 +5,8 @@ export const StyledButton = styled.button<{
   fullWidth: boolean;
   selected: boolean;
 }>`
-  width: ${({ fullWidth }) => (fullWidth ? `100%` : `max-content`)};
+  width: ${({ fullWidth }) => fullWidth && `100%`};
+  min-width: 6rem;
   position: relative;
   outline: none;
   border: none;
@@ -15,12 +16,13 @@ export const StyledButton = styled.button<{
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   min-height: 2.4rem;
   gap: 8px;
   transition: all 0.2s;
 
   & > :last-child {
-    width: ${({ fullWidth }) => (fullWidth ? `100%` : `max-content`)};
+    width: ${({ fullWidth }) => fullWidth && `100%`};
   }
 
   :disabled {

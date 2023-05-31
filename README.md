@@ -52,7 +52,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [x] Create user registration form
 - [x] Setup authentication with Firebase authentication
 - [ ] Create admin panel for creating new products, uploading images, etc 
-- [ ] Handle user actions: add to cart, checkout, save cart, adjustable quantity, etc
+- [ ] Handle user actions: add to cart, checkout, save cart, etc
 - [ ] Integrate Stripe payment gateway
 - [x] Setup testing environment for Firebase collections and Firebase storage
 - [ ] Create user profile page with information (delivery status, track orders, pending orders, order history)

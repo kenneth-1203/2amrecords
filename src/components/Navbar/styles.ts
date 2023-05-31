@@ -46,14 +46,33 @@ export const NavbarWrapper = styled.div`
 `;
 
 export const SidebarWrapper = styled.div`
+  display: flex;
   position: absolute;
   top: 0;
   right: 0;
+  gap: .4rem;
 `;
 
-export const SidebarButton = styled.div`
+export const SidebarButton = styled(motion.div)`
+  position: relative;
   padding: 0.6rem 0.8rem;
   cursor: pointer;
+`;
+
+export const ItemCounter = styled(motion.span)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: ${props => props.theme.colors.red.main};
+  color: ${props => props.theme.colors.secondary.main};
+  border-radius: 4px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8rem;
+  font-weight: 500;
 `;
 
 export const DrawerBackdrop = styled(motion.div)`
@@ -85,7 +104,7 @@ export const DrawerContents = styled.div`
   overflow: hidden;
   width: 28rem;
 
-  ${props => props.theme.sizes.mobile} {
+  ${(props) => props.theme.sizes.mobile} {
     width: 20rem;
   }
 `;
@@ -98,15 +117,15 @@ export const DrawerBody = styled.div`
 export const DrawerAction = styled(motion.div)`
   cursor: pointer;
   padding: 1rem 1.2rem;
-  transition: .3s;
+  transition: 0.3s;
 
   &:hover {
-    letter-spacing: .8rem;
-    background: ${props => props.theme.colors.primary[50]};
+    letter-spacing: 0.4rem;
+    background: ${(props) => props.theme.colors.primary[50]};
   }
 
   &:active {
-    background: ${props => props.theme.colors.primary[100]};
+    background: ${(props) => props.theme.colors.primary[100]};
   }
 `;
 

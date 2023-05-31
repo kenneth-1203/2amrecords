@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import _ from "lodash";
 import { motion } from "framer-motion";
@@ -30,11 +31,22 @@ import {
   WelcomeContainer,
 } from "@/styles/Profile";
 
+type ProfileSections = "profile" | "orders" | "settings";
+
 const Page: React.FC = () => {
+  const router = useRouter();
   const { user } = useContext(UserContext);
+  const { section } = router.query;
   const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [section, setSection] = useState<number>(0);
+  const [currentSection, setCurrentSection] =
+    useState<ProfileSections>("profile");
+
+  useEffect(() => {
+    if (section) {
+      setCurrentSection(section as ProfileSections);
+    }
+  }, [section]);
 
   useEffect(() => {
     if (!_.isEmpty(user)) {
@@ -74,15 +86,15 @@ const Page: React.FC = () => {
 
   const getGreeting = () => {
     const currentHour = new Date().getHours();
-  
+
     if (currentHour >= 5 && currentHour < 12) {
-      return 'Good morning';
+      return "Good morning";
     } else if (currentHour >= 12 && currentHour < 18) {
-      return 'Good afternoon';
+      return "Good afternoon";
     } else {
-      return 'Good evening';
+      return "Good evening";
     }
-  }
+  };
 
   return (
     <Section>
@@ -90,10 +102,12 @@ const Page: React.FC = () => {
         <>
           <WelcomeContainer
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 0.3, y: 0 }}
-            transition={{ delay: .5, duration: .5 }}
+            animate={{ opacity: 0.5, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.3 }}
           >
-            <Typography variant="h2" fontWeight={300}>{getGreeting()}, {userDetails.fullName}</Typography>
+            <Typography variant="h2" fontWeight={300}>
+              {getGreeting()}, {userDetails.fullName}
+            </Typography>
           </WelcomeContainer>
           <Container
             initial={{ opacity: 0, y: 20 }}
@@ -110,12 +124,13 @@ const Page: React.FC = () => {
                     }
                     alt=""
                     fill
-                    sizes="(max-width: 1200px) 12rem, 12rem"
+                    sizes="(max-width: 1200px) 12rem, 12rem, (max-width: 600px) 18rem 18rem"
                     quality={100}
                   />
                 </ProfilePicture>
                 <InputField
                   type="file"
+                  accept="image/*"
                   onChange={handleUpload}
                   disabled={isUploading}
                   fullWidth
@@ -133,7 +148,13 @@ const Page: React.FC = () => {
                         <FontAwesomeIcon icon={faSpinner} />
                       </motion.div>
                     ) : (
-                      "UPLOAD PHOTO"
+                      <Typography
+                        variant="p"
+                        fontWeight={500}
+                        textTransform="uppercase"
+                      >
+                        Upload photo
+                      </Typography>
                     )
                   }
                 />
@@ -141,7 +162,7 @@ const Page: React.FC = () => {
                   variant="outlined"
                   fullWidth
                   style={{ justifyContent: "center" }}
-                  disabled={isUploading}
+                  disabled={isUploading || !userDetails.photoURL}
                   onClick={handleRemove}
                 >
                   <Typography variant="p" textTransform="uppercase">
@@ -151,18 +172,18 @@ const Page: React.FC = () => {
               </ProfilePictureWrapper>
               <ProfileOptionsWrapper>
                 <Button
-                  onClick={() => setSection(0)}
-                  selected={section === 0}
+                  onClick={() => setCurrentSection("profile")}
+                  selected={currentSection === "profile"}
                   fullWidth
                   style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
                 >
                   <Typography variant="p" textTransform="uppercase">
-                    Profile details
+                    Profile
                   </Typography>
                 </Button>
                 <Button
-                  onClick={() => setSection(1)}
-                  selected={section === 1}
+                  onClick={() => setCurrentSection("orders")}
+                  selected={currentSection === "orders"}
                   fullWidth
                   style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
                 >
@@ -171,8 +192,8 @@ const Page: React.FC = () => {
                   </Typography>
                 </Button>
                 <Button
-                  onClick={() => setSection(2)}
-                  selected={section === 2}
+                  onClick={() => setCurrentSection("settings")}
+                  selected={currentSection === "settings"}
                   fullWidth
                   style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
                 >
@@ -182,9 +203,11 @@ const Page: React.FC = () => {
                 </Button>
               </ProfileOptionsWrapper>
             </ProfileSelection>
-            {section === 0 && <ProfileDetails userDetails={userDetails} />}
-            {section === 1 && <ProfileDetails userDetails={userDetails} />}
-            {section === 2 && <ProfileDetails userDetails={userDetails} />}
+            {currentSection === "profile" && (
+              <ProfileDetails userDetails={userDetails} />
+            )}
+            {currentSection === "orders" && <ProfileOrders />}
+            {currentSection === "settings" && <ProfileSettings />}
           </Container>
         </>
       )}
@@ -345,6 +368,14 @@ const ProfileOrders: React.FC = () => {
   return (
     <ProfileInfo>
       <h1>Orders</h1>
+    </ProfileInfo>
+  );
+};
+
+const ProfileSettings: React.FC = () => {
+  return (
+    <ProfileInfo>
+      <h1>Settings</h1>
     </ProfileInfo>
   );
 };

@@ -2,7 +2,8 @@ import styled, { css } from "styled-components";
 
 export const ListContainer = styled.ul<{ fullWidth: boolean }>`
   width: ${({ fullWidth }) => (fullWidth ? `100%` : `max-content`)};
-  border: 1px solid ${(props) => props.theme.colors.primary.main};
+  border-top: 1px solid ${(props) => props.theme.colors.primary.main};
+  border-bottom: 1px solid ${(props) => props.theme.colors.primary.main};
   list-style: none;
 `;
 
@@ -26,6 +27,12 @@ export const ListItemContainer = styled.li<{
       color: ${(props) => props.theme.colors.primary[300]};
       pointer-events: none;
     `};
+
+  ${({ selected }) =>
+    selected &&
+    `
+    text-shadow: 0 1px 1px black;
+  `}
 
   :not(:last-child) {
     border-bottom: 1px solid ${(props) => props.theme.colors.primary.main};

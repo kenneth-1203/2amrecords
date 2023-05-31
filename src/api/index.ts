@@ -59,6 +59,23 @@ export const getDocument = async (
   }
 };
 
+export const getDocumentRef = (path: string) => {
+  return doc(firestore, prefix + path);
+};
+
+export const checkDocumentExists = async (
+  collectionName: string,
+  documentId: string
+) => {
+  try {
+    const docRef = doc(firestore, prefix + collectionName, documentId);
+    const docSnapshot = await getDoc(docRef);
+    return docSnapshot.exists();
+  } catch (error) {
+    return error;
+  }
+};
+
 export const createDocument = async (collectionName: string, docData: any) => {
   try {
     let response;
@@ -176,6 +193,7 @@ export const signUp = async ({
         photoURL: "",
         provider: "",
         orderHistory: [],
+        items: [],
         lastSignedIn: new Date(),
         createdAt: new Date(),
       });
