@@ -77,6 +77,12 @@ export const ItemListContainer = styled.div`
 export const ItemWrapper = styled.div`
   display: flex;
   gap: 1rem;
+  
+  & > a {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+  }
 `;
 
 export const ItemImage = styled.div`

@@ -111,8 +111,8 @@ const BagItemsList: React.FC<PropTypes> = ({ userDetails }) => {
             items={itemList.map((item) => {
               return {
                 label: (
-                  <Link href={`/products/${item.id}`}>
-                    <ItemWrapper>
+                  <ItemWrapper>
+                    <Link href={`/products/${item.id}`}>
                       <ItemImage>
                         <Image
                           src={item.imageURL}
@@ -145,31 +145,31 @@ const BagItemsList: React.FC<PropTypes> = ({ userDetails }) => {
                           {item.size}
                         </Typography>
                       </ItemDetails>
-                      <PriceWrapper>
-                        <Typography variant="h3">
-                          RM{" "}
-                          {item.discountedPrice
-                            ? item.discountedPrice.toFixed(2)
-                            : item.originalPrice.toFixed(2)}
-                        </Typography>
-                        {item.discountedPrice && (
-                          <DiscountPrice>
-                            <Typography
-                              variant="h3"
-                              textDecoration={"line-through"}
-                            >
-                              RM {item.originalPrice.toFixed(2)}
-                            </Typography>
-                          </DiscountPrice>
-                        )}
-                        <RemoveItemButton
-                          onClick={() => handleRemoveItem(item.id)}
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </RemoveItemButton>
-                      </PriceWrapper>
-                    </ItemWrapper>
-                  </Link>
+                    </Link>
+                    <PriceWrapper>
+                      <Typography variant="h3">
+                        RM{" "}
+                        {item.discountedPrice
+                          ? item.discountedPrice.toFixed(2)
+                          : item.originalPrice.toFixed(2)}
+                      </Typography>
+                      {item.discountedPrice && (
+                        <DiscountPrice>
+                          <Typography
+                            variant="h3"
+                            textDecoration={"line-through"}
+                          >
+                            RM {item.originalPrice.toFixed(2)}
+                          </Typography>
+                        </DiscountPrice>
+                      )}
+                      <RemoveItemButton
+                        onClick={() => handleRemoveItem(item.id)}
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </RemoveItemButton>
+                    </PriceWrapper>
+                  </ItemWrapper>
                 ),
                 value: item.id,
               };
