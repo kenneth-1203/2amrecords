@@ -1,7 +1,6 @@
 import styled, { css } from "styled-components";
 
-export const ListContainer = styled.ul<{ fullWidth: boolean }>`
-  width: ${({ fullWidth }) => (fullWidth ? `100%` : `max-content`)};
+export const ListContainer = styled.ul`
   border-top: 1px solid ${(props) => props.theme.colors.primary.main};
   border-bottom: 1px solid ${(props) => props.theme.colors.primary.main};
   list-style: none;
@@ -18,7 +17,7 @@ export const ListItemContainer = styled.li<{
   background: ${({ selected }) =>
     selected
       ? css`
-          ${(props) => props.theme.colors.primary[100]};
+          ${(props) => props.theme.colors.primary[50]};
         `
       : "inherit"};
   ${({ disabled }) =>
@@ -39,14 +38,16 @@ export const ListItemContainer = styled.li<{
   }
 
   :hover {
-    background: ${(props) => props.theme.colors.primary[50]};
+    background: ${(props) => props.theme.colors.primary[25]};
   }
 
   :active {
-    background: ${(props) => props.theme.colors.primary[100]};
+    background: ${(props) => props.theme.colors.primary[50]};
   }
 `;
 
-export const ListItem = styled.div``;
+export const ListItem = styled.div`
+  width: 100%;
+`;
 
 export const ListItemIcon = styled.span``;

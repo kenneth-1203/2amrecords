@@ -45,7 +45,7 @@ export const Container = styled.div`
   }
 `;
 
-export const ProductDisplay = styled.div`
+export const ProductImageDisplay = styled.div`
   display: flex;
   width: calc(${TOTAL_WIDTH});
   height: ${MAIN_IMAGE_HEIGHT};
@@ -128,7 +128,7 @@ export const ProductImageSmall = styled.div<{ selected: boolean }>`
   }
 `;
 
-export const ProductDetails = styled.div`
+export const ProductDetailsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
@@ -185,6 +185,10 @@ export const ViewSizeChart = styled.div`
 
   &:active > button > p {
     color: ${(props) => props.theme.colors.primary[100]};
+  }
+
+  ${props => props.theme.sizes.mobile} {
+    width: 100%;
   }
 `;
 

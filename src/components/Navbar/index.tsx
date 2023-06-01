@@ -240,6 +240,7 @@ const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
                     icon={faXmark}
                     onClick={onClose}
                     style={{ cursor: "pointer" }}
+                    color="rgba(0,0,0,.3)"
                   />
                 </DrawerCloseButton>
                 <DrawerBody>

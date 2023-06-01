@@ -12,19 +12,17 @@ interface PropTypes {
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
     disabled?: boolean;
-    label: string;
+    label: React.ReactNode;
     value: ItemValue;
   }>;
   onSelect?: (index: number) => void | undefined;
   value?: number | undefined;
-  fullWidth?: boolean;
 }
 
 const List: React.FC<PropTypes> = ({
   items,
   onSelect,
   value,
-  fullWidth = false,
 }) => {
   const handleSelect = (index: number) => {
     if (onSelect) {
@@ -37,7 +35,7 @@ const List: React.FC<PropTypes> = ({
   };
 
   return (
-    <ListContainer fullWidth={fullWidth}>
+    <ListContainer>
       {items &&
         items.map((item, i) => (
           <ListItemContainer

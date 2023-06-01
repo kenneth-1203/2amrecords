@@ -18,7 +18,7 @@ export interface IProductData {
   sizes: Size[];
   stock: Stock[];
   totalQuantity: number;
-  discountedPrice: number;
+  discountedPrice: number | null;
   originalPrice: number;
   category: Category[];
 }
@@ -54,8 +54,19 @@ export interface IUserDetails {
   state: string;
   postcode: string;
   photoURL: string;
-  items: IProductData[];
+  items: IBagItem[];
   provider: "google" | null;
   lastSignedIn: Date;
   createdAt: Date;
+}
+
+export interface IBagItem {
+  id: string;
+  name: string;
+  variant: string;
+  description: string;
+  originalPrice: number;
+  discountedPrice: number | null;
+  size: string;
+  imageURL: string;
 }
