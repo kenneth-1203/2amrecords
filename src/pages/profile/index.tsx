@@ -35,7 +35,7 @@ type ProfileSections = "profile" | "orders" | "settings";
 
 const Page: React.FC = () => {
   const router = useRouter();
-  const { user } = useContext(UserContext);
+  const { user, isAuthenticated } = useContext(UserContext);
   const { section } = router.query;
   const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -49,10 +49,12 @@ const Page: React.FC = () => {
   }, [section]);
 
   useEffect(() => {
-    if (!_.isEmpty(user)) {
+    if (isAuthenticated) {
       setUserDetails(user as IUserDetails);
+    } else {
+      router.replace("/")
     }
-  }, [user]);
+  }, [isAuthenticated, router, user]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.files?.[0] && userDetails) {
