@@ -193,7 +193,7 @@ export const signUp = async ({
         photoURL: "",
         provider: "",
         orderHistory: [],
-        items: [],
+        items: [], // TODO: Add existing items from guest
         lastSignedIn: new Date(),
         createdAt: new Date(),
       });

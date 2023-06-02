@@ -13,7 +13,6 @@ export const ToastContainer = styled(motion.div)`
   display: flex;
   align-items: center;
   gap: 1rem;
-  max-width: 30rem;
   padding: 1rem;
   margin: 1rem;
   border-radius: 4px;

@@ -48,7 +48,7 @@ import {
 } from "./styles";
 
 const Navbar: React.FC = () => {
-  const { user } = useContext<any>(UserContext);
+  const { user, isAuthenticated } = useContext<any>(UserContext);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const variants = {
     visible: { opacity: 1 },
@@ -72,6 +72,7 @@ const Navbar: React.FC = () => {
       </Head>
       <Container>
         <Drawer
+          isAuthenticated={isAuthenticated}
           user={user as IUserDetails}
           open={openDrawer}
           onClose={toggleDrawer}
@@ -86,35 +87,33 @@ const Navbar: React.FC = () => {
             </NavbarTitleWrapper>
             <SidebarWrapper>
               <AnimatePresence>
-                {!_.isEmpty(user) ? (
-                  <Link href={"/bag"}>
-                    <SidebarButton
-                      initial={"hidden"}
-                      animate={"visible"}
-                      exit={"hidden"}
+                <Link href={"/bag"}>
+                  <SidebarButton
+                    initial={"hidden"}
+                    animate={"visible"}
+                    exit={"hidden"}
+                    variants={variants}
+                  >
+                    <ItemCounter
+                      animate={_.isEmpty(user.items) ? "hidden" : "visible"}
                       variants={variants}
                     >
-                      <ItemCounter
-                        animate={_.isEmpty(user.items) ? "hidden" : "visible"}
-                        variants={variants}
-                      >
-                        {user.items?.length}
-                      </ItemCounter>
-                      <motion.span
-                        animate={
-                          _.isEmpty(user.items)
-                            ? { opacity: 0.1 }
-                            : { opacity: 1 }
-                        }
-                      >
-                        <FontAwesomeIcon
-                          icon={faBagShopping}
-                          fontSize={"1.2rem"}
-                        />
-                      </motion.span>
-                    </SidebarButton>
-                  </Link>
-                ) : null}
+                      {user.items?.length}
+                    </ItemCounter>
+                    <motion.span
+                      animate={
+                        _.isEmpty(user.items)
+                          ? { opacity: 0.1 }
+                          : { opacity: 1 }
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={faBagShopping}
+                        fontSize={"1.2rem"}
+                      />
+                    </motion.span>
+                  </SidebarButton>
+                </Link>
               </AnimatePresence>
               <SidebarButton onClick={toggleDrawer}>
                 <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
@@ -128,6 +127,7 @@ const Navbar: React.FC = () => {
 };
 
 interface PropTypes extends React.HTMLAttributes<HTMLDivElement> {
+  isAuthenticated: boolean;
   user: IUserDetails;
   open: boolean;
   onClose: () => void;
@@ -135,7 +135,12 @@ interface PropTypes extends React.HTMLAttributes<HTMLDivElement> {
 
 type MODAL_STATE = "login" | "sign up";
 
-const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
+const Drawer: React.FC<PropTypes> = ({
+  isAuthenticated,
+  user,
+  open,
+  onClose,
+}) => {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const [openPopup, setOpenPopup] = useState<boolean>(false);
@@ -168,7 +173,7 @@ const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
               addressLine2: "",
               state: "",
               postcode: "",
-              items: [],
+              items: [], // TODO: Add existing items from guest
               orderHistory: [],
             });
           }
@@ -244,7 +249,7 @@ const Drawer: React.FC<PropTypes> = ({ user, open, onClose }) => {
                   />
                 </DrawerCloseButton>
                 <DrawerBody>
-                  {_.isEmpty(user) ? (
+                  {!isAuthenticated ? (
                     <DrawerAction onClick={togglePopup}>
                       <Typography variant="h2">login / signup</Typography>
                     </DrawerAction>

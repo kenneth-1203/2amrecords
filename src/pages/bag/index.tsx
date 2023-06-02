@@ -36,19 +36,35 @@ import {
 } from "@/styles/Bag";
 
 const Page: React.FC = () => {
-  const { user } = useContext(UserContext);
+  const { user, isAuthenticated } = useContext(UserContext);
   // @ts-ignore
   const userRef = getDocumentRef(`Users/${user.id}`);
-  const [userDetails] = useDocumentData(userRef);
+  const [userDocument] = useDocumentData(userRef);
+  const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
+
+  useEffect(() => {
+    if (userDocument) {
+      setUserDetails(userDocument as IUserDetails);
+    } else {
+      // @ts-ignore
+      setUserDetails(user as IUserDetails);
+    }
+  }, [userDocument, user]);
 
   if (!userDetails) return <h1>Loading...</h1>;
 
   return (
     <Container>
       <BagContainer>
-        <BagItemsList userDetails={userDetails} />
+        <BagItemsList
+          isAuthenticated={isAuthenticated}
+          userDetails={userDetails}
+        />
         {!_.isEmpty(userDetails.items) && (
-          <CheckoutSummary userDetails={userDetails} />
+          <CheckoutSummary
+            isAuthenticated={isAuthenticated}
+            userDetails={userDetails}
+          />
         )}
       </BagContainer>
     </Container>
@@ -56,34 +72,39 @@ const Page: React.FC = () => {
 };
 
 interface PropTypes {
-  userDetails: IUserDetails | DocumentData;
+  userDetails: IUserDetails;
+  isAuthenticated: boolean;
 }
 
-const BagItemsList: React.FC<PropTypes> = ({ userDetails }) => {
+const BagItemsList: React.FC<PropTypes> = ({
+  userDetails,
+  isAuthenticated,
+}) => {
   const [itemList, setItemList] = useState<IBagItem[] | []>([]);
 
   useEffect(() => {
-    const newList = userDetails.items.map(async (item: IBagItem) => {
-      const { results } = await getFileURL(`Products/${item.id}/1.jpg`);
-      return {
-        id: item.id,
-        name: item.name,
-        description: item.description,
-        size: item.size,
-        variant: item.variant,
-        discountedPrice: item.discountedPrice,
-        originalPrice: item.originalPrice,
-        imageURL: results ?? "",
-      };
-    });
-    Promise.all(newList)
-      .then((resolvedList) => {
-        setItemList(resolvedList);
-        console.log(resolvedList);
-      })
-      .catch((error) => {
-        console.error(error);
+    if (userDetails.items) {
+      const newList = userDetails.items.map(async (item: IBagItem) => {
+        const { results } = await getFileURL(`Products/${item.id}/1.jpg`);
+        return {
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          size: item.size,
+          variant: item.variant,
+          discountedPrice: item.discountedPrice,
+          originalPrice: item.originalPrice,
+          imageURL: results ?? "",
+        };
       });
+      Promise.all(newList)
+        .then((resolvedList) => {
+          setItemList(resolvedList);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   }, [userDetails.items]);
 
   const handleRemoveItem = async (itemId: string) => {
@@ -92,10 +113,15 @@ const BagItemsList: React.FC<PropTypes> = ({ userDetails }) => {
       (item: IBagItem) => item.id === itemId
     );
     newItemsList.splice(index, 1);
-    await createDocument(`Users`, {
-      ...userDetails,
-      items: newItemsList,
-    });
+    if (isAuthenticated) {
+      await createDocument(`Users`, {
+        ...userDetails,
+        items: newItemsList,
+      });
+    } else {
+      localStorage.setItem("items", JSON.stringify(newItemsList));
+      window.dispatchEvent(new Event("storage"));
+    }
   };
 
   return (

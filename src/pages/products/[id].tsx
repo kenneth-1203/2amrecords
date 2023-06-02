@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { NextPage } from "next/types";
 import _ from "lodash";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -24,6 +24,7 @@ import Button from "@/components/Button";
 import List from "@/components/List";
 import Toast from "@/components/Toast";
 import Chip from "@/components/Chip";
+import Modal from "@/components/Modal";
 import {
   Section,
   Container,
@@ -42,7 +43,6 @@ import {
   ProductImageDisplay,
   ProductDetailsWrapper,
 } from "@/styles/Products";
-import Modal from "@/components/Modal";
 
 export const getStaticPaths = async () => {
   const data = await getDocuments("Products");
@@ -133,6 +133,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
               sizes="100%"
               alt=""
               fill
+              priority
             />
           </SizeChartImage>
           <Typography variant="p" textTransform="uppercase" fontWeight={500}>
@@ -145,6 +146,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
               sizes="100%"
               alt=""
               fill
+              priority
             />
           </SizeChartImage>
           <Typography variant="p" textTransform="uppercase" fontWeight={500}>
@@ -157,6 +159,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
               sizes="100%"
               alt=""
               fill
+              priority
             />
           </SizeChartImage>
         </SizeChartWrapper>
@@ -247,7 +250,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
   setOpenToast,
   handleShowSizeChart,
 }) => {
-  const { user } = useContext(UserContext);
+  const { user, isAuthenticated } = useContext(UserContext);
   const [selectedSize, setSelectedSize] = useState<number>(-1);
   const productRef = getDocumentRef(`Products/${productId}`);
   const [productDetails]: any = useDocumentData(productRef);
@@ -257,20 +260,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
   };
 
   const handleAddToBag = async () => {
-    if (!_.isEmpty(user)) {
+    const newItem = {
+      id: productDetails.id,
+      name: productDetails.name,
+      variant: productDetails.variant,
+      category: productDetails.category,
+      description: productDetails.description,
+      originalPrice: productDetails.originalPrice,
+      discountedPrice: productDetails.discountedPrice,
+      size: getSizeValue(selectedSize),
+    };
+    if (isAuthenticated) {
       const newItems = [
         // @ts-ignore
         ...user.items,
-        {
-          id: productDetails.id,
-          name: productDetails.name,
-          variant: productDetails.variant,
-          category: productDetails.category,
-          description: productDetails.description,
-          originalPrice: productDetails.originalPrice,
-          discountedPrice: productDetails.discountedPrice,
-          size: getSizeValue(selectedSize),
-        },
+        newItem,
       ];
       // Update user items' state
       await createDocument("Users", {
@@ -293,18 +297,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
       //   totalQuantity: newTotalQuantity,
       // });
       handleSelectSize(-1);
-      setOpenToast({
-        open: true,
-        type: "success",
-        message: "Great choice! Added to your bag.",
-      });
     } else {
-      setOpenToast({
-        open: true,
-        type: "warning",
-        message: "You must be logged in to perform this action.",
-      });
+      const guestItems = localStorage.getItem("items");
+      if (guestItems) {
+        const updatedItems = [...JSON.parse(guestItems), newItem];
+        localStorage.setItem("items", JSON.stringify(updatedItems));
+      } else {
+        localStorage.setItem("items", JSON.stringify([newItem]));
+      }
+      window.dispatchEvent(new Event("storage"));
     }
+    setOpenToast({
+      open: true,
+      type: "success",
+      message: "Great choice! Added to your bag.",
+    });
   };
 
   return (

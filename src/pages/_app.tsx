@@ -30,18 +30,36 @@ export default function App({ Component, pageProps }: AppProps) {
         setUserDetails(data);
         setLoading(false);
       });
-    } else {
+    } else if (typeof window !== "undefined") {
+      handleUpdateItems();
+      const listenStorageChange = () => {
+        handleUpdateItems();
+      };
       setLoading(false);
-      setUserDetails({});
+      window.addEventListener("storage", listenStorageChange);
+      return () => window.removeEventListener("storage", listenStorageChange);
     }
   }, [user, loading]);
+
+  const handleUpdateItems = () => {
+    const guestItems = localStorage.getItem("items");
+    if (guestItems) {
+      const guest = { items: JSON.parse(guestItems) };
+      setUserDetails(guest);
+    }
+  };
 
   return (
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <UserContext.Provider
-          value={{ user: userDetails, loading, setLoading }}
+          value={{
+            user: userDetails,
+            isAuthenticated: !!user,
+            loading,
+            setLoading,
+          }}
         >
           <Layout>
             <Component {...pageProps} />
