@@ -1,7 +1,18 @@
 import Head from "next/head";
+import styled from "styled-components";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const Main = styled.main`
+  flex: 1;
+`;
 
 const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
@@ -10,9 +21,11 @@ const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
         <title>Create Next App</title>
       </Head>
       <Loading />
-      <Navbar />
-      {children}
-      <Footer />
+      <Wrapper>
+        <Navbar />
+        <Main>{children}</Main>
+        <Footer />
+      </Wrapper>
     </>
   );
 };

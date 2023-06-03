@@ -16,6 +16,7 @@ interface PropTypes extends React.HTMLAttributes<HTMLDivElement> {
   title?: string | undefined;
   onClose: () => void;
   clickOutside?: boolean;
+  position?: "absolute" | "fixed";
 }
 
 const Modal: React.FC<PropTypes> = ({
@@ -23,6 +24,7 @@ const Modal: React.FC<PropTypes> = ({
   open = false,
   title,
   onClose,
+  position = "fixed",
   clickOutside = true,
 }) => {
   return (
@@ -38,7 +40,7 @@ const Modal: React.FC<PropTypes> = ({
       </Head>
       <AnimatePresence>
         {open && (
-          <ModalContainer>
+          <ModalContainer position={position}>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -52,13 +54,14 @@ const Modal: React.FC<PropTypes> = ({
               exit={{ opacity: 0, y: 20 }}
             >
               <ModalHeader>
-                <Typography variant="h3" fontWeight={500}>
+                <Typography variant="h2" fontWeight={500}>
                   {title}
                 </Typography>
                 <FontAwesomeIcon
                   icon={faXmark}
                   onClick={onClose}
-                  style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                  style={{ cursor: "pointer", fontSize: "1.4rem" }}
+                  color="rgba(0,0,0,.3)"
                 />
               </ModalHeader>
               <ModalBody>{children}</ModalBody>

@@ -7,7 +7,7 @@ export const Container = styled.nav`
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: ${props => props.theme.colors.secondary.main};
+  background-color: ${(props) => props.theme.colors.secondary.main};
 `;
 
 export const NavbarContainer = styled.div`
@@ -34,17 +34,48 @@ export const NavbarTitle = styled.div`
 
 export const NavbarSubtitle = styled.div`
   text-align: center;
-  font-size: .8rem;
+  font-size: 0.8rem;
 `;
 
 export const NavbarWrapper = styled.div`
   display: flex;
   align-items: center;
-  min-height: 4rem;
   justify-content: space-between;
+  position: relative;
+  margin: 0.8rem 0;
 `;
 
-export const DrawerBackdrop = styled.div`
+export const SidebarWrapper = styled.div`
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  gap: .4rem;
+`;
+
+export const SidebarButton = styled(motion.div)`
+  position: relative;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+`;
+
+export const ItemCounter = styled(motion.span)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: ${props => props.theme.colors.red.main};
+  color: ${props => props.theme.colors.secondary.main};
+  border-radius: 4px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8rem;
+  font-weight: 500;
+`;
+
+export const DrawerBackdrop = styled(motion.div)`
   position: absolute;
   top: 0;
   width: 100%;
@@ -54,28 +85,55 @@ export const DrawerBackdrop = styled.div`
 `;
 
 export const DrawerContainer = styled(motion.div)`
-  position: fixed;
+  position: absolute;
+  top: 0;
   right: 0;
-  height: 100%;
-  width: 20rem;
+  height: 100vh;
+  overflow: hidden;
   background: ${(props) => props.theme.colors.secondary.main};
   z-index: 1000;
 `;
 
+export const DrawerCloseButton = styled.div`
+  cursor: pointer;
+  padding: 1rem;
+  font-size: 1.4rem;
+`;
+
 export const DrawerContents = styled.div`
   overflow: hidden;
-  width: 20rem;
-  padding: 1.2rem;
+  width: 28rem;
+
+  ${(props) => props.theme.sizes.mobile} {
+    width: 20rem;
+  }
 `;
 
 export const DrawerBody = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 `;
 
 export const DrawerAction = styled(motion.div)`
   cursor: pointer;
+  padding: 1rem 1.2rem;
+  transition: 0.3s;
+
+  &:hover {
+    letter-spacing: 0.4rem;
+    background: ${(props) => props.theme.colors.primary[50]};
+  }
+
+  &:active {
+    background: ${(props) => props.theme.colors.primary[100]};
+  }
+`;
+
+export const Line = styled.span`
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid ${(props) => props.theme.colors.primary[300]};
+  margin-top: 2rem;
 `;
 
 export const FormContainer = styled(motion.div)`

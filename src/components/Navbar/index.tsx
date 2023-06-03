@@ -1,16 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Link from "next/link";
 import Head from "next/head";
-import { useRouter } from "next/navigation";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { useRouter } from "next/router";
+import _ from "lodash";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { AnimatePresence, motion } from "framer-motion";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { initFirebase } from "@/lib/index";
-import { createDocument, signIn, signUp } from "@/api/index";
-import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
+import {
+  faBagShopping,
+  faBars,
+  faChevronLeft,
+  faChevronRight,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { UserContext } from "@/lib/context";
+import {
+  createDocument,
+  checkDocumentExists,
+  signIn,
+  signUp,
+} from "@/api/index";
+import { ILoginForm, ISignUpForm, IUserDetails } from "@/shared/interfaces";
 import Button from "@/components/Button";
 import Modal from "@/components/Modal";
 import InputField from "@/components/InputField";
@@ -22,17 +34,26 @@ import {
   NavbarTitle,
   NavbarSubtitle,
   NavbarWrapper,
+  ItemCounter,
+  SidebarWrapper,
+  SidebarButton,
   DrawerBackdrop,
   DrawerContainer,
+  DrawerCloseButton,
   DrawerContents,
   DrawerBody,
   DrawerAction,
   FormContainer,
+  Line,
 } from "./styles";
 
 const Navbar: React.FC = () => {
-  initFirebase();
+  const { user, isAuthenticated } = useContext<any>(UserContext);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const variants = {
+    visible: { opacity: 1 },
+    hidden: { opacity: 0 },
+  };
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
@@ -50,7 +71,12 @@ const Navbar: React.FC = () => {
         )}
       </Head>
       <Container>
-        <Drawer open={openDrawer} onClose={toggleDrawer} />
+        <Drawer
+          isAuthenticated={isAuthenticated}
+          user={user as IUserDetails}
+          open={openDrawer}
+          onClose={toggleDrawer}
+        />
         <NavbarContainer>
           <NavbarWrapper>
             <NavbarTitleWrapper>
@@ -59,9 +85,40 @@ const Navbar: React.FC = () => {
                 <NavbarSubtitle>EST. 2022</NavbarSubtitle>
               </Link>
             </NavbarTitleWrapper>
-            <Button variant="text" onClick={toggleDrawer}>
-              <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
-            </Button>
+            <SidebarWrapper>
+              <AnimatePresence>
+                <Link href={"/bag"}>
+                  <SidebarButton
+                    initial={"hidden"}
+                    animate={"visible"}
+                    exit={"hidden"}
+                    variants={variants}
+                  >
+                    <ItemCounter
+                      animate={_.isEmpty(user.items) ? "hidden" : "visible"}
+                      variants={variants}
+                    >
+                      {user.items?.length}
+                    </ItemCounter>
+                    <motion.span
+                      animate={
+                        _.isEmpty(user.items)
+                          ? { opacity: 0.1 }
+                          : { opacity: 1 }
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={faBagShopping}
+                        fontSize={"1.2rem"}
+                      />
+                    </motion.span>
+                  </SidebarButton>
+                </Link>
+              </AnimatePresence>
+              <SidebarButton onClick={toggleDrawer}>
+                <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
+              </SidebarButton>
+            </SidebarWrapper>
           </NavbarWrapper>
         </NavbarContainer>
       </Container>
@@ -70,17 +127,22 @@ const Navbar: React.FC = () => {
 };
 
 interface PropTypes extends React.HTMLAttributes<HTMLDivElement> {
+  isAuthenticated: boolean;
+  user: IUserDetails;
   open: boolean;
   onClose: () => void;
 }
 
 type MODAL_STATE = "login" | "sign up";
 
-const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
-  const auth = getAuth();
+const Drawer: React.FC<PropTypes> = ({
+  isAuthenticated,
+  user,
+  open,
+  onClose,
+}) => {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const [user, loading] = useAuthState(auth);
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [modalState, setModalState] = useState<MODAL_STATE>("login");
 
@@ -92,24 +154,49 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
 
   const loginWithGoogle = async () => {
     try {
-      const { user } = await signInWithPopup(auth, provider);
-      createDocument("Users", {
-        id: user.uid,
-        fullName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        createdAt: user.metadata.creationTime,
-        lastSignedIn: user.metadata.lastSignInTime,
-        provider: "google",
-      });
+      await signInWithPopup(auth, provider)
+        .then(async (result) => {
+          const { user } = result;
+          const isExistingUser = await checkDocumentExists("Users", user.uid);
+          if (!isExistingUser) {
+            await createDocument("Users", {
+              id: user.uid,
+              fullName: user.displayName,
+              email: user.email,
+              photoURL: user.photoURL,
+              createdAt: user.metadata.creationTime,
+              lastSignedIn: user.metadata.lastSignInTime,
+              provider: "google",
+              country: "Malaysia",
+              phoneNumber: "",
+              addressLine1: "",
+              addressLine2: "",
+              state: "",
+              postcode: "",
+              items: [], // TODO: Add existing items from guest
+              orderHistory: [],
+            });
+          }
+          // TODO: Add a welcome modal/toast
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+        });
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleLogout = () => {
+    // TODO: Add confirmation modal/toast
     auth.signOut();
-    router.refresh();
+    if (router.pathname !== "/") {
+      router.replace("/");
+    } else {
+      router.replace(router.pathname);
+    }
     onClose();
   };
 
@@ -125,6 +212,7 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
         open={openPopup}
         onClose={() => setOpenPopup(false)}
         title={modalState}
+        position={"absolute"}
       >
         <AnimatePresence>
           {modalState === "login" ? (
@@ -139,53 +227,59 @@ const Drawer: React.FC<PropTypes> = ({ open, onClose }) => {
       </Modal>
       <AnimatePresence>
         {open && (
-          <div>
-            <motion.div
+          <>
+            <DrawerBackdrop
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-            >
-              <DrawerBackdrop onClick={onClose} />
-            </motion.div>
+              onClick={onClose}
+            />
             <DrawerContainer
               initial={{ width: "0" }}
               animate={{ width: "auto" }}
               exit={{ width: "0" }}
             >
               <DrawerContents>
-                <Button
-                  style={{
-                    padding: 0,
-                    fontSize: "1.2rem",
-                    marginBottom: "1.2rem",
-                  }}
-                >
+                <DrawerCloseButton>
                   <FontAwesomeIcon
                     icon={faXmark}
                     onClick={onClose}
                     style={{ cursor: "pointer" }}
+                    color="rgba(0,0,0,.3)"
                   />
-                </Button>
+                </DrawerCloseButton>
                 <DrawerBody>
-                  {!user ? (
-                    <DrawerAction
-                      onClick={togglePopup}
-                      whileHover={{ letterSpacing: ".2rem" }}
-                    >
-                      <Typography variant="h3">login / signup</Typography>
+                  {!isAuthenticated ? (
+                    <DrawerAction onClick={togglePopup}>
+                      <Typography variant="h2">login / signup</Typography>
                     </DrawerAction>
                   ) : (
-                    <DrawerAction
-                      onClick={handleLogout}
-                      whileHover={{ letterSpacing: ".2rem" }}
-                    >
-                      <Typography variant="h3">log off</Typography>
-                    </DrawerAction>
+                    <>
+                      <Link href="/profile">
+                        <DrawerAction onClick={onClose}>
+                          <Typography variant="h2">profile</Typography>
+                        </DrawerAction>
+                      </Link>
+                      <Link href="/profile?section=orders">
+                        <DrawerAction onClick={onClose}>
+                          <Typography variant="h2">orders</Typography>
+                        </DrawerAction>
+                      </Link>
+                      <Link href="/profile?section=settings">
+                        <DrawerAction onClick={onClose}>
+                          <Typography variant="h2">settings</Typography>
+                        </DrawerAction>
+                      </Link>
+                      <Line />
+                      <DrawerAction onClick={handleLogout}>
+                        <Typography variant="h2">logout</Typography>
+                      </DrawerAction>
+                    </>
                   )}
                 </DrawerBody>
               </DrawerContents>
             </DrawerContainer>
-          </div>
+          </>
         )}
       </AnimatePresence>
     </>
@@ -206,10 +300,9 @@ const LoginForm: React.FC<{
     e.preventDefault();
     const { results, error } = await signIn(formData);
     if (results) {
-      console.log(results);
+      // TODO: Add a welcome modal/toast
     }
     if (error) {
-      console.log(error);
       setError(error);
     }
   };
@@ -243,14 +336,20 @@ const LoginForm: React.FC<{
       <Typography variant="small" marginBottom={".4rem"} color="red">
         {error}
       </Typography>
-      <Button onClick={loginWithEmail} variant="contained" center fullWidth>
+      <Button
+        onClick={loginWithEmail}
+        variant="contained"
+        fullWidth
+        style={{ justifyContent: "center" }}
+      >
         <Typography fontWeight={500}>Login</Typography>
       </Button>
       <Button
         onClick={() => setModalState("sign up")}
         variant="contained"
-        center
         fullWidth
+        style={{ justifyContent: "center" }}
+        endIcon={<FontAwesomeIcon icon={faChevronRight} />}
       >
         <Typography fontWeight={500}>Sign up</Typography>
       </Button>
@@ -261,8 +360,8 @@ const LoginForm: React.FC<{
         onClick={loginWithGoogle}
         variant="contained"
         startIcon={<FontAwesomeIcon icon={faGoogle} fontSize={"1rem"} />}
-        center
         fullWidth
+        style={{ justifyContent: "center" }}
       >
         <Typography fontWeight={500}>Login with Google</Typography>
       </Button>
@@ -286,6 +385,7 @@ const SignUpForm: React.FC<{
     if (results) {
       // automatically sign user in
       await signIn({ email: formData.email, password: formData.password });
+      // TODO: Add a welcome modal/toast
     }
     if (error) {
       setError(error);
@@ -336,14 +436,20 @@ const SignUpForm: React.FC<{
       <Typography variant="small" marginBottom={".4rem"} color="red">
         {error}
       </Typography>
-      <Button onClick={signUpWithEmail} variant="contained" center fullWidth>
+      <Button
+        onClick={signUpWithEmail}
+        variant="contained"
+        fullWidth
+        style={{ justifyContent: "center" }}
+      >
         <Typography fontWeight={500}>Submit</Typography>
       </Button>
       <Button
         onClick={() => setModalState("login")}
         variant="contained"
-        center
         fullWidth
+        style={{ justifyContent: "center" }}
+        startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
       >
         <Typography fontWeight={500}>Go back</Typography>
       </Button>

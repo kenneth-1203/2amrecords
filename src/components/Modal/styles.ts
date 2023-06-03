@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
-export const ModalContainer = styled.div`
-  position: absolute;
+export const ModalContainer = styled.div<{ position: string }>`
+  position: ${({ position }) => position};
   top: 0;
   display: flex;
   width: 100%;

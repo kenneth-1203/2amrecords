@@ -5,6 +5,11 @@ export type Stock = {
   quantity: number;
 };
 
+export type Category = {
+  id: string;
+  name: string;
+};
+
 export interface IProductData {
   id: number;
   name: string;
@@ -13,9 +18,9 @@ export interface IProductData {
   sizes: Size[];
   stock: Stock[];
   totalQuantity: number;
-  discountedPrice: number;
+  discountedPrice: number | null;
   originalPrice: number;
-  category: Array<string>;
+  category: Category[];
 }
 
 export interface ICategoryData {
@@ -36,4 +41,37 @@ export interface ISignUpForm {
 export interface ILoginForm {
   email: string;
   password: string;
+}
+
+export interface IShippingInfo {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  addressLine1: string;
+  addressLine2: string;
+  country: string;
+  state: string;
+  postcode: string;
+}
+
+export interface IUserDetails extends IShippingInfo {
+  id: string;
+  fullName: string;
+  email: string;
+  photoURL: string;
+  items: IBagItem[];
+  provider: "google" | null;
+  lastSignedIn: Date;
+  createdAt: Date;
+}
+
+export interface IBagItem {
+  id: string;
+  name: string;
+  variant: string;
+  description: string;
+  originalPrice: number;
+  discountedPrice: number | null;
+  size: string;
+  imageURL: string;
 }
