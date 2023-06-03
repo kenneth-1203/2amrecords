@@ -1,17 +1,19 @@
 import { useEffect, useState, useContext } from "react";
+import { useRouter } from "next/router";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import _ from "lodash";
-import { DocumentData } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { createDocument, getDocumentRef, getFileURL } from "@/api/index";
 import { UserContext } from "@/lib/context";
-import { IBagItem, IUserDetails } from "@/shared/interfaces";
+import { IBagItem, IShippingInfo, IUserDetails } from "@/shared/interfaces";
 import List from "@/components/List";
 import Typography from "@/components/Typography";
 import Button from "@/components/Button";
+import InputField from "@/components/InputField";
 import {
   ButtonsWrapper,
   Container,
@@ -33,6 +35,8 @@ import {
   SummaryItem,
   SummaryWrapper,
   SummaryTotal,
+  ShippingContainer,
+  InputWrapper,
 } from "@/styles/Bag";
 
 const Page: React.FC = () => {
@@ -54,20 +58,25 @@ const Page: React.FC = () => {
   if (!userDetails) return <h1>Loading...</h1>;
 
   return (
-    <Container>
-      <BagContainer>
-        <BagItemsList
-          isAuthenticated={isAuthenticated}
-          userDetails={userDetails}
-        />
-        {!_.isEmpty(userDetails.items) && (
-          <CheckoutSummary
+    <>
+      <Head>
+        <title>2AMRECORDS - Shopping Bag</title>
+      </Head>
+      <Container>
+        <BagContainer>
+          <BagItemsList
             isAuthenticated={isAuthenticated}
             userDetails={userDetails}
           />
-        )}
-      </BagContainer>
-    </Container>
+          {!_.isEmpty(userDetails.items) && (
+            <CheckoutSummary
+              isAuthenticated={isAuthenticated}
+              userDetails={userDetails}
+            />
+          )}
+        </BagContainer>
+      </Container>
+    </>
   );
 };
 
@@ -224,6 +233,18 @@ const BagItemsList: React.FC<PropTypes> = ({
 };
 
 const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
+  const router = useRouter();
+  const [shippingData, setShippingData] = useState<IShippingInfo>({
+    fullName: userDetails?.fullName,
+    email: userDetails?.email,
+    phoneNumber: userDetails?.phoneNumber,
+    country: userDetails?.country ?? "Malaysia",
+    addressLine1: userDetails?.addressLine1,
+    addressLine2: userDetails?.addressLine2,
+    state: userDetails?.state,
+    postcode: userDetails?.postcode,
+  });
+
   const getTotalAmount = () => {
     let totalAmount = 0;
     const priceArray = userDetails.items.map(
@@ -232,9 +253,18 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
     priceArray.forEach((price: number) => (totalAmount += price));
     return Math.round(totalAmount).toFixed(2);
   };
+
+  const handleContinueShopping = () => {
+    router.replace("/");
+  };
+
   return (
     <CheckoutContainer>
       <SummaryContainer>
+        <ShippingDetails
+          shippingData={shippingData}
+          setShippingData={setShippingData}
+        />
         <SummaryItemList>
           {userDetails.items.map((item: IBagItem, i: number) => (
             <SummaryItem key={i}>
@@ -271,32 +301,128 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
             </Typography>
           </SummaryTotal>
           <ButtonsWrapper>
-            <Link href={"/"}>
-              <Button variant="outlined" fullWidth>
-                <Typography variant="p" textTransform="uppercase">
-                  Continue shopping
-                </Typography>
-              </Button>
-            </Link>
-            <Link href={"/checkout"}>
-              <Button
-                variant="contained"
-                endIcon={<FontAwesomeIcon icon={faChevronRight} />}
-                fullWidth
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={handleContinueShopping}
+            >
+              <Typography variant="p" textTransform="uppercase">
+                Continue shopping
+              </Typography>
+            </Button>
+            <Button
+              variant="contained"
+              endIcon={<FontAwesomeIcon icon={faChevronRight} />}
+              fullWidth
+            >
+              <Typography
+                variant="p"
+                textTransform="uppercase"
+                fontWeight={500}
               >
-                <Typography
-                  variant="p"
-                  textTransform="uppercase"
-                  fontWeight={500}
-                >
-                  Proceed to checkout
-                </Typography>
-              </Button>
-            </Link>
+                Proceed to checkout
+              </Typography>
+            </Button>
           </ButtonsWrapper>
         </SummaryWrapper>
       </SummaryContainer>
     </CheckoutContainer>
+  );
+};
+
+interface ShippingDetailsProps {
+  shippingData: IShippingInfo;
+  setShippingData: (data: IShippingInfo) => void;
+}
+
+const ShippingDetails: React.FC<ShippingDetailsProps> = ({
+  shippingData,
+  setShippingData,
+}) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setShippingData({ ...shippingData, [e.target.id]: e.target.value });
+  };
+
+  return (
+    <ShippingContainer>
+      <Typography variant="h3" fontWeight={500} paddingBottom={"1rem"}>
+        Delivery information
+      </Typography>
+      <InputField
+        id="fullName"
+        type="text"
+        label="Full name"
+        value={shippingData.fullName}
+        onChange={handleChange}
+        fullWidth
+      />
+      <InputField
+        type="email"
+        label="Email"
+        value={shippingData.email}
+        onChange={handleChange}
+        fullWidth
+      />
+      <InputWrapper>
+        <InputField
+          id="phoneNumber"
+          type="number"
+          label="Phone number"
+          value={shippingData.phoneNumber}
+          onChange={handleChange}
+          fullWidth
+          placeholder="e.g: 0123456789"
+        />
+        <InputField
+          id="country"
+          type="text"
+          label="Country"
+          value={shippingData.country}
+          onChange={handleChange}
+          fullWidth
+          disabled={true}
+          placeholder="e.g: Malaysia"
+        />
+      </InputWrapper>
+      <InputField
+        id="addressLine1"
+        type="text"
+        label="Address (Line 1)"
+        value={shippingData.addressLine1}
+        onChange={handleChange}
+        fullWidth
+        placeholder="e.g: 69 Jalan 1, 50088 Kuala Lumpur, Malaysia"
+      />
+      <InputField
+        id="addressLine2"
+        type="text"
+        label="Address (Line 2)"
+        value={shippingData.addressLine2}
+        onChange={handleChange}
+        fullWidth
+        placeholder="Optional"
+      />
+      <InputWrapper>
+        <InputField
+          id="state"
+          type="text"
+          label="State"
+          value={shippingData.state}
+          onChange={handleChange}
+          fullWidth
+          placeholder="e.g: Kuala Lumpur"
+        />
+        <InputField
+          id="postcode"
+          type="number"
+          label="Postcode"
+          value={shippingData.postcode}
+          onChange={handleChange}
+          fullWidth
+          placeholder="e.g: 50088"
+        />
+      </InputWrapper>
+    </ShippingContainer>
   );
 };
 

@@ -87,8 +87,18 @@ a:visited {
   color: inherit;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -96,11 +106,11 @@ a:visited {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,.3);
+  background: rgba(0,0,0,.1);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0,0,0,.5); 
+  background: rgba(0,0,0,.2); 
 }
 
 /* desktop */

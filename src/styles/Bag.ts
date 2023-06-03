@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 export const Container = styled.section`
-  margin: 2rem 4rem 8rem 4rem;
+  margin: 1rem 4rem 8rem 4rem;
 
   ${(props) => props.theme.sizes.tabLand} {
-    margin: 2rem 2rem 8rem 2rem;
+    margin: 1rem 2rem 8rem 2rem;
   }
 
   ${(props) => props.theme.sizes.tabPort} {
@@ -19,6 +19,7 @@ export const Container = styled.section`
 export const BagContainer = styled.div`
   display: flex;
   gap: 2rem;
+  max-height: 86vh;
 
   ${(props) => props.theme.sizes.tabLand} {
     gap: 1rem;
@@ -26,6 +27,7 @@ export const BagContainer = styled.div`
 
   ${(props) => props.theme.sizes.tabPort} {
     flex-direction: column;
+    max-height: 100%;
   }
 
   ${(props) => props.theme.sizes.mobile} {
@@ -54,7 +56,6 @@ export const TitleWrapper = styled.div`
 `;
 
 export const ItemListContainer = styled.div`
-  max-height: 52rem;
   overflow-y: auto;
 
   & > ul {
@@ -77,7 +78,7 @@ export const ItemListContainer = styled.div`
 export const ItemWrapper = styled.div`
   display: flex;
   gap: 1rem;
-  
+
   & > a {
     width: 100%;
     display: flex;
@@ -183,18 +184,20 @@ export const NoItemsWrapper = styled.div`
 `;
 
 export const CheckoutContainer = styled.div`
+  display: flex;
   margin-top: 3.2rem;
-  width: 40%;
+  width: 36rem;
 
   ${(props) => props.theme.sizes.tabPort} {
+    display: inline-block;
     width: 100%;
     margin: 0;
   }
 `;
 
 export const SummaryContainer = styled.div`
-  height: 100%;
   display: flex;
+  width: 100%;
   flex-direction: column;
   gap: 2rem;
   border: 1px solid ${(props) => props.theme.colors.primary[100]};
@@ -214,13 +217,22 @@ export const SummaryItemList = styled.div`
   flex-direction: column;
   flex-grow: 1;
   overflow-y: auto;
+
+  ${(props) => props.theme.sizes.tabPort} {
+    max-height: 20rem;
+  }
 `;
 
 export const SummaryItem = styled.div`
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
+  align-items: center;
+  border-top: 1px solid ${(props) => props.theme.colors.primary[100]};
   padding: 0.4rem 0;
+
+  &:last-child {
+    border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
+  }
 `;
 
 export const SummaryTotal = styled.div`
@@ -239,12 +251,20 @@ export const ButtonsWrapper = styled.div`
   display: flex;
   gap: 1rem;
 
-  & > a {
-    flex-grow: 1;
-  }
-
   ${(props) => props.theme.sizes.mobile} {
     flex-direction: column;
     gap: 0.8rem;
   }
+`;
+
+export const ShippingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+`;
+
+export const InputWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 1rem;
 `;

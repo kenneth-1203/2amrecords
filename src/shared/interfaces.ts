@@ -43,8 +43,7 @@ export interface ILoginForm {
   password: string;
 }
 
-export interface IUserDetails {
-  id: string;
+export interface IShippingInfo {
   fullName: string;
   email: string;
   phoneNumber: string;
@@ -53,6 +52,12 @@ export interface IUserDetails {
   country: string;
   state: string;
   postcode: string;
+}
+
+export interface IUserDetails extends IShippingInfo {
+  id: string;
+  fullName: string;
+  email: string;
   photoURL: string;
   items: IBagItem[];
   provider: "google" | null;

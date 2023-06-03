@@ -9,11 +9,11 @@ export const InputComponent = styled.input`
   margin-bottom: 0.4rem;
 
   &:disabled {
-    color: ${(props) => props.theme.colors.primary[300]};
+    color: ${(props) => props.theme.colors.primary[500]};
   }
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.primary[300]};
+    color: ${(props) => props.theme.colors.primary[100]};
   }
 `;
 

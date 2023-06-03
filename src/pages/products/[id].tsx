@@ -1,4 +1,5 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
+import Head from "next/head";
 import { NextPage } from "next/types";
 import _ from "lodash";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -88,6 +89,8 @@ interface PropTypes {
 }
 
 const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
+  const productRef = getDocumentRef(`Products/${productId}`);
+  const [productDetails]: any = useDocumentData(productRef);
   const [showSizeChart, setShowSizeChart] = useState<boolean>(false);
   const [openToast, setOpenToast] = useState<ToastProps>({
     open: false,
@@ -106,8 +109,13 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
     setShowSizeChart(!showSizeChart);
   };
 
+  if (!productDetails) return <h1>Loading...</h1>
+
   return (
     <>
+      <Head>
+        <title>2AMRECORDS - {productDetails.name}</title>
+      </Head>
       <Toast
         open={openToast.open}
         onClose={handleOpenToast}
@@ -168,7 +176,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
         <Container>
           <ProductDisplay productImages={productImages} />
           <ProductDetails
-            productId={productId}
+            productDetails={productDetails}
             setOpenToast={setOpenToast}
             handleShowSizeChart={handleShowSizeChart}
           />
@@ -240,20 +248,18 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ productImages }) => {
 };
 
 interface ProductDetailsProps {
-  productId: string;
+  productDetails: IProductData;
   setOpenToast: (toast: ToastProps) => void;
   handleShowSizeChart: () => void;
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({
-  productId,
+  productDetails,
   setOpenToast,
   handleShowSizeChart,
 }) => {
   const { user, isAuthenticated } = useContext(UserContext);
   const [selectedSize, setSelectedSize] = useState<number>(-1);
-  const productRef = getDocumentRef(`Products/${productId}`);
-  const [productDetails]: any = useDocumentData(productRef);
 
   const handleSelectSize = (index: number) => {
     setSelectedSize(index);
@@ -296,7 +302,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
       //   stock: newStock,
       //   totalQuantity: newTotalQuantity,
       // });
-      handleSelectSize(-1);
     } else {
       const guestItems = localStorage.getItem("items");
       if (guestItems) {
@@ -307,6 +312,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
       }
       window.dispatchEvent(new Event("storage"));
     }
+    handleSelectSize(-1);
     setOpenToast({
       open: true,
       type: "success",

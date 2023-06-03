@@ -37,8 +37,12 @@ export const StyledButton = styled.button<{
           border-color: ${(props) => props.theme.colors.primary.main};
           color: ${(props) => props.theme.colors.primary.main} !important;
 
+          &:hover {
+            background: ${(props) => props.theme.colors.primary[50]};
+          }
+
           &:active {
-            color: ${(props) => props.theme.colors.primary[500]};
+            color: ${(props) => props.theme.colors.primary[500]} !important;
             border-color: ${(props) => props.theme.colors.primary[500]};
           }
         `

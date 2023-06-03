@@ -68,7 +68,7 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
   );
 };
 
-function Landing() {
+const Landing: React.FC = () => {
   return (
     <Background>
       <motion.img
@@ -91,16 +91,17 @@ function Landing() {
       />
     </Background>
   );
-}
+};
 
 interface CollectionProps {
   categoryList: ICategoryData[];
   productList: IProductData[];
 }
 
-function Collection(props: CollectionProps) {
-  const { categoryList, productList } = props;
-
+const Collection: React.FC<CollectionProps> = ({
+  categoryList,
+  productList,
+}) => {
   const variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
@@ -135,6 +136,6 @@ function Collection(props: CollectionProps) {
         })}
     </>
   );
-}
+};
 
 export default Page;

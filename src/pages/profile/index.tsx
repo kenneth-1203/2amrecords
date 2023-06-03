@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import _ from "lodash";
@@ -52,7 +53,7 @@ const Page: React.FC = () => {
     if (isAuthenticated) {
       setUserDetails(user as IUserDetails);
     } else {
-      router.replace("/")
+      router.replace("/");
     }
   }, [isAuthenticated, router, user]);
 
@@ -99,121 +100,126 @@ const Page: React.FC = () => {
   };
 
   return (
-    <Section>
-      {userDetails && (
-        <>
-          <WelcomeContainer
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 0.5, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.3 }}
-          >
-            <Typography variant="h2" fontWeight={300}>
-              {getGreeting()}, {userDetails.fullName}
-            </Typography>
-          </WelcomeContainer>
-          <Container
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <ProfileSelection>
-              <ProfilePictureWrapper>
-                <ProfilePicture>
-                  <Image
-                    src={
-                      userDetails.photoURL
-                        ? userDetails.photoURL
-                        : "/default-pp.png"
+    <>
+      <Head>
+        <title>2AMRECORDS - Profile</title>
+      </Head>
+      <Section>
+        {userDetails && (
+          <>
+            <WelcomeContainer
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 0.5, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
+            >
+              <Typography variant="h2" fontWeight={300}>
+                {getGreeting()}, {userDetails.fullName}
+              </Typography>
+            </WelcomeContainer>
+            <Container
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <ProfileSelection>
+                <ProfilePictureWrapper>
+                  <ProfilePicture>
+                    <Image
+                      src={
+                        userDetails.photoURL
+                          ? userDetails.photoURL
+                          : "/default-pp.png"
+                      }
+                      alt=""
+                      fill
+                      sizes="(max-width: 1200px) 12rem, 12rem, (max-width: 600px) 18rem 18rem"
+                      quality={100}
+                    />
+                  </ProfilePicture>
+                  <InputField
+                    type="file"
+                    accept="image/*"
+                    onChange={handleUpload}
+                    disabled={isUploading}
+                    fullWidth
+                    label={
+                      isUploading ? (
+                        <motion.div
+                          animate={{ rotateZ: 360 }}
+                          transition={{
+                            repeat: Infinity,
+                            repeatType: "loop",
+                            duration: 1,
+                            ease: "linear",
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faSpinner} />
+                        </motion.div>
+                      ) : (
+                        <Typography
+                          variant="p"
+                          fontWeight={500}
+                          textTransform="uppercase"
+                        >
+                          Upload photo
+                        </Typography>
+                      )
                     }
-                    alt=""
-                    fill
-                    sizes="(max-width: 1200px) 12rem, 12rem, (max-width: 600px) 18rem 18rem"
-                    quality={100}
                   />
-                </ProfilePicture>
-                <InputField
-                  type="file"
-                  accept="image/*"
-                  onChange={handleUpload}
-                  disabled={isUploading}
-                  fullWidth
-                  label={
-                    isUploading ? (
-                      <motion.div
-                        animate={{ rotateZ: 360 }}
-                        transition={{
-                          repeat: Infinity,
-                          repeatType: "loop",
-                          duration: 1,
-                          ease: "linear",
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faSpinner} />
-                      </motion.div>
-                    ) : (
-                      <Typography
-                        variant="p"
-                        fontWeight={500}
-                        textTransform="uppercase"
-                      >
-                        Upload photo
-                      </Typography>
-                    )
-                  }
-                />
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  style={{ justifyContent: "center" }}
-                  disabled={isUploading || !userDetails.photoURL}
-                  onClick={handleRemove}
-                >
-                  <Typography variant="p" textTransform="uppercase">
-                    Remove photo
-                  </Typography>
-                </Button>
-              </ProfilePictureWrapper>
-              <ProfileOptionsWrapper>
-                <Button
-                  onClick={() => setCurrentSection("profile")}
-                  selected={currentSection === "profile"}
-                  fullWidth
-                  style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
-                >
-                  <Typography variant="p" textTransform="uppercase">
-                    Profile
-                  </Typography>
-                </Button>
-                <Button
-                  onClick={() => setCurrentSection("orders")}
-                  selected={currentSection === "orders"}
-                  fullWidth
-                  style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
-                >
-                  <Typography variant="p" textTransform="uppercase">
-                    Orders
-                  </Typography>
-                </Button>
-                <Button
-                  onClick={() => setCurrentSection("settings")}
-                  selected={currentSection === "settings"}
-                  fullWidth
-                  style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
-                >
-                  <Typography variant="p" textTransform="uppercase">
-                    Settings
-                  </Typography>
-                </Button>
-              </ProfileOptionsWrapper>
-            </ProfileSelection>
-            {currentSection === "profile" && (
-              <ProfileDetails userDetails={userDetails} />
-            )}
-            {currentSection === "orders" && <ProfileOrders />}
-            {currentSection === "settings" && <ProfileSettings />}
-          </Container>
-        </>
-      )}
-    </Section>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    style={{ justifyContent: "center" }}
+                    disabled={isUploading || !userDetails.photoURL}
+                    onClick={handleRemove}
+                  >
+                    <Typography variant="p" textTransform="uppercase">
+                      Remove photo
+                    </Typography>
+                  </Button>
+                </ProfilePictureWrapper>
+                <ProfileOptionsWrapper>
+                  <Button
+                    onClick={() => setCurrentSection("profile")}
+                    selected={currentSection === "profile"}
+                    fullWidth
+                    style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
+                  >
+                    <Typography variant="p" textTransform="uppercase">
+                      Profile
+                    </Typography>
+                  </Button>
+                  <Button
+                    onClick={() => setCurrentSection("orders")}
+                    selected={currentSection === "orders"}
+                    fullWidth
+                    style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
+                  >
+                    <Typography variant="p" textTransform="uppercase">
+                      Orders
+                    </Typography>
+                  </Button>
+                  <Button
+                    onClick={() => setCurrentSection("settings")}
+                    selected={currentSection === "settings"}
+                    fullWidth
+                    style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
+                  >
+                    <Typography variant="p" textTransform="uppercase">
+                      Settings
+                    </Typography>
+                  </Button>
+                </ProfileOptionsWrapper>
+              </ProfileSelection>
+              {currentSection === "profile" && (
+                <ProfileDetails userDetails={userDetails} />
+              )}
+              {currentSection === "orders" && <ProfileOrders />}
+              {currentSection === "settings" && <ProfileSettings />}
+            </Container>
+          </>
+        )}
+      </Section>
+    </>
   );
 };
 
