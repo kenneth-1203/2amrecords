@@ -147,7 +147,7 @@ export const RemoveItemButton = styled.div`
     transition: 0.3s;
 
     &:hover {
-      color: ${(props) => props.theme.colors.red.main};
+      color: ${(props) => props.theme.colors.primary[400]};
     }
   }
 `;

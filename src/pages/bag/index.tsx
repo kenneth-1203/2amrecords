@@ -279,7 +279,7 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
               </TextWrapper>
               <PriceWrapper>
                 <Typography variant="h3">
-                  RM{" "}
+                  + RM{" "}
                   {item.discountedPrice
                     ? item.discountedPrice.toFixed(2)
                     : item.originalPrice.toFixed(2)}

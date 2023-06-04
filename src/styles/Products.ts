@@ -59,13 +59,13 @@ export const ProductImageDisplay = styled.div`
   }
 
   ${(props) => props.theme.sizes.tabPort} {
-    height: calc((${MAIN_IMAGE_HEIGHT} - ${GAP_SIZE}) / 1.2);
+    height: ${MAIN_IMAGE_HEIGHT};
   }
 
   ${(props) => props.theme.sizes.mobile} {
     flex-direction: column;
     width: 100%;
-    height: calc(${MAIN_IMAGE_HEIGHT} / 1.2);
+    height: calc(10% - ${MAIN_IMAGE_HEIGHT});
     align-items: center;
   }
 `;
@@ -113,11 +113,12 @@ export const ProductImage = styled(motion.div)`
   }
 
   ${(props) => props.theme.sizes.tabPort} {
-    height: calc(${MAIN_IMAGE_HEIGHT} / 1.25);
+    height: ${MAIN_IMAGE_HEIGHT};
   }
 
   ${(props) => props.theme.sizes.mobile} {
-    min-width: ${SMALL_IMAGE_WIDTH};
+    min-width: calc(30vw - 5rem);
+    height: ${MAIN_IMAGE_HEIGHT};
   }
 `;
 

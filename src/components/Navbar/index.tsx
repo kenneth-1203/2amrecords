@@ -101,10 +101,11 @@ const Navbar: React.FC = () => {
                   {!_.isEmpty(user.items) && (
                     <ItemCounter
                       animate={
-                        count < user.items?.length
-                          ? { y: [0, -50, 0] }
+                        count === user.items?.length
+                          ? { y: [0, -10, 0] }
                           : { y: 0 }
                       }
+                      transition={{ duration: .15 }}
                     >
                       {user.items?.length}
                     </ItemCounter>

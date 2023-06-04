@@ -261,7 +261,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ productImages }) => {
               key={i}
               onClick={() => handleClick(i)}
               animate={selectedIndex === i ? { boxShadow: "0 0 0 1px" } : {}}
-              transition={{ delay: 0.1 }}
+              transition={{ delay: 0.05, duration: .05 }}
             >
               <Image
                 src={image.url}
