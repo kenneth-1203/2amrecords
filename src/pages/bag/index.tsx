@@ -258,6 +258,14 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
     router.replace("/");
   };
 
+  const handleProceedToCheckout = async () => {
+    const response = await createDocument("Orders", {
+      items: userDetails.items,
+      userInfo: shippingData,
+    })
+    console.log(response)
+  };
+
   return (
     <CheckoutContainer>
       <SummaryContainer>
@@ -314,6 +322,7 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
               variant="contained"
               endIcon={<FontAwesomeIcon icon={faChevronRight} />}
               fullWidth
+              onClick={handleProceedToCheckout}
             >
               <Typography
                 variant="p"

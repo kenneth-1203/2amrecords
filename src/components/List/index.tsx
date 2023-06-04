@@ -13,16 +13,18 @@ interface PropTypes {
     rightIcon?: React.ReactNode;
     disabled?: boolean;
     label: React.ReactNode;
-    value: ItemValue;
+    value?: ItemValue;
   }>;
   onSelect?: (index: number) => void | undefined;
   value?: number | undefined;
+  noSelect?: boolean;
 }
 
 const List: React.FC<PropTypes> = ({
   items,
   onSelect,
-  value,
+  value = undefined,
+  noSelect = false,
 }) => {
   const handleSelect = (index: number) => {
     if (onSelect) {
@@ -40,8 +42,9 @@ const List: React.FC<PropTypes> = ({
         items.map((item, i) => (
           <ListItemContainer
             key={i}
+            noSelect={noSelect}
             onClick={item.disabled ? undefined : () => handleSelect(i)}
-            selected={value === i}
+            selected={value === i ?? false}
             disabled={item.disabled || false}
           >
             {item.leftIcon && <ListItemIcon>{item.leftIcon}</ListItemIcon>}

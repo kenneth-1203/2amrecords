@@ -69,3 +69,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [ ] Trigger an email to user upon completing a purchase
 - [x] Change image load behavior to increase performance
 - [ ] Add a subscribe to newsletter section in homepage
+- [ ] Remove uneccessary profile image upload and display
+- [ ] Add a next and previous slide navigation button on products (including auto slide with timer)
