@@ -3,7 +3,12 @@ import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import _ from "lodash";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { AnimatePresence, motion } from "framer-motion";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -46,6 +51,7 @@ import {
   FormContainer,
   Line,
 } from "./styles";
+import { authReducer } from "../../reducer";
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated } = useContext<any>(UserContext);
@@ -155,35 +161,28 @@ const Drawer: React.FC<PropTypes> = ({
   const loginWithGoogle = async () => {
     try {
       await signInWithPopup(auth, provider)
-        .then(async (result) => {
-          const { user } = result;
-          const isExistingUser = await checkDocumentExists("Users", user.uid);
+        .then(async ({ user }) => {
+          const isExistingUser = await (
+            await fetch(`/api/users/${user.uid}`)
+          ).json();
           if (!isExistingUser) {
-            await createDocument("Users", {
-              id: user.uid,
-              fullName: user.displayName,
-              email: user.email,
-              photoURL: user.photoURL,
-              createdAt: user.metadata.creationTime,
-              lastSignedIn: user.metadata.lastSignInTime,
-              provider: "google",
-              country: "Malaysia",
-              phoneNumber: "",
-              addressLine1: "",
-              addressLine2: "",
-              state: "",
-              postcode: "",
-              items: [], // TODO: Add existing items from guest
-              orderHistory: [],
+            await fetch(`/api/users/create`, {
+              method: "POST",
+              body: JSON.stringify({
+                id: user.uid,
+                fullName: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL,
+                createdAt: user.metadata.creationTime,
+                lastSignedIn: user.metadata.lastSignInTime,
+                provider: "google",
+                country: "Malaysia",
+              }),
             });
           }
           // TODO: Add a welcome modal/toast
         })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
-        });
+        .catch(authReducer);
     } catch (error) {
       console.log(error);
     }
@@ -298,13 +297,15 @@ const LoginForm: React.FC<{
 
   const loginWithEmail = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    const { results, error } = await signIn(formData);
-    if (results) {
-      // TODO: Add a welcome modal/toast
-    }
-    if (error) {
-      setError(error);
-    }
+    await signInWithEmailAndPassword(auth, formData.email, formData.password)
+      .then(async ({ user }) => {
+        if (user) {
+          // TODO: Add a welcome modal/toast
+        }
+      })
+      .catch((reason) => {
+        console.log(reason);
+      });
   };
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -381,15 +382,29 @@ const SignUpForm: React.FC<{
   });
 
   const signUpWithEmail = async () => {
-    const { results, error } = await signUp(formData);
-    if (results) {
-      // automatically sign user in
-      await signIn({ email: formData.email, password: formData.password });
-      // TODO: Add a welcome modal/toast
-    }
-    if (error) {
-      setError(error);
-    }
+    await createUserWithEmailAndPassword(
+      auth,
+      formData.email,
+      formData.password
+    )
+      .then(async ({ user }) => {
+        if (user) {
+          await fetch("/api/users/create", {
+            method: "POST",
+            body: JSON.stringify({
+              id: user.uid,
+              fullName: formData.fullName,
+              email: formData.email,
+              createdAt: user.metadata.creationTime,
+              lastSignedIn: user.metadata.lastSignInTime,
+              country: "Malaysia",
+            }),
+          });
+        }
+      })
+      .catch((reason) => {
+        console.log(reason);
+      });
   };
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
