@@ -108,7 +108,7 @@ export const ProductImage = styled(motion.div)`
   }
 
   ${(props) => props.theme.sizes.tabLand} {
-    width: calc(${MAIN_IMAGE_WIDTH} / 1.2);
+    min-width: calc(${MAIN_IMAGE_WIDTH} / 1.2);
     height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
   }
 
@@ -117,8 +117,7 @@ export const ProductImage = styled(motion.div)`
   }
 
   ${(props) => props.theme.sizes.mobile} {
-    width: 25rem;
-    height: 35rem;
+    min-width: ${SMALL_IMAGE_WIDTH};
   }
 `;
 
