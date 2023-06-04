@@ -1,8 +1,7 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import Head from "next/head";
 import { NextPage } from "next/types";
 import _ from "lodash";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { UserContext } from "@/lib/context";
 import {
@@ -109,7 +108,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
     setShowSizeChart(!showSizeChart);
   };
 
-  if (!productDetails) return <h1>Loading...</h1>
+  if (!productDetails) return <h1>Loading...</h1>;
 
   return (
     <>
@@ -191,46 +190,78 @@ interface ProductDisplayProps {
 }
 
 const ProductDisplay: React.FC<ProductDisplayProps> = ({ productImages }) => {
-  const [selectedImage, setSelectedImage] = useState<IProductImage>(
-    productImages[0]
-  );
-  const handleSelectImage = (img: IProductImage) => {
-    setSelectedImage(img);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const carouselContainer = carouselRef.current;
+    if (carouselContainer) {
+      carouselContainer.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (carouselContainer) {
+        carouselContainer.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [selectedIndex]);
+
+  const handleClick = (index: number) => {
+    setSelectedIndex(index);
+    const carouselContainer = carouselRef.current;
+    if (carouselContainer) {
+      const itemWidth = carouselContainer.offsetWidth;
+      const scrollAmount = index * itemWidth;
+      if (index === productImages.length - 1) {
+        const itemWidth = carouselContainer.offsetWidth;
+        carouselContainer.scrollTo({
+          left: scrollAmount + itemWidth,
+          behavior: "smooth",
+        });
+      } else {
+        carouselContainer.scrollTo({
+          left: scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    }
   };
+
+  const handleScroll = () => {
+    const carouselContainer = carouselRef.current;
+    if (carouselContainer) {
+      const scrollPosition = carouselContainer.scrollLeft;
+      const itemWidth = carouselContainer.offsetWidth;
+      const index = Math.round(scrollPosition / itemWidth);
+      setSelectedIndex(index);
+    }
+  };
+
   return (
     <ProductImageDisplay>
-      <MainImage>
-        <TransformWrapper>
-          <TransformComponent>
-            <ProductImage>
-              {productImages &&
-                productImages.map((image, i) => (
-                  <Image
-                    style={
-                      selectedImage.url === image.url
-                        ? { opacity: 1, transition: ".3s" }
-                        : { opacity: 0, transition: ".3s" }
-                    }
-                    key={i}
-                    src={image.url}
-                    fill
-                    sizes="(max-width: 1200px) 35rem, 55rem"
-                    alt=""
-                    priority
-                    quality={100}
-                  />
-                ))}
+      <MainImage ref={carouselRef}>
+        {productImages &&
+          productImages.map((image, i) => (
+            <ProductImage key={i}>
+              <Image
+                src={image.url}
+                fill
+                sizes="(max-width: 1200px) 35rem, 55rem"
+                alt=""
+                priority
+                quality={100}
+              />
             </ProductImage>
-          </TransformComponent>
-        </TransformWrapper>
+          ))}
       </MainImage>
       <ImageList>
         {productImages &&
           productImages.map((image, i) => (
             <ProductImageSmall
               key={i}
-              onClick={() => handleSelectImage(image)}
-              selected={selectedImage.url === image.url}
+              onClick={() => handleClick(i)}
+              animate={selectedIndex === i ? { boxShadow: "0 0 0 1px" } : {}}
+              transition={{ delay: 0.1 }}
             >
               <Image
                 src={image.url}

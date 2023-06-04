@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 const MAIN_IMAGE_WIDTH = "35rem";
@@ -69,8 +70,16 @@ export const ProductImageDisplay = styled.div`
   }
 `;
 
-export const MainImage = styled.div`
-  overflow: hidden;
+export const MainImage = styled(motion.div)`
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+
+  ::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
 `;
 
 export const ImageList = styled.div`
@@ -88,10 +97,11 @@ export const ImageList = styled.div`
   }
 `;
 
-export const ProductImage = styled.div`
+export const ProductImage = styled(motion.div)`
   position: relative;
-  display: inline-flex;
-  width: ${MAIN_IMAGE_WIDTH};
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  min-width: ${MAIN_IMAGE_WIDTH};
   height: ${MAIN_IMAGE_HEIGHT};
   & > img {
     object-fit: cover;
@@ -112,11 +122,10 @@ export const ProductImage = styled.div`
   }
 `;
 
-export const ProductImageSmall = styled.div<{ selected: boolean }>`
+export const ProductImageSmall = styled(motion.div)`
   position: relative;
   width: ${SMALL_IMAGE_WIDTH};
   height: ${SMALL_IMAGE_HEIGHT};
-  ${({ selected }) => selected && `box-shadow: 0 0 0 2px`};
 
   & > img {
     object-fit: cover;
@@ -187,7 +196,7 @@ export const ViewSizeChart = styled.div`
     color: ${(props) => props.theme.colors.primary[100]};
   }
 
-  ${props => props.theme.sizes.mobile} {
+  ${(props) => props.theme.sizes.mobile} {
     width: 100%;
   }
 `;

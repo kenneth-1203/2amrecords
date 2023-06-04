@@ -259,11 +259,7 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
   };
 
   const handleProceedToCheckout = async () => {
-    const response = await createDocument("Orders", {
-      items: userDetails.items,
-      userInfo: shippingData,
-    })
-    console.log(response)
+    
   };
 
   return (
