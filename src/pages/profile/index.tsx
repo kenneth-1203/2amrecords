@@ -1,35 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import _ from "lodash";
-import { motion } from "framer-motion";
 import { UserContext } from "@/lib/context";
-import {
-  createDocument,
-  deleteFile,
-  getFileURL,
-  uploadFile,
-} from "@/api/index";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { createDocument } from "@/api/index";
 import Button from "@/components/Button";
 import InputField from "@/components/InputField";
 import Typography from "@/components/Typography";
+import Select from "@/components/Select";
+import { malaysiaStates } from "@/data/countries";
 import { IUserDetails } from "@/shared/interfaces";
 import {
   Container,
   Section,
   ProfileSelection,
-  ProfilePictureWrapper,
-  ProfilePicture,
   ProfileOptionsWrapper,
   ProfileInfo,
   ProfileDetailsWrapper,
   ShippingInformationWrapper,
   Wrapper,
   ButtonsWrapper,
-  WelcomeContainer,
 } from "@/styles/Profile";
 
 type ProfileSections = "profile" | "orders" | "settings";
@@ -57,36 +47,6 @@ const Page: React.FC = () => {
     }
   }, [isAuthenticated, router, user]);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget.files?.[0] && userDetails) {
-      setIsUploading(true);
-      const file = e.currentTarget.files[0];
-      const pathToStorage = `ProfileImages/${userDetails.id}`;
-      const { results } = await uploadFile(file, pathToStorage);
-      if (results) {
-        const { results: uploadedURL } = await getFileURL(pathToStorage);
-        await createDocument("Users", {
-          ...userDetails,
-          photoURL: uploadedURL,
-        });
-        setIsUploading(false);
-      }
-    }
-  };
-
-  const handleRemove = async () => {
-    if (userDetails) {
-      setIsUploading(true);
-      const pathToStorage = `ProfileImages/${userDetails.id}`;
-      await createDocument("Users", {
-        ...userDetails,
-        photoURL: "",
-      });
-      await deleteFile(pathToStorage);
-      setIsUploading(false);
-    }
-  };
-
   const getGreeting = () => {
     const currentHour = new Date().getHours();
 
@@ -107,76 +67,11 @@ const Page: React.FC = () => {
       <Section>
         {userDetails && (
           <>
-            <WelcomeContainer
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 0.5, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.3 }}
-            >
-              <Typography variant="h2" fontWeight={300}>
-                {getGreeting()}, {userDetails.fullName}
-              </Typography>
-            </WelcomeContainer>
             <Container
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               <ProfileSelection>
-                <ProfilePictureWrapper>
-                  <ProfilePicture>
-                    <Image
-                      src={
-                        userDetails.photoURL
-                          ? userDetails.photoURL
-                          : "/default-pp.png"
-                      }
-                      alt=""
-                      fill
-                      sizes="(max-width: 1200px) 12rem, 12rem, (max-width: 600px) 18rem 18rem"
-                      quality={100}
-                    />
-                  </ProfilePicture>
-                  <InputField
-                    type="file"
-                    accept="image/*"
-                    onChange={handleUpload}
-                    disabled={isUploading}
-                    fullWidth
-                    label={
-                      isUploading ? (
-                        <motion.div
-                          animate={{ rotateZ: 360 }}
-                          transition={{
-                            repeat: Infinity,
-                            repeatType: "loop",
-                            duration: 1,
-                            ease: "linear",
-                          }}
-                        >
-                          <FontAwesomeIcon icon={faSpinner} />
-                        </motion.div>
-                      ) : (
-                        <Typography
-                          variant="p"
-                          fontWeight={500}
-                          textTransform="uppercase"
-                        >
-                          Upload photo
-                        </Typography>
-                      )
-                    }
-                  />
-                  <Button
-                    variant="outlined"
-                    fullWidth
-                    style={{ justifyContent: "center" }}
-                    disabled={isUploading || !userDetails.photoURL}
-                    onClick={handleRemove}
-                  >
-                    <Typography variant="p" textTransform="uppercase">
-                      Remove photo
-                    </Typography>
-                  </Button>
-                </ProfilePictureWrapper>
                 <ProfileOptionsWrapper>
                   <Button
                     onClick={() => setCurrentSection("profile")}
@@ -234,6 +129,10 @@ const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDetails({ ...details, [e.target.id]: e.target.value });
+  };
+
+  const handleStateChange = (state: any) => {
+    setDetails({ ...userDetails, state } as IUserDetails);
   };
 
   const handleEdit = () => {
@@ -330,15 +229,18 @@ const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
           placeholder="Optional"
         />
         <Wrapper>
-          <InputField
-            id="state"
-            type="text"
+          <Select
             label="State"
-            value={details?.state}
-            onChange={handleChange}
             fullWidth
+            value={details?.state}
             disabled={!editMode}
-            placeholder="e.g: Kuala Lumpur"
+            onChange={handleStateChange}
+            options={malaysiaStates.sort().map((state) => {
+              return {
+                label: state,
+                value: state,
+              };
+            })}
           />
           <InputField
             id="postcode"

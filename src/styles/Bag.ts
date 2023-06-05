@@ -227,12 +227,12 @@ export const SummaryItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid ${(props) => props.theme.colors.primary[100]};
+  border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
   padding: 0.4rem 0;
 
-  &:last-child {
-    border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
-  }
+  // &:last-child {
+  //   border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
+  // }
 `;
 
 export const SummaryTotal = styled.div`
@@ -243,7 +243,7 @@ export const SummaryTotal = styled.div`
 export const SummaryWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: .8rem;
   justify-content: end;
 `;
 
@@ -255,16 +255,4 @@ export const ButtonsWrapper = styled.div`
     flex-direction: column;
     gap: 0.8rem;
   }
-`;
-
-export const ShippingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: .4rem;
-`;
-
-export const InputWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 1rem;
 `;

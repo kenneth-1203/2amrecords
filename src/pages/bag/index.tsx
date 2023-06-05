@@ -35,8 +35,6 @@ import {
   SummaryItem,
   SummaryWrapper,
   SummaryTotal,
-  ShippingContainer,
-  InputWrapper,
 } from "@/styles/Bag";
 
 const Page: React.FC = () => {
@@ -234,16 +232,6 @@ const BagItemsList: React.FC<PropTypes> = ({
 
 const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
   const router = useRouter();
-  const [shippingData, setShippingData] = useState<IShippingInfo>({
-    fullName: userDetails?.fullName,
-    email: userDetails?.email,
-    phoneNumber: userDetails?.phoneNumber,
-    country: userDetails?.country ?? "Malaysia",
-    addressLine1: userDetails?.addressLine1,
-    addressLine2: userDetails?.addressLine2,
-    state: userDetails?.state,
-    postcode: userDetails?.postcode,
-  });
 
   const getTotalAmount = () => {
     let totalAmount = 0;
@@ -259,16 +247,16 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
   };
 
   const handleProceedToCheckout = async () => {
-    
+    router.replace("/checkout");
   };
 
   return (
     <CheckoutContainer>
       <SummaryContainer>
-        <ShippingDetails
+        {/* <ShippingDetails
           shippingData={shippingData}
           setShippingData={setShippingData}
-        />
+        /> */}
         <SummaryItemList>
           {userDetails.items.map((item: IBagItem, i: number) => (
             <SummaryItem key={i}>
@@ -304,6 +292,9 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
               RM {getTotalAmount()}
             </Typography>
           </SummaryTotal>
+          <Typography variant="small">
+            Get free delivery with purchase up to 3 items during checkout.
+          </Typography>
           <ButtonsWrapper>
             <Button
               variant="outlined"
@@ -332,102 +323,6 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
         </SummaryWrapper>
       </SummaryContainer>
     </CheckoutContainer>
-  );
-};
-
-interface ShippingDetailsProps {
-  shippingData: IShippingInfo;
-  setShippingData: (data: IShippingInfo) => void;
-}
-
-const ShippingDetails: React.FC<ShippingDetailsProps> = ({
-  shippingData,
-  setShippingData,
-}) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setShippingData({ ...shippingData, [e.target.id]: e.target.value });
-  };
-
-  return (
-    <ShippingContainer>
-      <Typography variant="h3" fontWeight={500} paddingBottom={"1rem"}>
-        Delivery information
-      </Typography>
-      <InputField
-        id="fullName"
-        type="text"
-        label="Full name"
-        value={shippingData.fullName}
-        onChange={handleChange}
-        fullWidth
-      />
-      <InputField
-        type="email"
-        label="Email"
-        value={shippingData.email}
-        onChange={handleChange}
-        fullWidth
-      />
-      <InputWrapper>
-        <InputField
-          id="phoneNumber"
-          type="number"
-          label="Phone number"
-          value={shippingData.phoneNumber}
-          onChange={handleChange}
-          fullWidth
-          placeholder="e.g: 0123456789"
-        />
-        <InputField
-          id="country"
-          type="text"
-          label="Country"
-          value={shippingData.country}
-          onChange={handleChange}
-          fullWidth
-          disabled={true}
-          placeholder="e.g: Malaysia"
-        />
-      </InputWrapper>
-      <InputField
-        id="addressLine1"
-        type="text"
-        label="Address (Line 1)"
-        value={shippingData.addressLine1}
-        onChange={handleChange}
-        fullWidth
-        placeholder="e.g: 69 Jalan 1, 50088 Kuala Lumpur, Malaysia"
-      />
-      <InputField
-        id="addressLine2"
-        type="text"
-        label="Address (Line 2)"
-        value={shippingData.addressLine2}
-        onChange={handleChange}
-        fullWidth
-        placeholder="Optional"
-      />
-      <InputWrapper>
-        <InputField
-          id="state"
-          type="text"
-          label="State"
-          value={shippingData.state}
-          onChange={handleChange}
-          fullWidth
-          placeholder="e.g: Kuala Lumpur"
-        />
-        <InputField
-          id="postcode"
-          type="number"
-          label="Postcode"
-          value={shippingData.postcode}
-          onChange={handleChange}
-          fullWidth
-          placeholder="e.g: 50088"
-        />
-      </InputWrapper>
-    </ShippingContainer>
   );
 };
 

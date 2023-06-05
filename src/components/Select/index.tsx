@@ -10,9 +10,10 @@ import {
   SelectIconWrapper,
   SelectComponent,
   SelectOption,
+  HiddenSelect,
 } from "./styles";
 
-type OptionValue = string | number | null | undefined;
+type OptionValue = string | number | readonly string[] | undefined;
 
 interface PropTypes extends React.CSSProperties {
   options: Array<{
@@ -23,6 +24,7 @@ interface PropTypes extends React.CSSProperties {
   label?: string;
   disabled?: boolean;
   fullWidth?: boolean;
+  required?: boolean;
   onChange?: (value: OptionValue) => void;
 }
 
@@ -32,6 +34,7 @@ const Select: React.FC<PropTypes> = ({
   label,
   disabled = false,
   fullWidth = false,
+  required = false,
   onChange,
   ...props
 }) => {
@@ -53,6 +56,12 @@ const Select: React.FC<PropTypes> = ({
       fullWidth={fullWidth}
       style={{ ...props }}
     >
+      <HiddenSelect value={value} required={required}>
+        {value && <option selected>{value}</option>}
+      </HiddenSelect>
+      <Typography variant="p" paddingBottom={".4rem"}>
+        {label}
+      </Typography>
       <SelectLabel onClick={() => setShow(!show)}>
         <Typography variant="p" textOverflow="ellipsis" overflow="hidden">
           {findLabelByValue(value)}
@@ -69,7 +78,7 @@ const Select: React.FC<PropTypes> = ({
               animate={{ height: "auto" }}
               exit={{ height: "0" }}
             >
-              {options.map((option, i) => (
+              {options.sort().map((option, i) => (
                 <SelectOption
                   key={i}
                   onClick={() => handleSelectOption(option.value)}
