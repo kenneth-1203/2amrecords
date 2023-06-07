@@ -183,6 +183,7 @@ const Drawer: React.FC<PropTypes> = ({
           }
           // TODO: Add a welcome modal/toast
           localStorage.removeItem("items");
+          window.dispatchEvent(new Event("storage"));
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -307,6 +308,7 @@ const LoginForm: React.FC<{
     if (results) {
       // TODO: Add a welcome modal/toast
       localStorage.removeItem("items");
+      window.dispatchEvent(new Event("storage"));
     }
     if (error) {
       setError(error);
@@ -393,6 +395,7 @@ const SignUpForm: React.FC<{
       await signIn({ email: formData.email, password: formData.password });
       // TODO: Add a welcome modal/toast
       localStorage.removeItem("items");
+      window.dispatchEvent(new Event("storage"));
     }
     if (error) {
       setError(error);

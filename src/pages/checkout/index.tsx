@@ -74,6 +74,8 @@ const Page: React.FC = () => {
           ],
         } as IUserDetails);
       }
+      localStorage.removeItem("items");
+      window.dispatchEvent(new Event("storage"));
       setOrderDetails(order as IOrderDetails);
     } else {
       // @ts-ignore
