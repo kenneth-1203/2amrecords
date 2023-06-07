@@ -81,13 +81,12 @@ const Page: React.FC = () => {
             id: orderId,
             customer: { fullName: user.fullName },
           });
-        } else {
-          console.log("Removing local storage items...");
-          localStorage.removeItem("items");
-          window.dispatchEvent(new Event("storage"));
         }
       }
     } else {
+      console.log("Removing local storage items...");
+      localStorage.removeItem("items");
+      window.dispatchEvent(new Event("storage"));
       setOrderDetails({ id: orderId, customer: { fullName: "User" } });
     }
     setPage("success");
