@@ -1,45 +1,105 @@
 import { useEffect, useContext, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import _ from "lodash";
-import { IBagItem, IUserDetails } from "@/shared/interfaces";
+import { motion } from "framer-motion";
+import { IBagItem, IOrderDetails, IUserDetails } from "@/shared/interfaces";
 import InputField from "@/components/InputField";
 import Typography from "@/components/Typography";
 import { UserContext } from "@/lib/context";
 import Select from "@/components/Select";
+import Button from "@/components/Button";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { malaysiaStates } from "@/data/countries";
+import { createDocument, deleteDocument, getDocument } from "@/api/index";
 import {
   Container,
   ShippingForm,
   InputWrapper,
   Summary,
   SummaryItem,
+  StatusContainer,
+  Wrapper,
 } from "@/styles/Checkout";
-import Button from "@/components/Button";
 
 const Page: React.FC = () => {
   const router = useRouter();
-  const { user } = useContext(UserContext);
+  const { user, isAuthenticated } = useContext(UserContext);
   const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
+  const [orderDetails, setOrderDetails] = useState<IOrderDetails | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
   const [page, setPage] = useState<"checkout" | "success" | "canceled">(
     "checkout"
   );
+  const variants = {
+    hidden: { opacity: 0, y: 20, transition: { duration: 0.5 } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
 
   useEffect(() => {
-    const { success, canceled } = router.query;
-    if (success) {
-      setPage("success");
-    }
-    if (canceled) {
-      setPage("canceled");
-    }
-  }, [router.query]);
-
-  useEffect(() => {
-    if (user) {
+    if (isPageLoading && !_.isEmpty(user)) {
       setUserDetails(user as IUserDetails);
-      console.log(user);
+      setIsPageLoading(false);
     }
-  }, [user]);
+  }, [user, isPageLoading]);
+
+  useEffect(() => {
+    if (userDetails) {
+      const { success, canceled, orderId } = router.query;
+      if (success && orderId) {
+        handleSuccess(user as IUserDetails, orderId as string);
+      }
+      if (canceled && orderId) {
+        handleCanceled(user as IUserDetails, orderId as string);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, userDetails]);
+
+  const handleSuccess = async (user: IUserDetails, orderId: string) => {
+    const order = await getDocument("Orders", orderId);
+    if (_.isEmpty(order)) {
+      if (isAuthenticated) {
+        await createDocument("Users", {
+          ...user,
+          items: [],
+          orderHistory: [
+            ...user.orderHistory,
+            {
+              id: orderId,
+              status: "paid",
+            },
+          ],
+        } as IUserDetails);
+      }
+      setOrderDetails(order as IOrderDetails);
+    } else {
+      // @ts-ignore
+      setOrderDetails({ id: orderId, customer: { fullName: "User" } });
+    }
+    setPage("success");
+  };
+
+  const handleCanceled = async (user: IUserDetails, orderId: string) => {
+    await deleteDocument("Orders", orderId);
+    if (isAuthenticated) {
+      await createDocument("Users", {
+        ...user,
+        items: [],
+        orderHistory: [
+          ...user.orderHistory,
+          {
+            id: orderId,
+            status: "canceled",
+          },
+        ],
+      } as IUserDetails);
+    }
+    setOrderDetails({ id: orderId });
+    setPage("canceled");
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserDetails({
@@ -84,7 +144,22 @@ const Page: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (userDetails?.items) {
+      setIsLoading(true);
       const deliveryFees = getDeliveryFees();
+      const orderId = await createDocument("Orders", {
+        authenticated: isAuthenticated,
+        items: userDetails.items,
+        customer: {
+          fullName: userDetails.fullName,
+          email: userDetails.email,
+          phoneNumber: userDetails.phoneNumber,
+          addressLine1: userDetails.addressLine1,
+          addressLine2: userDetails.addressLine2 ?? "",
+          country: userDetails.country ?? "Malaysia",
+          state: userDetails.state,
+          postcode: userDetails.postcode,
+        },
+      });
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: {
@@ -93,10 +168,13 @@ const Page: React.FC = () => {
         body: JSON.stringify({
           user: userDetails,
           deliveryFees,
+          orderId,
         }),
       });
       const { url } = await response.json();
-      router.replace(url);
+      if (url) {
+        router.replace(url);
+      }
     }
   };
 
@@ -117,6 +195,7 @@ const Page: React.FC = () => {
             required
           />
           <InputField
+            id="email"
             type="email"
             label="Email"
             value={userDetails?.email}
@@ -127,7 +206,7 @@ const Page: React.FC = () => {
           <InputWrapper>
             <InputField
               id="phoneNumber"
-              type="number"
+              type="text"
               label="Phone number"
               value={userDetails?.phoneNumber}
               onChange={handleChange}
@@ -139,8 +218,7 @@ const Page: React.FC = () => {
               id="country"
               type="text"
               label="Country"
-              value={userDetails?.country}
-              onChange={handleChange}
+              value={"Malaysia"}
               fullWidth
               required
               disabled={true}
@@ -228,29 +306,167 @@ const Page: React.FC = () => {
                 RM {getTotalAmount()}
               </Typography>
             </SummaryItem>
-            <Button variant="contained">
+            <Button variant="contained" disabled={isLoading}>
               <Typography variant="p" textTransform="uppercase">
-                Proceed to payment
+                {isLoading ? (
+                  <motion.div
+                    animate={{ rotateZ: 360 }}
+                    transition={{
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      duration: 1,
+                      ease: "linear",
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faSpinner} />
+                  </motion.div>
+                ) : (
+                  "Proceed to payment"
+                )}
               </Typography>
             </Button>
           </Summary>
         </ShippingForm>
       ) : page === "success" ? (
-        <>
-          {/* TODO:
-            1. Create success UI
-            2. Add successful payment as order to "Orders" collection 
-          */}
-        </>
+        <StatusContainer
+          initial={"hidden"}
+          animate={"visible"}
+          variants={variants}
+        >
+          <AnimatedCheckArrow />
+          <Typography variant="h2" fontWeight={500}>
+            Dear {orderDetails?.customer?.fullName},
+          </Typography>
+          <Typography variant="h3" fontWeight={500}>
+            Congratulations on your successful purchase!
+          </Typography>
+          <Typography variant="p">
+            We are thrilled to confirm that your order has been received and is
+            being processed. Kindly allow a duration of <b>2-3</b> business days
+            for the delivery process to be successfully finalized.
+          </Typography>
+          <Typography variant="p">
+            Thank you for choosing us for your purchase. Our team is working
+            diligently to ensure a smooth and timely fulfillment of your order.
+          </Typography>
+          <Typography variant="h3" fontWeight={500}>
+            ORDER ID: {orderDetails?.id}
+          </Typography>
+          <Wrapper>
+            <Link href={"/"}>
+              <Button variant="outlined">
+                <Typography variant="p" textTransform="uppercase">
+                  Continue
+                </Typography>
+              </Button>
+            </Link>
+            <Link href={"/profile?section=orders"}>
+              <Button variant="contained" disabled={!isAuthenticated}>
+                <Typography variant="p" textTransform="uppercase">
+                  View Order
+                </Typography>
+              </Button>
+            </Link>
+          </Wrapper>
+        </StatusContainer>
       ) : page === "canceled" ? (
-        <>
-          {/* TODO:
-            1. Create canceled UI
-            2. Add canceled payment as order to "Orders" collection
-          */}
-        </>
+        <StatusContainer
+          initial={"hidden"}
+          animate={"visible"}
+          variants={variants}
+        >
+          <AnimatedCross />
+          <Typography variant="h3" fontWeight={500}>
+            Payment was unsuccessful!
+          </Typography>
+          <Typography variant="p">
+            Sorry for any inconvenience caused. If this is a mistake, kindly
+            contact our support team or send us an email.
+          </Typography>
+          <Typography variant="h3" fontWeight={500}>
+            ORDER ID: {orderDetails?.id}
+          </Typography>
+          <Wrapper>
+            <Link href={"/"}>
+              <Button variant="outlined">
+                <Typography variant="p" textTransform="uppercase">
+                  Continue
+                </Typography>
+              </Button>
+            </Link>
+            <Button variant="contained">
+              <Typography variant="p" textTransform="uppercase">
+                Contact Us
+              </Typography>
+            </Button>
+          </Wrapper>
+        </StatusContainer>
       ) : null}
     </Container>
+  );
+};
+
+const AnimatedCheckArrow = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="100"
+      height="100"
+      viewBox="0 0 50 50"
+    >
+      <motion.circle
+        cx="24"
+        cy="24"
+        r="22"
+        fill="transparent"
+        stroke="green"
+        strokeWidth="3"
+        initial={{ scale: 0 }}
+        animate={{ scale: [0, 0.9, 1, 0.9] }}
+        transition={{ duration: 1, ease: "easeInOut", times: [0, 0.3, 0.7, 1] }}
+      />
+      <motion.path
+        d="M16 24l6 6 14-14"
+        stroke="green"
+        strokeWidth="3"
+        fill="transparent"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1 }}
+      />
+    </svg>
+  );
+};
+
+const AnimatedCross = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="100"
+      height="100"
+      viewBox="0 0 50 50"
+    >
+      <motion.circle
+        cx="24"
+        cy="24"
+        r="22"
+        fill="transparent"
+        stroke="red"
+        strokeWidth="3"
+        initial={{ scale: 0 }}
+        animate={{ scale: [0, 0.9, 1, 0.9] }}
+        transition={{ duration: 1, ease: "easeInOut", times: [0, 0.3, 0.7, 1] }}
+      />
+      <motion.path
+        d="M16 16l16 16M32 16L16 32"
+        stroke="red"
+        strokeWidth="3"
+        fill="transparent"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1 }}
+      />
+    </svg>
   );
 };
 

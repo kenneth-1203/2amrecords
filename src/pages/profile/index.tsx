@@ -189,7 +189,7 @@ const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
         <Wrapper>
           <InputField
             id="phoneNumber"
-            type="number"
+            type="text"
             label="Phone number"
             value={details?.phoneNumber}
             onChange={handleChange}
@@ -277,6 +277,7 @@ const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
 const ProfileOrders: React.FC = () => {
   return (
     <ProfileInfo>
+      {/* TODO: Populate orders */}
       <h1>Orders</h1>
     </ProfileInfo>
   );
@@ -285,6 +286,7 @@ const ProfileOrders: React.FC = () => {
 const ProfileSettings: React.FC = () => {
   return (
     <ProfileInfo>
+      {/* TODO: Complete settings UI */}
       <h1>Settings</h1>
     </ProfileInfo>
   );

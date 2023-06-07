@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { IBagItem } from "@/shared/interfaces";
+import { stripeSecretKey } from "@/api/config";
 
-const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
+const stripe = require("stripe")(stripeSecretKey);
 
 type ResponseData = {
   url: any;
@@ -12,7 +13,7 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   if (req.method === "POST") {
-    const { user, deliveryFees } = req.body;
+    const { user, deliveryFees, orderId } = req.body;
 
     try {
       let line_items: any = [];
@@ -48,8 +49,8 @@ export default async function handler(
         line_items,
         mode: "payment",
         customer_email: user.email,
-        success_url: `${req.headers.origin}/checkout?success=true`,
-        cancel_url: `${req.headers.origin}/checkout?canceled=true`,
+        success_url: `${req.headers.origin}/checkout?orderId=${orderId}&success=true`,
+        cancel_url: `${req.headers.origin}/checkout?orderId=${orderId}&canceled=true`,
       });
 
       res.json({ url: session.url });

@@ -293,7 +293,7 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
             </Typography>
           </SummaryTotal>
           <Typography variant="small">
-            Get free delivery with purchase up to 3 items during checkout.
+            Get FREE delivery with purchase up to 3 items during checkout.
           </Typography>
           <ButtonsWrapper>
             <Button
