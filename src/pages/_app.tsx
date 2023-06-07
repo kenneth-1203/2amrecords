@@ -6,7 +6,7 @@ import type { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
 import { firestore } from "@/lib/firebase";
 import { UserContext } from "@/lib/context";
-import { prefix } from "@/api/index";
+import { prefix } from "@/api/config";
 import { theme, GlobalStyle } from "@/shared/theme";
 import { IUserDetails } from "@/shared/interfaces";
 import Layout from "@/components/Layout";
