@@ -1,3 +1,4 @@
+import Typography from "@/components/Typography";
 import {
   InputWrapper,
   InputComponent,
@@ -13,6 +14,7 @@ interface PropTypes extends React.HTMLAttributes<HTMLInputElement> {
   fullWidth?: boolean;
   disabled?: boolean;
   value?: string | number;
+  required?: boolean;
 }
 
 const InputField: React.FC<PropTypes> = ({
@@ -21,19 +23,20 @@ const InputField: React.FC<PropTypes> = ({
   type,
   fullWidth = false,
   disabled = false,
+  required = false,
   ...props
 }) => {
   return (
     <InputWrapper fullWidth={fullWidth}>
       {type === "file" ? (
         <InputFileWrapper disabled={disabled}>
-          {label && label}
-          <InputFileComponent type={type} disabled={disabled} {...props} />
+          {label && <Typography variant="p">{label}</Typography>}
+          <InputFileComponent type={type} disabled={disabled} required={required} {...props} />
         </InputFileWrapper>
       ) : (
         <>
-          {label && label}
-          <InputComponent type={type} disabled={disabled} {...props} />
+          {label && <Typography variant="p">{label}</Typography>}
+          <InputComponent type={type} disabled={disabled} required={required} {...props} />
         </>
       )}
     </InputWrapper>

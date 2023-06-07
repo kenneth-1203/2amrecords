@@ -1,36 +1,37 @@
 import { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import _ from "lodash";
 import { motion } from "framer-motion";
 import { UserContext } from "@/lib/context";
-import {
-  createDocument,
-  deleteFile,
-  getFileURL,
-  uploadFile,
-} from "@/api/index";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { createDocument } from "@/api/index";
 import Button from "@/components/Button";
 import InputField from "@/components/InputField";
 import Typography from "@/components/Typography";
+import Select from "@/components/Select";
+import { malaysiaStates } from "@/data/countries";
 import { IUserDetails } from "@/shared/interfaces";
 import {
   Container,
   Section,
   ProfileSelection,
-  ProfilePictureWrapper,
-  ProfilePicture,
   ProfileOptionsWrapper,
   ProfileInfo,
   ProfileDetailsWrapper,
   ShippingInformationWrapper,
   Wrapper,
   ButtonsWrapper,
-  WelcomeContainer,
+  ProfileOrdersInfo,
+  OrdersList,
+  OrderItem,
+  OrderItemHeader,
+  OrderStatus,
+  OrderItemBody,
+  OrderItemContent,
+  OrderSummary,
 } from "@/styles/Profile";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 type ProfileSections = "profile" | "orders" | "settings";
 
@@ -39,7 +40,6 @@ const Page: React.FC = () => {
   const { user, isAuthenticated } = useContext(UserContext);
   const { section } = router.query;
   const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [currentSection, setCurrentSection] =
     useState<ProfileSections>("profile");
 
@@ -52,52 +52,8 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated) {
       setUserDetails(user as IUserDetails);
-    } else {
-      router.replace("/");
     }
   }, [isAuthenticated, router, user]);
-
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget.files?.[0] && userDetails) {
-      setIsUploading(true);
-      const file = e.currentTarget.files[0];
-      const pathToStorage = `ProfileImages/${userDetails.id}`;
-      const { results } = await uploadFile(file, pathToStorage);
-      if (results) {
-        const { results: uploadedURL } = await getFileURL(pathToStorage);
-        await createDocument("Users", {
-          ...userDetails,
-          photoURL: uploadedURL,
-        });
-        setIsUploading(false);
-      }
-    }
-  };
-
-  const handleRemove = async () => {
-    if (userDetails) {
-      setIsUploading(true);
-      const pathToStorage = `ProfileImages/${userDetails.id}`;
-      await createDocument("Users", {
-        ...userDetails,
-        photoURL: "",
-      });
-      await deleteFile(pathToStorage);
-      setIsUploading(false);
-    }
-  };
-
-  const getGreeting = () => {
-    const currentHour = new Date().getHours();
-
-    if (currentHour >= 5 && currentHour < 12) {
-      return "Good morning";
-    } else if (currentHour >= 12 && currentHour < 18) {
-      return "Good afternoon";
-    } else {
-      return "Good evening";
-    }
-  };
 
   return (
     <>
@@ -107,76 +63,11 @@ const Page: React.FC = () => {
       <Section>
         {userDetails && (
           <>
-            <WelcomeContainer
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 0.5, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.3 }}
-            >
-              <Typography variant="h2" fontWeight={300}>
-                {getGreeting()}, {userDetails.fullName}
-              </Typography>
-            </WelcomeContainer>
             <Container
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               <ProfileSelection>
-                <ProfilePictureWrapper>
-                  <ProfilePicture>
-                    <Image
-                      src={
-                        userDetails.photoURL
-                          ? userDetails.photoURL
-                          : "/default-pp.png"
-                      }
-                      alt=""
-                      fill
-                      sizes="(max-width: 1200px) 12rem, 12rem, (max-width: 600px) 18rem 18rem"
-                      quality={100}
-                    />
-                  </ProfilePicture>
-                  <InputField
-                    type="file"
-                    accept="image/*"
-                    onChange={handleUpload}
-                    disabled={isUploading}
-                    fullWidth
-                    label={
-                      isUploading ? (
-                        <motion.div
-                          animate={{ rotateZ: 360 }}
-                          transition={{
-                            repeat: Infinity,
-                            repeatType: "loop",
-                            duration: 1,
-                            ease: "linear",
-                          }}
-                        >
-                          <FontAwesomeIcon icon={faSpinner} />
-                        </motion.div>
-                      ) : (
-                        <Typography
-                          variant="p"
-                          fontWeight={500}
-                          textTransform="uppercase"
-                        >
-                          Upload photo
-                        </Typography>
-                      )
-                    }
-                  />
-                  <Button
-                    variant="outlined"
-                    fullWidth
-                    style={{ justifyContent: "center" }}
-                    disabled={isUploading || !userDetails.photoURL}
-                    onClick={handleRemove}
-                  >
-                    <Typography variant="p" textTransform="uppercase">
-                      Remove photo
-                    </Typography>
-                  </Button>
-                </ProfilePictureWrapper>
                 <ProfileOptionsWrapper>
                   <Button
                     onClick={() => setCurrentSection("profile")}
@@ -213,7 +104,9 @@ const Page: React.FC = () => {
               {currentSection === "profile" && (
                 <ProfileDetails userDetails={userDetails} />
               )}
-              {currentSection === "orders" && <ProfileOrders />}
+              {currentSection === "orders" && (
+                <ProfileOrders userDetails={userDetails} />
+              )}
               {currentSection === "settings" && <ProfileSettings />}
             </Container>
           </>
@@ -223,17 +116,21 @@ const Page: React.FC = () => {
   );
 };
 
-interface IProfileDetails {
+interface PropsWithUserDetails {
   userDetails: IUserDetails;
 }
 
-const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
+const ProfileDetails: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [details, setDetails] = useState<IUserDetails>(userDetails);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDetails({ ...details, [e.target.id]: e.target.value });
+  };
+
+  const handleStateChange = (state: any) => {
+    setDetails({ ...userDetails, state } as IUserDetails);
   };
 
   const handleEdit = () => {
@@ -290,7 +187,7 @@ const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
         <Wrapper>
           <InputField
             id="phoneNumber"
-            type="number"
+            type="text"
             label="Phone number"
             value={details?.phoneNumber}
             onChange={handleChange}
@@ -330,15 +227,18 @@ const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
           placeholder="Optional"
         />
         <Wrapper>
-          <InputField
-            id="state"
-            type="text"
+          <Select
             label="State"
-            value={details?.state}
-            onChange={handleChange}
             fullWidth
+            value={details?.state}
             disabled={!editMode}
-            placeholder="e.g: Kuala Lumpur"
+            onChange={handleStateChange}
+            options={malaysiaStates.sort().map((state) => {
+              return {
+                label: state,
+                value: state,
+              };
+            })}
           />
           <InputField
             id="postcode"
@@ -372,17 +272,101 @@ const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
   );
 };
 
-const ProfileOrders: React.FC = () => {
+const ProfileOrders: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
+  const [expandedIndex, setExpandedIndex] = useState<number>(-1);
+
+  const getTotalAmount = (index: number) => {
+    let amount = 0;
+    userDetails.orderHistory[index].items.map(
+      (item) => (amount += Number(item.discountedPrice ?? item.originalPrice))
+    );
+    return amount.toFixed(2);
+  };
+
+  const handleExpand = (index: number) => {
+    if (expandedIndex === index) {
+      setExpandedIndex(-1);
+    } else {
+      setExpandedIndex(index);
+    }
+  };
+
   return (
-    <ProfileInfo>
-      <h1>Orders</h1>
-    </ProfileInfo>
+    <ProfileOrdersInfo>
+      {/* TODO: Populate orders */}
+      <Typography variant="h3" fontWeight={500}>
+        Orders
+      </Typography>
+      <OrdersList>
+        {userDetails.orderHistory?.map((order, i) => (
+          <OrderItem key={i}>
+            <OrderItemHeader onClick={() => handleExpand(i)}>
+              <motion.span
+                animate={
+                  expandedIndex === i ? { rotateZ: 180 } : { rotateZ: 0 }
+                }
+              >
+                <FontAwesomeIcon icon={faChevronDown} />
+              </motion.span>
+              <Typography
+                variant="h3"
+                fontWeight={500}
+                whiteSpace={"nowrap"}
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}
+              >
+                {order.id}
+              </Typography>
+              <OrderStatus status={order.status}>
+                <Typography variant="p" fontWeight={500}>
+                  {order.status}
+                </Typography>
+              </OrderStatus>
+            </OrderItemHeader>
+            <OrderItemBody
+              animate={expandedIndex === i ? { height: "auto" } : { height: 0 }}
+            >
+              {order.items.map((item, i) => (
+                <OrderItemContent key={i}>
+                  <Typography variant="p" textTransform="uppercase">
+                    {item.name}
+                  </Typography>
+                  <Typography variant="p">
+                    RM{" "}
+                    {item.discountedPrice
+                      ? item.discountedPrice.toFixed(2)
+                      : item.originalPrice.toFixed(2)}
+                  </Typography>
+                </OrderItemContent>
+              ))}
+              <OrderSummary>
+                <Typography
+                  variant="p"
+                  textTransform="uppercase"
+                  fontWeight={500}
+                >
+                  TOTAL
+                </Typography>
+                <Typography
+                  variant="p"
+                  textTransform="uppercase"
+                  fontWeight={500}
+                >
+                  RM {getTotalAmount(i)}
+                </Typography>
+              </OrderSummary>
+            </OrderItemBody>
+          </OrderItem>
+        ))}
+      </OrdersList>
+    </ProfileOrdersInfo>
   );
 };
 
 const ProfileSettings: React.FC = () => {
   return (
     <ProfileInfo>
+      {/* TODO: Complete settings UI */}
       <h1>Settings</h1>
     </ProfileInfo>
   );

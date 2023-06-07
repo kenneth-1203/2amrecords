@@ -21,6 +21,7 @@
       "@/assets/*": ["./src/assets/*"],
       "@/api/*": ["./src/api/*"],
       "@/styles/*": ["./src/styles/*"],
+      "@/data/*": ["./src/data/*"],
       "@/public/*": ["./public/*"]
     }
   },

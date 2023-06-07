@@ -1,31 +1,20 @@
 import { motion } from "framer-motion";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Section = styled.section`
-  margin: 2rem;
+  margin: 2rem 8rem;
 
-  ${(props) => props.theme.sizes.mobile} {
+  ${(props) => props.theme.sizes.tabPort} {
     margin: 0;
-  }
-`;
-
-export const WelcomeContainer = styled(motion.div)`
-  text-align: center;
-  opacity: 0.3;
-  padding: 0 0 2rem 0;
-
-  ${(props) => props.theme.sizes.mobile} {
-    padding: 1rem 0 0 0;
   }
 `;
 
 export const Container = styled(motion.div)`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 4rem;
 
-  ${(props) => props.theme.sizes.mobile} {
-    flex-direction: column;
+  ${(props) => props.theme.sizes.tabPort} {
     gap: 2rem;
   }
 `;
@@ -37,7 +26,6 @@ export const ProfileSelection = styled.div`
 
 export const ProfileInfo = styled.div`
   display: grid;
-  width: 50rem;
   gap: 2rem;
   grid-template-columns: 1fr 1fr;
 
@@ -45,44 +33,12 @@ export const ProfileInfo = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-  }
-
-  ${(props) => props.theme.sizes.mobile} {
     padding: 0 2rem;
-  }
-`;
-
-export const ProfilePictureWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid ${(props) => props.theme.colors.primary[200]};
-
-  ${(props) => props.theme.sizes.tabPort} {
-    align-items: center;
-  }
-
-  ${(props) => props.theme.sizes.mobile} {
-    margin: 2rem;
-    border: none;
-  }
-`;
-
-export const ProfilePicture = styled.div`
-  position: relative;
-  width: 12rem;
-  height: 12rem;
-  margin-bottom: 1rem;
-
-  ${(props) => props.theme.sizes.mobile} {
-    width: 18rem;
-    height: 18rem;
   }
 `;
 
 export const ProfileOptionsWrapper = styled.div`
   display: flex;
-  flex-direction: column;
 
   ${(props) => props.theme.sizes.mobile} {
     flex-direction: row;
@@ -115,4 +71,77 @@ export const ButtonsWrapper = styled.div`
   ${(props) => props.theme.sizes.mobile} {
     justify-content: end;
   }
+`;
+
+export const ProfileOrdersInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  ${(props) => props.theme.sizes.tabPort} {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 2rem;
+  }
+`;
+
+export const OrdersList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+export const OrderItemHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+export const OrderItem = styled.div`
+  padding: 1rem;
+  border: 1px solid black;
+`;
+
+export const OrderStatus = styled.span<{
+  status: "paid" | "canceled" | "pending";
+}>`
+  margin-left: auto;
+  text-transform: uppercase;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  background: ${({ status }) =>
+    status === "paid"
+      ? css`
+          ${(props) => props.theme.colors.green.main}
+        `
+      : status === "canceled"
+      ? css`
+          ${(props) => props.theme.colors.orange.main}
+        `
+      : css`
+          ${(props) => props.theme.colors.primary[500]}
+        `};
+`;
+
+export const OrderItemBody = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
+export const OrderItemContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+
+  :not(:last-child) {
+    border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
+  }
+`;
+
+export const OrderSummary = styled.div`
+  padding-top: 1rem;
+  display: flex;
+  justify-content: space-between;
 `;

@@ -17,12 +17,21 @@ export const SelectContainer = styled.div<{
     `}
 `;
 
+export const HiddenSelect = styled.select`
+  position: absolute;
+  opacity: 0;
+  bottom: 0;
+  height: 3rem;
+  width: inherit;
+  z-index: -1;
+`;
+
 export const SelectComponent = styled(motion.ul)`
   position: absolute;
   background: ${(props) => props.theme.colors.secondary.main};
   top: 100%;
   width: inherit;
-  max-height: 98px;
+  max-height: 9rem;
   border: 1px solid ${(props) => props.theme.colors.primary[200]};
   border-top: none;
   overflow-y: auto;
@@ -33,6 +42,8 @@ export const SelectLabel = styled.label`
   width: inherit;
   display: flex;
   padding: 0.4rem;
+  height: 3rem;
+  align-items: center;
   gap: 0.4rem;
   border: 1px solid ${(props) => props.theme.colors.primary[600]};
   justify-content: space-between;
@@ -50,6 +61,9 @@ export const SelectIconWrapper = styled(motion.span)`
 export const SelectOption = styled.li`
   padding: 0.4rem;
   transition: background 0.2s;
+  height: 3rem;
+  display: flex;
+  align-items: center;
   cursor: pointer;
   user-select: none;
 

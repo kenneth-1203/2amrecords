@@ -58,7 +58,7 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     setCount(user.items?.length);
-  }, [user.items]);
+  }, [user]);
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
@@ -177,11 +177,13 @@ const Drawer: React.FC<PropTypes> = ({
               addressLine2: "",
               state: "",
               postcode: "",
-              items: [], // TODO: Add existing items from guest
+              items: [],
               orderHistory: [],
             });
           }
           // TODO: Add a welcome modal/toast
+          localStorage.removeItem("items");
+          window.dispatchEvent(new Event("storage"));
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -305,6 +307,8 @@ const LoginForm: React.FC<{
     const { results, error } = await signIn(formData);
     if (results) {
       // TODO: Add a welcome modal/toast
+      localStorage.removeItem("items");
+      window.dispatchEvent(new Event("storage"));
     }
     if (error) {
       setError(error);
@@ -390,6 +394,8 @@ const SignUpForm: React.FC<{
       // automatically sign user in
       await signIn({ email: formData.email, password: formData.password });
       // TODO: Add a welcome modal/toast
+      localStorage.removeItem("items");
+      window.dispatchEvent(new Event("storage"));
     }
     if (error) {
       setError(error);

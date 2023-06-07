@@ -9,7 +9,9 @@ export const InputComponent = styled.input`
   margin-bottom: 0.4rem;
 
   &:disabled {
-    color: ${(props) => props.theme.colors.primary[500]};
+    color: ${(props) => props.theme.colors.primary[200]};
+    border-color: ${(props) => props.theme.colors.primary[200]};
+    background: inherit;
   }
 
   &::placeholder {

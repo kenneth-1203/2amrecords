@@ -54,12 +54,20 @@ export interface IShippingInfo {
   postcode: string;
 }
 
+export interface IOrderHistory {
+  id: string;
+  status: "paid" | "canceled" | "pending";
+  items: IBagItem[];
+  deliveryFees: number;
+}
+
 export interface IUserDetails extends IShippingInfo {
   id: string;
   fullName: string;
   email: string;
   photoURL: string;
   items: IBagItem[];
+  orderHistory: IOrderHistory[];
   provider: "google" | null;
   lastSignedIn: Date;
   createdAt: Date;
@@ -74,4 +82,13 @@ export interface IBagItem {
   discountedPrice: number | null;
   size: string;
   imageURL: string;
+}
+
+export interface IOrderDetails {
+  id?: string;
+  authenticated?: boolean;
+  items?: IBagItem[];
+  customer?: {
+    fullName: string;
+  };
 }
