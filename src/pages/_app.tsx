@@ -46,6 +46,8 @@ export default function App({ Component, pageProps }: AppProps) {
     if (guestItems) {
       const guest = { items: JSON.parse(guestItems) };
       setUserDetails(guest);
+    } else {
+      setUserDetails({});
     }
   };
 

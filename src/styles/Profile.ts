@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Section = styled.section`
   margin: 2rem 8rem;
@@ -71,4 +71,77 @@ export const ButtonsWrapper = styled.div`
   ${(props) => props.theme.sizes.mobile} {
     justify-content: end;
   }
+`;
+
+export const ProfileOrdersInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  ${(props) => props.theme.sizes.tabPort} {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 2rem;
+  }
+`;
+
+export const OrdersList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+export const OrderItemHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+export const OrderItem = styled.div`
+  padding: 1rem;
+  border: 1px solid black;
+`;
+
+export const OrderStatus = styled.span<{
+  status: "paid" | "canceled" | "pending";
+}>`
+  margin-left: auto;
+  text-transform: uppercase;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  background: ${({ status }) =>
+    status === "paid"
+      ? css`
+          ${(props) => props.theme.colors.green.main}
+        `
+      : status === "canceled"
+      ? css`
+          ${(props) => props.theme.colors.orange.main}
+        `
+      : css`
+          ${(props) => props.theme.colors.primary[500]}
+        `};
+`;
+
+export const OrderItemBody = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
+export const OrderItemContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+
+  :not(:last-child) {
+    border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
+  }
+`;
+
+export const OrderSummary = styled.div`
+  padding-top: 1rem;
+  display: flex;
+  justify-content: space-between;
 `;

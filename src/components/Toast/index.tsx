@@ -23,8 +23,8 @@ const Toast: React.FC<PropTypes> = ({
   onClose,
 }) => {
   const variants = {
-    hidden: { opacity: 0, y: -150 },
-    visible: { opacity: 1, y: -50 },
+    hidden: { opacity: 0, y: -100 },
+    visible: { opacity: 1, y: -20 },
   };
 
   useEffect(() => {

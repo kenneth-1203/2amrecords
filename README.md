@@ -54,7 +54,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [x] Handle user actions: add to cart, checkout, save cart, etc
 - [x] Integrate Stripe payment gateway
 - [x] Setup testing environment for Firebase collections and Firebase storage
-- [ ] Create user profile page with information (delivery status, track orders, pending orders, order history)
+- [x] Create user profile page with information (delivery status, track orders, pending orders, order history)
 - [x] Create guest buy feature (no authentication)
 
 ### Priority: MEDIUM
@@ -62,12 +62,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [x] Change current product list UI (create custom slider or wrapper for the list of products)
 - [ ] Show similar products based on the categories attached to the product from product details page
 - [x] Create carousel for product lists
-- [ ] Add delivery fees for East Malaysia (RM 10) and West Malaysia (RM 15) and only charge below 3 products
+- [x] Add delivery fees for East Malaysia (RM 10) and West Malaysia (RM 15) and only charge below 3 products
 
 ### Priority: LOW
 - [ ] Handle lazy loading for images (create a skeleton/placeholder for loading images)
 - [ ] Create feedback section where users can rate products and write comments
-- [ ] Trigger an email to user upon completing a purchase
+- [x] Trigger an email to user upon completing a purchase
 - [x] Change image load behavior to increase performance
 - [ ] Add a subscribe to newsletter section in homepage
 - [x] Remove uneccessary profile image upload and display

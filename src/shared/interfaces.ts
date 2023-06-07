@@ -57,6 +57,8 @@ export interface IShippingInfo {
 export interface IOrderHistory {
   id: string;
   status: "paid" | "canceled" | "pending";
+  items: IBagItem[];
+  deliveryFees: number;
 }
 
 export interface IUserDetails extends IShippingInfo {
@@ -86,5 +88,7 @@ export interface IOrderDetails {
   id?: string;
   authenticated?: boolean;
   items?: IBagItem[];
-  customer?: IShippingInfo;
+  customer?: {
+    fullName: string;
+  };
 }

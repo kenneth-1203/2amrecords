@@ -47,7 +47,7 @@ const Select: React.FC<PropTypes> = ({
 
   const findLabelByValue = (value: OptionValue) => {
     const foundOption = options.find((option) => option.value === value);
-    return foundOption ? foundOption.label : label ?? "";
+    return foundOption ? foundOption.label : "";
   };
 
   return (
@@ -56,9 +56,9 @@ const Select: React.FC<PropTypes> = ({
       fullWidth={fullWidth}
       style={{ ...props }}
     >
-      <HiddenSelect value={value} required={required}>
-        {value && <option selected>{value}</option>}
-      </HiddenSelect>
+      {!value && (
+        <HiddenSelect defaultValue={value} required={required}></HiddenSelect>
+      )}
       <Typography variant="p" paddingBottom={".4rem"}>
         {label}
       </Typography>

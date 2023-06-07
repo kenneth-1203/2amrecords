@@ -36,6 +36,7 @@ import {
   SummaryWrapper,
   SummaryTotal,
 } from "@/styles/Bag";
+import { AnimatePresence } from "framer-motion";
 
 const Page: React.FC = () => {
   const { user, isAuthenticated } = useContext(UserContext);
@@ -88,6 +89,10 @@ const BagItemsList: React.FC<PropTypes> = ({
   isAuthenticated,
 }) => {
   const [itemList, setItemList] = useState<IBagItem[] | []>([]);
+  const variants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   useEffect(() => {
     if (userDetails.items) {
@@ -144,72 +149,82 @@ const BagItemsList: React.FC<PropTypes> = ({
             items={itemList.map((item) => {
               return {
                 label: (
-                  <ItemWrapper>
-                    <Link href={`/products/${item.id}`}>
-                      <ItemImage>
-                        <Image
-                          src={item.imageURL}
-                          style={{ objectFit: "contain" }}
-                          alt=""
-                          fill
-                          sizes="@media query (max-width: 1200px) 100px 160px"
-                          quality={25}
-                        />
-                      </ItemImage>
-                      <ItemDetails>
-                        <TextWrapper lineClamp={1}>
-                          <Typography
-                            variant="p"
-                            textTransform="uppercase"
-                            fontWeight={500}
-                          >
-                            {item.name}
-                          </Typography>
-                        </TextWrapper>
-                        <TextWrapper lineClamp={3}>
+                  <AnimatePresence>
+                    <ItemWrapper
+                      initial={"hidden"}
+                      animate={"visible"}
+                      variants={variants}
+                    >
+                      <Link href={`/products/${item.id}`}>
+                        <ItemImage>
+                          <Image
+                            src={item.imageURL}
+                            style={{ objectFit: "contain" }}
+                            alt=""
+                            fill
+                            sizes="@media query (max-width: 1200px) 100px 160px"
+                            quality={25}
+                          />
+                        </ItemImage>
+                        <ItemDetails>
+                          <TextWrapper lineClamp={1}>
+                            <Typography
+                              variant="p"
+                              textTransform="uppercase"
+                              fontWeight={500}
+                            >
+                              {item.name}
+                            </Typography>
+                          </TextWrapper>
+                          <TextWrapper lineClamp={3}>
+                            <Typography variant="p" textTransform="uppercase">
+                              {item.description}
+                            </Typography>
+                          </TextWrapper>
                           <Typography variant="p" textTransform="uppercase">
-                            {item.description}
+                            {item.variant}
                           </Typography>
-                        </TextWrapper>
-                        <Typography variant="p" textTransform="uppercase">
-                          {item.variant}
-                        </Typography>
-                        <Typography variant="p" textTransform="uppercase">
-                          {item.size}
-                        </Typography>
-                      </ItemDetails>
-                    </Link>
-                    <PriceWrapper>
-                      <Typography variant="h3">
-                        RM{" "}
-                        {item.discountedPrice
-                          ? item.discountedPrice.toFixed(2)
-                          : item.originalPrice.toFixed(2)}
-                      </Typography>
-                      {item.discountedPrice && (
-                        <DiscountPrice>
-                          <Typography
-                            variant="h3"
-                            textDecoration={"line-through"}
-                          >
-                            RM {item.originalPrice.toFixed(2)}
+                          <Typography variant="p" textTransform="uppercase">
+                            {item.size}
                           </Typography>
-                        </DiscountPrice>
-                      )}
-                      <RemoveItemButton
-                        onClick={() => handleRemoveItem(item.id)}
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                      </RemoveItemButton>
-                    </PriceWrapper>
-                  </ItemWrapper>
+                        </ItemDetails>
+                      </Link>
+                      <PriceWrapper>
+                        <Typography variant="h3">
+                          RM{" "}
+                          {item.discountedPrice
+                            ? item.discountedPrice.toFixed(2)
+                            : item.originalPrice.toFixed(2)}
+                        </Typography>
+                        {item.discountedPrice && (
+                          <DiscountPrice>
+                            <Typography
+                              variant="h3"
+                              textDecoration={"line-through"}
+                            >
+                              RM {item.originalPrice.toFixed(2)}
+                            </Typography>
+                          </DiscountPrice>
+                        )}
+                        <RemoveItemButton
+                          onClick={() => handleRemoveItem(item.id)}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </RemoveItemButton>
+                      </PriceWrapper>
+                    </ItemWrapper>
+                  </AnimatePresence>
                 ),
                 value: item.id,
               };
             })}
           />
         ) : (
-          <NoItemsWrapper>
+          <NoItemsWrapper
+            initial={"hidden"}
+            animate={"visible"}
+            variants={variants}
+          >
             <Typography variant="h3">
               There are no items in your shopping bag.
             </Typography>
@@ -267,7 +282,7 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
               </TextWrapper>
               <PriceWrapper>
                 <Typography variant="h3">
-                  + RM{" "}
+                  RM{" "}
                   {item.discountedPrice
                     ? item.discountedPrice.toFixed(2)
                     : item.originalPrice.toFixed(2)}

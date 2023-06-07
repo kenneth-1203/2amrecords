@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 export const Container = styled.section`
@@ -75,7 +76,7 @@ export const ItemListContainer = styled.div`
   }
 `;
 
-export const ItemWrapper = styled.div`
+export const ItemWrapper = styled(motion.div)`
   display: flex;
   gap: 1rem;
 
@@ -152,7 +153,7 @@ export const RemoveItemButton = styled.div`
   }
 `;
 
-export const NoItemsWrapper = styled.div`
+export const NoItemsWrapper = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;

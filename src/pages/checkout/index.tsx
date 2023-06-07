@@ -34,8 +34,8 @@ const Page: React.FC = () => {
     "checkout"
   );
   const variants = {
-    hidden: { opacity: 0, y: 20, transition: { duration: 0.5 } },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    hidden: { opacity: 0, y: 20, transition: { duration: 0.2 } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.2 } },
   };
 
   useEffect(() => {
@@ -59,26 +59,35 @@ const Page: React.FC = () => {
   }, [router, userDetails]);
 
   const handleSuccess = async (user: IUserDetails, orderId: string) => {
-    const order = await getDocument("Orders", orderId);
-    if (_.isEmpty(order)) {
-      if (isAuthenticated) {
-        await createDocument("Users", {
-          ...user,
-          items: [],
-          orderHistory: [
-            ...user.orderHistory,
-            {
-              id: orderId,
-              status: "paid",
-            },
-          ],
-        } as IUserDetails);
+    if (user?.orderHistory) {
+      const existingOrder = user.orderHistory.find(
+        (order) => order.id === orderId
+      );
+      if (!existingOrder) {
+        if (isAuthenticated) {
+          await createDocument("Users", {
+            ...user,
+            items: [],
+            orderHistory: [
+              ...user.orderHistory,
+              {
+                id: orderId,
+                status: "paid",
+                items: user.items,
+              },
+            ],
+          } as IUserDetails);
+          setOrderDetails({
+            id: orderId,
+            customer: { fullName: user.fullName },
+          });
+        } else {
+          console.log("Removing local storage items...");
+          localStorage.removeItem("items");
+          window.dispatchEvent(new Event("storage"));
+        }
       }
-      localStorage.removeItem("items");
-      window.dispatchEvent(new Event("storage"));
-      setOrderDetails(order as IOrderDetails);
     } else {
-      // @ts-ignore
       setOrderDetails({ id: orderId, customer: { fullName: "User" } });
     }
     setPage("success");
@@ -95,11 +104,12 @@ const Page: React.FC = () => {
           {
             id: orderId,
             status: "canceled",
+            items: user.items,
           },
         ],
       } as IUserDetails);
     }
-    setOrderDetails({ id: orderId });
+    setOrderDetails({ id: orderId, customer: { fullName: "User" } });
     setPage("canceled");
   };
 
@@ -181,7 +191,7 @@ const Page: React.FC = () => {
   };
 
   return (
-    <Container>
+    <Container initial={"hidden"} animate={"visible"} variants={variants}>
       {page === "checkout" && userDetails ? (
         <ShippingForm onSubmit={handleSubmit}>
           <Typography variant="h3" fontWeight={500} paddingBottom={"1rem"}>
@@ -362,13 +372,15 @@ const Page: React.FC = () => {
                 </Typography>
               </Button>
             </Link>
-            <Link href={"/profile?section=orders"}>
-              <Button variant="contained" disabled={!isAuthenticated}>
-                <Typography variant="p" textTransform="uppercase">
-                  View Order
-                </Typography>
-              </Button>
-            </Link>
+            {isAuthenticated && (
+              <Link href={"/profile?section=orders"}>
+                <Button variant="contained">
+                  <Typography variant="p" textTransform="uppercase">
+                    View Order
+                  </Typography>
+                </Button>
+              </Link>
+            )}
           </Wrapper>
         </StatusContainer>
       ) : page === "canceled" ? (
@@ -378,12 +390,15 @@ const Page: React.FC = () => {
           variants={variants}
         >
           <AnimatedCross />
+          <Typography variant="h2" fontWeight={500}>
+            Dear {orderDetails?.customer?.fullName},
+          </Typography>
           <Typography variant="h3" fontWeight={500}>
-            Payment was unsuccessful!
+            Your payment was unsuccessful!
           </Typography>
           <Typography variant="p">
-            Sorry for any inconvenience caused. If this is a mistake, kindly
-            contact our support team or send us an email.
+            If this is a mistake, kindly contact our support team or send us an
+            email. Sorry for any inconvenience caused.
           </Typography>
           <Typography variant="h3" fontWeight={500}>
             ORDER ID: {orderDetails?.id}
@@ -396,11 +411,13 @@ const Page: React.FC = () => {
                 </Typography>
               </Button>
             </Link>
-            <Button variant="contained">
-              <Typography variant="p" textTransform="uppercase">
-                Contact Us
-              </Typography>
-            </Button>
+            <Link href={"mailto:2amrecordsglobal@gmail.com"}>
+              <Button variant="contained">
+                <Typography variant="p" textTransform="uppercase">
+                  Contact Us
+                </Typography>
+              </Button>
+            </Link>
           </Wrapper>
         </StatusContainer>
       ) : null}
@@ -421,7 +438,7 @@ const AnimatedCheckArrow = () => {
         cy="24"
         r="22"
         fill="transparent"
-        stroke="green"
+        stroke="rgb(40, 224, 111)"
         strokeWidth="3"
         initial={{ scale: 0 }}
         animate={{ scale: [0, 0.9, 1, 0.9] }}
@@ -429,7 +446,7 @@ const AnimatedCheckArrow = () => {
       />
       <motion.path
         d="M16 24l6 6 14-14"
-        stroke="green"
+        stroke="rgb(40, 224, 111)"
         strokeWidth="3"
         fill="transparent"
         initial={{ pathLength: 0 }}
@@ -453,7 +470,7 @@ const AnimatedCross = () => {
         cy="24"
         r="22"
         fill="transparent"
-        stroke="red"
+        stroke="rgb(221,83,83)"
         strokeWidth="3"
         initial={{ scale: 0 }}
         animate={{ scale: [0, 0.9, 1, 0.9] }}
@@ -461,7 +478,7 @@ const AnimatedCross = () => {
       />
       <motion.path
         d="M16 16l16 16M32 16L16 32"
-        stroke="red"
+        stroke="rgb(221,83,83)"
         strokeWidth="3"
         fill="transparent"
         initial={{ pathLength: 0 }}

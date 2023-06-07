@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import _ from "lodash";
+import { motion } from "framer-motion";
 import { UserContext } from "@/lib/context";
 import { createDocument } from "@/api/index";
 import Button from "@/components/Button";
@@ -20,7 +21,17 @@ import {
   ShippingInformationWrapper,
   Wrapper,
   ButtonsWrapper,
+  ProfileOrdersInfo,
+  OrdersList,
+  OrderItem,
+  OrderItemHeader,
+  OrderStatus,
+  OrderItemBody,
+  OrderItemContent,
+  OrderSummary,
 } from "@/styles/Profile";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 type ProfileSections = "profile" | "orders" | "settings";
 
@@ -29,7 +40,6 @@ const Page: React.FC = () => {
   const { user, isAuthenticated } = useContext(UserContext);
   const { section } = router.query;
   const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [currentSection, setCurrentSection] =
     useState<ProfileSections>("profile");
 
@@ -42,22 +52,8 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated) {
       setUserDetails(user as IUserDetails);
-    } else {
-      router.replace("/");
     }
   }, [isAuthenticated, router, user]);
-
-  const getGreeting = () => {
-    const currentHour = new Date().getHours();
-
-    if (currentHour >= 5 && currentHour < 12) {
-      return "Good morning";
-    } else if (currentHour >= 12 && currentHour < 18) {
-      return "Good afternoon";
-    } else {
-      return "Good evening";
-    }
-  };
 
   return (
     <>
@@ -108,7 +104,9 @@ const Page: React.FC = () => {
               {currentSection === "profile" && (
                 <ProfileDetails userDetails={userDetails} />
               )}
-              {currentSection === "orders" && <ProfileOrders />}
+              {currentSection === "orders" && (
+                <ProfileOrders userDetails={userDetails} />
+              )}
               {currentSection === "settings" && <ProfileSettings />}
             </Container>
           </>
@@ -118,11 +116,11 @@ const Page: React.FC = () => {
   );
 };
 
-interface IProfileDetails {
+interface PropsWithUserDetails {
   userDetails: IUserDetails;
 }
 
-const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
+const ProfileDetails: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [details, setDetails] = useState<IUserDetails>(userDetails);
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -274,12 +272,94 @@ const ProfileDetails: React.FC<IProfileDetails> = ({ userDetails }) => {
   );
 };
 
-const ProfileOrders: React.FC = () => {
+const ProfileOrders: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
+  const [expandedIndex, setExpandedIndex] = useState<number>(-1);
+
+  const getTotalAmount = (index: number) => {
+    let amount = 0;
+    userDetails.orderHistory[index].items.map(
+      (item) => (amount += Number(item.discountedPrice ?? item.originalPrice))
+    );
+    return amount.toFixed(2);
+  };
+
+  const handleExpand = (index: number) => {
+    if (expandedIndex === index) {
+      setExpandedIndex(-1);
+    } else {
+      setExpandedIndex(index);
+    }
+  };
+
   return (
-    <ProfileInfo>
+    <ProfileOrdersInfo>
       {/* TODO: Populate orders */}
-      <h1>Orders</h1>
-    </ProfileInfo>
+      <Typography variant="h3" fontWeight={500}>
+        Orders
+      </Typography>
+      <OrdersList>
+        {userDetails.orderHistory?.map((order, i) => (
+          <OrderItem key={i}>
+            <OrderItemHeader onClick={() => handleExpand(i)}>
+              <motion.span
+                animate={
+                  expandedIndex === i ? { rotateZ: 180 } : { rotateZ: 0 }
+                }
+              >
+                <FontAwesomeIcon icon={faChevronDown} />
+              </motion.span>
+              <Typography
+                variant="h3"
+                fontWeight={500}
+                whiteSpace={"nowrap"}
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}
+              >
+                {order.id}
+              </Typography>
+              <OrderStatus status={order.status}>
+                <Typography variant="p" fontWeight={500}>
+                  {order.status}
+                </Typography>
+              </OrderStatus>
+            </OrderItemHeader>
+            <OrderItemBody
+              animate={expandedIndex === i ? { height: "auto" } : { height: 0 }}
+            >
+              {order.items.map((item, i) => (
+                <OrderItemContent key={i}>
+                  <Typography variant="p" textTransform="uppercase">
+                    {item.name}
+                  </Typography>
+                  <Typography variant="p">
+                    RM{" "}
+                    {item.discountedPrice
+                      ? item.discountedPrice.toFixed(2)
+                      : item.originalPrice.toFixed(2)}
+                  </Typography>
+                </OrderItemContent>
+              ))}
+              <OrderSummary>
+                <Typography
+                  variant="p"
+                  textTransform="uppercase"
+                  fontWeight={500}
+                >
+                  TOTAL
+                </Typography>
+                <Typography
+                  variant="p"
+                  textTransform="uppercase"
+                  fontWeight={500}
+                >
+                  RM {getTotalAmount(i)}
+                </Typography>
+              </OrderSummary>
+            </OrderItemBody>
+          </OrderItem>
+        ))}
+      </OrdersList>
+    </ProfileOrdersInfo>
   );
 };
 

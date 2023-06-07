@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-export const Container = styled.section`
+export const Container = styled(motion.section)`
   margin: 2rem 2rem 18rem 2rem;
 `;
 
