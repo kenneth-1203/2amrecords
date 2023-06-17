@@ -108,6 +108,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
     setShowSizeChart(!showSizeChart);
   };
 
+  // TODO: Create UI for loading skeleton
   if (!productDetails) return <h1>Loading...</h1>;
 
   return (

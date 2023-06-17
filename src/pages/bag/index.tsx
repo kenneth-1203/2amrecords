@@ -54,6 +54,7 @@ const Page: React.FC = () => {
     }
   }, [userDocument, user]);
 
+  // TODO: Create UI for loading skeleton
   if (!userDetails) return <h1>Loading...</h1>;
 
   return (
