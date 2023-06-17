@@ -6,6 +6,7 @@ import {
   addDoc,
   updateDoc,
   doc,
+  deleteDoc,
 } from "firebase/firestore";
 import {
   ref,
@@ -22,9 +23,7 @@ import {
 import { firestore, auth, storage } from "@/lib/firebase";
 import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
 import { removeFileExtension } from "@/shared/utils";
-
-export const prefix =
-  process.env.NEXT_PUBLIC_ENVIRONMENT === "production" ? "prod-" : "dev-";
+import { prefix } from "./config";
 
 export const getDocuments = async (collectionName: string) => {
   try {
@@ -78,6 +77,10 @@ export const checkDocumentExists = async (
 
 export const createDocument = async (collectionName: string, docData: any) => {
   try {
+    const collectionRef = collection(firestore, prefix + collectionName);
+    const docRef = doc(collectionRef);
+    const autoId = docRef.id;
+
     let response;
     if (docData.id) {
       response = await setDoc(
@@ -85,13 +88,29 @@ export const createDocument = async (collectionName: string, docData: any) => {
         docData
       );
     } else {
-      response = await addDoc(
-        collection(firestore, prefix + collectionName),
+      docData = { id: autoId, ...docData };
+      response = await setDoc(
+        doc(firestore, prefix + collectionName, autoId),
         docData
       );
     }
-    const results = response;
-    return results;
+
+    return docData.id;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const deleteDocument = async (
+  collectionName: string,
+  documentId: string
+) => {
+  try {
+    const docRef = doc(firestore, prefix + collectionName, documentId);
+
+    await deleteDoc(docRef);
+
+    return "Document deleted successfully";
   } catch (error) {
     return error;
   }
@@ -193,7 +212,7 @@ export const signUp = async ({
         photoURL: "",
         provider: "",
         orderHistory: [],
-        items: [], // TODO: Add existing items from guest
+        items: [],
         lastSignedIn: new Date(),
         createdAt: new Date(),
       });

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 const MAIN_IMAGE_WIDTH = "35rem";
@@ -58,19 +59,27 @@ export const ProductImageDisplay = styled.div`
   }
 
   ${(props) => props.theme.sizes.tabPort} {
-    height: calc((${MAIN_IMAGE_HEIGHT} - ${GAP_SIZE}) / 1.2);
+    height: ${MAIN_IMAGE_HEIGHT};
   }
 
   ${(props) => props.theme.sizes.mobile} {
     flex-direction: column;
     width: 100%;
-    height: calc(${MAIN_IMAGE_HEIGHT} / 1.2);
+    height: calc(${MAIN_IMAGE_HEIGHT});
     align-items: center;
   }
 `;
 
-export const MainImage = styled.div`
-  overflow: hidden;
+export const MainImage = styled(motion.div)`
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+
+  ::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
 `;
 
 export const ImageList = styled.div`
@@ -88,35 +97,35 @@ export const ImageList = styled.div`
   }
 `;
 
-export const ProductImage = styled.div`
+export const ProductImage = styled(motion.div)`
   position: relative;
-  display: inline-flex;
-  width: ${MAIN_IMAGE_WIDTH};
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  min-width: ${MAIN_IMAGE_WIDTH};
   height: ${MAIN_IMAGE_HEIGHT};
   & > img {
     object-fit: cover;
   }
 
   ${(props) => props.theme.sizes.tabLand} {
-    width: calc(${MAIN_IMAGE_WIDTH} / 1.2);
+    min-width: calc(${MAIN_IMAGE_WIDTH} / 1.2);
     height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
   }
 
   ${(props) => props.theme.sizes.tabPort} {
-    height: calc(${MAIN_IMAGE_HEIGHT} / 1.25);
+    height: ${MAIN_IMAGE_HEIGHT};
   }
 
   ${(props) => props.theme.sizes.mobile} {
-    width: 25rem;
-    height: 35rem;
+    min-width: 18vw;
+    height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
   }
 `;
 
-export const ProductImageSmall = styled.div<{ selected: boolean }>`
+export const ProductImageSmall = styled(motion.div)`
   position: relative;
   width: ${SMALL_IMAGE_WIDTH};
   height: ${SMALL_IMAGE_HEIGHT};
-  ${({ selected }) => selected && `box-shadow: 0 0 0 2px`};
 
   & > img {
     object-fit: cover;
@@ -187,7 +196,7 @@ export const ViewSizeChart = styled.div`
     color: ${(props) => props.theme.colors.primary[100]};
   }
 
-  ${props => props.theme.sizes.mobile} {
+  ${(props) => props.theme.sizes.mobile} {
     width: 100%;
   }
 `;

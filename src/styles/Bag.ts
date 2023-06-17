@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 export const Container = styled.section`
@@ -75,7 +76,7 @@ export const ItemListContainer = styled.div`
   }
 `;
 
-export const ItemWrapper = styled.div`
+export const ItemWrapper = styled(motion.div)`
   display: flex;
   gap: 1rem;
 
@@ -147,12 +148,12 @@ export const RemoveItemButton = styled.div`
     transition: 0.3s;
 
     &:hover {
-      color: ${(props) => props.theme.colors.red.main};
+      color: ${(props) => props.theme.colors.primary[400]};
     }
   }
 `;
 
-export const NoItemsWrapper = styled.div`
+export const NoItemsWrapper = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -227,12 +228,12 @@ export const SummaryItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid ${(props) => props.theme.colors.primary[100]};
+  border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
   padding: 0.4rem 0;
 
-  &:last-child {
-    border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
-  }
+  // &:last-child {
+  //   border-bottom: 1px solid ${(props) => props.theme.colors.primary[100]};
+  // }
 `;
 
 export const SummaryTotal = styled.div`
@@ -243,7 +244,7 @@ export const SummaryTotal = styled.div`
 export const SummaryWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: .8rem;
   justify-content: end;
 `;
 
@@ -255,16 +256,4 @@ export const ButtonsWrapper = styled.div`
     flex-direction: column;
     gap: 0.8rem;
   }
-`;
-
-export const ShippingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: .4rem;
-`;
-
-export const InputWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 1rem;
 `;

@@ -16,7 +16,7 @@
 /build
 
 # in development
-/src/pages/api
+# /src/pages/api
 
 # misc
 .DS_Store

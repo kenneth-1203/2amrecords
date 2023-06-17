@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export type Size = "S" | "M" | "L" | "XL";
 
 export type Stock = {
@@ -54,24 +56,34 @@ export interface IShippingInfo {
   postcode: string;
 }
 
+export interface IOrderHistory {
+  id: string;
+  status: "paid" | "canceled" | "pending";
+  items: IBagItem[];
+  date: Timestamp,
+}
+
 export interface IUserDetails extends IShippingInfo {
   id: string;
   fullName: string;
   email: string;
   photoURL: string;
   items: IBagItem[];
+  orderHistory: IOrderHistory[];
   provider: "google" | null;
   lastSignedIn: Date;
   createdAt: Date;
 }
 
-export interface IBagItem {
-  id: string;
-  name: string;
-  variant: string;
-  description: string;
-  originalPrice: number;
-  discountedPrice: number | null;
+export interface IBagItem extends IProductData {
   size: string;
-  imageURL: string;
+}
+
+export interface IOrderDetails {
+  id?: string;
+  authenticated?: boolean;
+  items?: IBagItem[];
+  customer?: {
+    fullName: string;
+  };
 }

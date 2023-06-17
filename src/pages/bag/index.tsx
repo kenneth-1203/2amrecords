@@ -35,9 +35,8 @@ import {
   SummaryItem,
   SummaryWrapper,
   SummaryTotal,
-  ShippingContainer,
-  InputWrapper,
 } from "@/styles/Bag";
+import { AnimatePresence } from "framer-motion";
 
 const Page: React.FC = () => {
   const { user, isAuthenticated } = useContext(UserContext);
@@ -90,6 +89,10 @@ const BagItemsList: React.FC<PropTypes> = ({
   isAuthenticated,
 }) => {
   const [itemList, setItemList] = useState<IBagItem[] | []>([]);
+  const variants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   useEffect(() => {
     if (userDetails.items) {
@@ -146,72 +149,82 @@ const BagItemsList: React.FC<PropTypes> = ({
             items={itemList.map((item) => {
               return {
                 label: (
-                  <ItemWrapper>
-                    <Link href={`/products/${item.id}`}>
-                      <ItemImage>
-                        <Image
-                          src={item.imageURL}
-                          style={{ objectFit: "contain" }}
-                          alt=""
-                          fill
-                          sizes="@media query (max-width: 1200px) 100px 160px"
-                          quality={25}
-                        />
-                      </ItemImage>
-                      <ItemDetails>
-                        <TextWrapper lineClamp={1}>
-                          <Typography
-                            variant="p"
-                            textTransform="uppercase"
-                            fontWeight={500}
-                          >
-                            {item.name}
-                          </Typography>
-                        </TextWrapper>
-                        <TextWrapper lineClamp={3}>
+                  <AnimatePresence>
+                    <ItemWrapper
+                      initial={"hidden"}
+                      animate={"visible"}
+                      variants={variants}
+                    >
+                      <Link href={`/products/${item.id}`}>
+                        <ItemImage>
+                          <Image
+                            src={item.imageURL}
+                            style={{ objectFit: "contain" }}
+                            alt=""
+                            fill
+                            sizes="@media query (max-width: 1200px) 100px 160px"
+                            quality={25}
+                          />
+                        </ItemImage>
+                        <ItemDetails>
+                          <TextWrapper lineClamp={1}>
+                            <Typography
+                              variant="p"
+                              textTransform="uppercase"
+                              fontWeight={500}
+                            >
+                              {item.name}
+                            </Typography>
+                          </TextWrapper>
+                          <TextWrapper lineClamp={3}>
+                            <Typography variant="p" textTransform="uppercase">
+                              {item.description}
+                            </Typography>
+                          </TextWrapper>
                           <Typography variant="p" textTransform="uppercase">
-                            {item.description}
+                            {item.variant}
                           </Typography>
-                        </TextWrapper>
-                        <Typography variant="p" textTransform="uppercase">
-                          {item.variant}
-                        </Typography>
-                        <Typography variant="p" textTransform="uppercase">
-                          {item.size}
-                        </Typography>
-                      </ItemDetails>
-                    </Link>
-                    <PriceWrapper>
-                      <Typography variant="h3">
-                        RM{" "}
-                        {item.discountedPrice
-                          ? item.discountedPrice.toFixed(2)
-                          : item.originalPrice.toFixed(2)}
-                      </Typography>
-                      {item.discountedPrice && (
-                        <DiscountPrice>
-                          <Typography
-                            variant="h3"
-                            textDecoration={"line-through"}
-                          >
-                            RM {item.originalPrice.toFixed(2)}
+                          <Typography variant="p" textTransform="uppercase">
+                            {item.size}
                           </Typography>
-                        </DiscountPrice>
-                      )}
-                      <RemoveItemButton
-                        onClick={() => handleRemoveItem(item.id)}
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                      </RemoveItemButton>
-                    </PriceWrapper>
-                  </ItemWrapper>
+                        </ItemDetails>
+                      </Link>
+                      <PriceWrapper>
+                        <Typography variant="h3">
+                          RM{" "}
+                          {item.discountedPrice
+                            ? item.discountedPrice.toFixed(2)
+                            : item.originalPrice.toFixed(2)}
+                        </Typography>
+                        {item.discountedPrice && (
+                          <DiscountPrice>
+                            <Typography
+                              variant="h3"
+                              textDecoration={"line-through"}
+                            >
+                              RM {item.originalPrice.toFixed(2)}
+                            </Typography>
+                          </DiscountPrice>
+                        )}
+                        <RemoveItemButton
+                          onClick={() => handleRemoveItem(item.id)}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </RemoveItemButton>
+                      </PriceWrapper>
+                    </ItemWrapper>
+                  </AnimatePresence>
                 ),
                 value: item.id,
               };
             })}
           />
         ) : (
-          <NoItemsWrapper>
+          <NoItemsWrapper
+            initial={"hidden"}
+            animate={"visible"}
+            variants={variants}
+          >
             <Typography variant="h3">
               There are no items in your shopping bag.
             </Typography>
@@ -234,16 +247,6 @@ const BagItemsList: React.FC<PropTypes> = ({
 
 const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
   const router = useRouter();
-  const [shippingData, setShippingData] = useState<IShippingInfo>({
-    fullName: userDetails?.fullName,
-    email: userDetails?.email,
-    phoneNumber: userDetails?.phoneNumber,
-    country: userDetails?.country ?? "Malaysia",
-    addressLine1: userDetails?.addressLine1,
-    addressLine2: userDetails?.addressLine2,
-    state: userDetails?.state,
-    postcode: userDetails?.postcode,
-  });
 
   const getTotalAmount = () => {
     let totalAmount = 0;
@@ -258,13 +261,17 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
     router.replace("/");
   };
 
+  const handleProceedToCheckout = async () => {
+    router.replace("/checkout");
+  };
+
   return (
     <CheckoutContainer>
       <SummaryContainer>
-        <ShippingDetails
+        {/* <ShippingDetails
           shippingData={shippingData}
           setShippingData={setShippingData}
-        />
+        /> */}
         <SummaryItemList>
           {userDetails.items.map((item: IBagItem, i: number) => (
             <SummaryItem key={i}>
@@ -300,6 +307,9 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
               RM {getTotalAmount()}
             </Typography>
           </SummaryTotal>
+          <Typography variant="small">
+            Get FREE delivery with purchase up to 3 items during checkout.
+          </Typography>
           <ButtonsWrapper>
             <Button
               variant="outlined"
@@ -314,6 +324,7 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
               variant="contained"
               endIcon={<FontAwesomeIcon icon={faChevronRight} />}
               fullWidth
+              onClick={handleProceedToCheckout}
             >
               <Typography
                 variant="p"
@@ -327,102 +338,6 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
         </SummaryWrapper>
       </SummaryContainer>
     </CheckoutContainer>
-  );
-};
-
-interface ShippingDetailsProps {
-  shippingData: IShippingInfo;
-  setShippingData: (data: IShippingInfo) => void;
-}
-
-const ShippingDetails: React.FC<ShippingDetailsProps> = ({
-  shippingData,
-  setShippingData,
-}) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setShippingData({ ...shippingData, [e.target.id]: e.target.value });
-  };
-
-  return (
-    <ShippingContainer>
-      <Typography variant="h3" fontWeight={500} paddingBottom={"1rem"}>
-        Delivery information
-      </Typography>
-      <InputField
-        id="fullName"
-        type="text"
-        label="Full name"
-        value={shippingData.fullName}
-        onChange={handleChange}
-        fullWidth
-      />
-      <InputField
-        type="email"
-        label="Email"
-        value={shippingData.email}
-        onChange={handleChange}
-        fullWidth
-      />
-      <InputWrapper>
-        <InputField
-          id="phoneNumber"
-          type="number"
-          label="Phone number"
-          value={shippingData.phoneNumber}
-          onChange={handleChange}
-          fullWidth
-          placeholder="e.g: 0123456789"
-        />
-        <InputField
-          id="country"
-          type="text"
-          label="Country"
-          value={shippingData.country}
-          onChange={handleChange}
-          fullWidth
-          disabled={true}
-          placeholder="e.g: Malaysia"
-        />
-      </InputWrapper>
-      <InputField
-        id="addressLine1"
-        type="text"
-        label="Address (Line 1)"
-        value={shippingData.addressLine1}
-        onChange={handleChange}
-        fullWidth
-        placeholder="e.g: 69 Jalan 1, 50088 Kuala Lumpur, Malaysia"
-      />
-      <InputField
-        id="addressLine2"
-        type="text"
-        label="Address (Line 2)"
-        value={shippingData.addressLine2}
-        onChange={handleChange}
-        fullWidth
-        placeholder="Optional"
-      />
-      <InputWrapper>
-        <InputField
-          id="state"
-          type="text"
-          label="State"
-          value={shippingData.state}
-          onChange={handleChange}
-          fullWidth
-          placeholder="e.g: Kuala Lumpur"
-        />
-        <InputField
-          id="postcode"
-          type="number"
-          label="Postcode"
-          value={shippingData.postcode}
-          onChange={handleChange}
-          fullWidth
-          placeholder="e.g: 50088"
-        />
-      </InputWrapper>
-    </ShippingContainer>
   );
 };
 

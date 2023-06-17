@@ -53,7 +53,7 @@ const ProductCard: React.FC<IProductData> = (props) => {
 
   return (
     <CardContainer
-      whileTap={{ scale: 0.96, boxShadow: "0 2px 4px -2px rgba(0,0,0,.4)" }}
+      whileTap={{ scale: 0.98, boxShadow: "0 0px 4px -2px rgba(0,0,0,.4)" }}
     >
       <Link
         href={`/products/${id}`}

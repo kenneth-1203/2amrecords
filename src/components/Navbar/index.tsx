@@ -50,10 +50,15 @@ import {
 const Navbar: React.FC = () => {
   const { user, isAuthenticated } = useContext<any>(UserContext);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const variants = {
+  const [count, setCount] = useState<number>(0);
+  const sidebarVariants = {
     visible: { opacity: 1 },
     hidden: { opacity: 0 },
   };
+
+  useEffect(() => {
+    setCount(user.items?.length);
+  }, [user]);
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
@@ -86,35 +91,34 @@ const Navbar: React.FC = () => {
               </Link>
             </NavbarTitleWrapper>
             <SidebarWrapper>
-              <AnimatePresence>
-                <Link href={"/bag"}>
-                  <SidebarButton
-                    initial={"hidden"}
-                    animate={"visible"}
-                    exit={"hidden"}
-                    variants={variants}
-                  >
+              <Link href={"/bag"}>
+                <SidebarButton
+                  initial={"hidden"}
+                  animate={"visible"}
+                  exit={"hidden"}
+                  variants={sidebarVariants}
+                >
+                  {!_.isEmpty(user.items) && (
                     <ItemCounter
-                      animate={_.isEmpty(user.items) ? "hidden" : "visible"}
-                      variants={variants}
+                      animate={
+                        count === user.items?.length
+                          ? { y: [0, -10, 0] }
+                          : { y: 0 }
+                      }
+                      transition={{ duration: .15 }}
                     >
                       {user.items?.length}
                     </ItemCounter>
-                    <motion.span
-                      animate={
-                        _.isEmpty(user.items)
-                          ? { opacity: 0.1 }
-                          : { opacity: 1 }
-                      }
-                    >
-                      <FontAwesomeIcon
-                        icon={faBagShopping}
-                        fontSize={"1.2rem"}
-                      />
-                    </motion.span>
-                  </SidebarButton>
-                </Link>
-              </AnimatePresence>
+                  )}
+                  <motion.span
+                    animate={
+                      _.isEmpty(user.items) ? { opacity: 0.1 } : { opacity: 1 }
+                    }
+                  >
+                    <FontAwesomeIcon icon={faBagShopping} fontSize={"1.2rem"} />
+                  </motion.span>
+                </SidebarButton>
+              </Link>
               <SidebarButton onClick={toggleDrawer}>
                 <FontAwesomeIcon icon={faBars} fontSize={"1.2rem"} />
               </SidebarButton>
@@ -173,11 +177,13 @@ const Drawer: React.FC<PropTypes> = ({
               addressLine2: "",
               state: "",
               postcode: "",
-              items: [], // TODO: Add existing items from guest
+              items: [],
               orderHistory: [],
             });
           }
           // TODO: Add a welcome modal/toast
+          localStorage.removeItem("items");
+          window.dispatchEvent(new Event("storage"));
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -301,6 +307,8 @@ const LoginForm: React.FC<{
     const { results, error } = await signIn(formData);
     if (results) {
       // TODO: Add a welcome modal/toast
+      localStorage.removeItem("items");
+      window.dispatchEvent(new Event("storage"));
     }
     if (error) {
       setError(error);
@@ -386,6 +394,8 @@ const SignUpForm: React.FC<{
       // automatically sign user in
       await signIn({ email: formData.email, password: formData.password });
       // TODO: Add a welcome modal/toast
+      localStorage.removeItem("items");
+      window.dispatchEvent(new Event("storage"));
     }
     if (error) {
       setError(error);
