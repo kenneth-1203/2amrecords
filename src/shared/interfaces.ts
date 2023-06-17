@@ -60,7 +60,7 @@ export interface IOrderHistory {
   id: string;
   status: "paid" | "canceled" | "pending";
   items: IBagItem[];
-  date: Timestamp,
+  date: Timestamp;
 }
 
 export interface IUserDetails extends IShippingInfo {
@@ -75,8 +75,15 @@ export interface IUserDetails extends IShippingInfo {
   createdAt: Date;
 }
 
-export interface IBagItem extends IProductData {
+export interface IBagItem {
+  id: string;
+  name: string;
+  variant: string;
+  description: string;
+  originalPrice: number;
+  discountedPrice: number | null;
   size: string;
+  imageURL: string;
 }
 
 export interface IOrderDetails {
