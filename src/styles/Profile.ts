@@ -96,6 +96,7 @@ export const OrderItemHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  cursor: pointer;
 `;
 
 export const OrderItem = styled.div`
@@ -103,31 +104,11 @@ export const OrderItem = styled.div`
   border: 1px solid black;
 `;
 
-export const OrderStatus = styled.span<{
-  status: "paid" | "canceled" | "pending";
-}>`
-  margin-left: auto;
-  text-transform: uppercase;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  background: ${({ status }) =>
-    status === "paid"
-      ? css`
-          ${(props) => props.theme.colors.green.main}
-        `
-      : status === "canceled"
-      ? css`
-          ${(props) => props.theme.colors.orange.main}
-        `
-      : css`
-          ${(props) => props.theme.colors.primary[500]}
-        `};
-`;
-
 export const OrderItemBody = styled(motion.div)`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  height: 0;
 `;
 
 export const OrderItemContent = styled.div`

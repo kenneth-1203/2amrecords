@@ -298,13 +298,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
 
   const handleAddToBag = async () => {
     const newItem = {
-      id: productDetails.id,
-      name: productDetails.name,
-      variant: productDetails.variant,
-      category: productDetails.category,
-      description: productDetails.description,
-      originalPrice: productDetails.originalPrice,
-      discountedPrice: productDetails.discountedPrice,
+      ...productDetails,
       size: getSizeValue(selectedSize),
     };
     if (isAuthenticated) {
@@ -318,21 +312,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         ...user,
         items: newItems,
       });
-      // Update products stock state
-      // const stock = productDetails.stock;
-      // const totalQuantity = productDetails.totalQuantity;
-      // const newStock = stock.map((item: Stock) => {
-      //   if (item.size === getSizeValue(selectedSize)) {
-      //     return { ...item, quantity: item.quantity - 1 };
-      //   }
-      //   return item;
-      // });
-      // const newTotalQuantity = totalQuantity - 1;
-      // await createDocument("Products", {
-      //   ...productDetails,
-      //   stock: newStock,
-      //   totalQuantity: newTotalQuantity,
-      // });
     } else {
       const guestItems = localStorage.getItem("items");
       if (guestItems) {

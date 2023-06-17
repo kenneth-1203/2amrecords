@@ -118,7 +118,7 @@ export const ProductImage = styled(motion.div)`
 
   ${(props) => props.theme.sizes.mobile} {
     min-width: 18vw;
-    height: ${MAIN_IMAGE_HEIGHT};
+    height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
   }
 `;
 

@@ -3,6 +3,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import _ from "lodash";
 import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { UserContext } from "@/lib/context";
 import { createDocument } from "@/api/index";
 import Button from "@/components/Button";
@@ -25,13 +27,11 @@ import {
   OrdersList,
   OrderItem,
   OrderItemHeader,
-  OrderStatus,
   OrderItemBody,
   OrderItemContent,
   OrderSummary,
 } from "@/styles/Profile";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { formatDate } from "@/shared/utils";
 
 type ProfileSections = "profile" | "orders" | "settings";
 
@@ -55,6 +55,10 @@ const Page: React.FC = () => {
     }
   }, [isAuthenticated, router, user]);
 
+  const handleSelectSection = (section: ProfileSections) => {
+    setCurrentSection(section);
+  };
+
   return (
     <>
       <Head>
@@ -70,7 +74,7 @@ const Page: React.FC = () => {
               <ProfileSelection>
                 <ProfileOptionsWrapper>
                   <Button
-                    onClick={() => setCurrentSection("profile")}
+                    onClick={() => handleSelectSection("profile")}
                     selected={currentSection === "profile"}
                     fullWidth
                     style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
@@ -80,7 +84,7 @@ const Page: React.FC = () => {
                     </Typography>
                   </Button>
                   <Button
-                    onClick={() => setCurrentSection("orders")}
+                    onClick={() => handleSelectSection("orders")}
                     selected={currentSection === "orders"}
                     fullWidth
                     style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
@@ -90,7 +94,7 @@ const Page: React.FC = () => {
                     </Typography>
                   </Button>
                   <Button
-                    onClick={() => setCurrentSection("settings")}
+                    onClick={() => handleSelectSection("settings")}
                     selected={currentSection === "settings"}
                     fullWidth
                     style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
@@ -317,15 +321,20 @@ const ProfileOrders: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
               >
                 {order.id}
               </Typography>
-              <OrderStatus status={order.status}>
-                <Typography variant="p" fontWeight={500}>
-                  {order.status}
-                </Typography>
-              </OrderStatus>
             </OrderItemHeader>
             <OrderItemBody
               animate={expandedIndex === i ? { height: "auto" } : { height: 0 }}
             >
+              <Typography
+                variant="p"
+                textTransform="uppercase"
+                paddingTop={"1rem"}
+              >
+                status: {order.status}
+              </Typography>
+              <Typography variant="p" textTransform="uppercase">
+                date placed: {formatDate(order.date)}
+              </Typography>
               {order.items.map((item, i) => (
                 <OrderItemContent key={i}>
                   <Typography variant="p" textTransform="uppercase">

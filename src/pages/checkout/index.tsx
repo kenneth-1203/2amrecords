@@ -3,7 +3,12 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import _ from "lodash";
 import { motion } from "framer-motion";
-import { IBagItem, IOrderDetails, IUserDetails } from "@/shared/interfaces";
+import {
+  IBagItem,
+  IOrderDetails,
+  IUserDetails,
+  Stock,
+} from "@/shared/interfaces";
 import InputField from "@/components/InputField";
 import Typography from "@/components/Typography";
 import { UserContext } from "@/lib/context";
@@ -12,7 +17,7 @@ import Button from "@/components/Button";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { malaysiaStates } from "@/data/countries";
-import { createDocument, deleteDocument, getDocument } from "@/api/index";
+import { createDocument, deleteDocument } from "@/api/index";
 import {
   Container,
   ShippingForm,
@@ -58,6 +63,8 @@ const Page: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, userDetails]);
 
+  if (_.isEmpty(userDetails?.items)) return null;
+
   const handleSuccess = async (user: IUserDetails, orderId: string) => {
     if (user?.orderHistory) {
       const existingOrder = user.orderHistory.find(
@@ -74,6 +81,7 @@ const Page: React.FC = () => {
                 id: orderId,
                 status: "paid",
                 items: user.items,
+                date: new Date(),
               },
             ],
           } as IUserDetails);
@@ -89,6 +97,8 @@ const Page: React.FC = () => {
       window.dispatchEvent(new Event("storage"));
       setOrderDetails({ id: orderId, customer: { fullName: "User" } });
     }
+    // Update products stock state
+    // handleUpdateProductStock(user);
     setPage("success");
   };
 
@@ -104,6 +114,7 @@ const Page: React.FC = () => {
             id: orderId,
             status: "canceled",
             items: user.items,
+            date: new Date(),
           },
         ],
       } as IUserDetails);
@@ -111,6 +122,22 @@ const Page: React.FC = () => {
     setOrderDetails({ id: orderId, customer: { fullName: "User" } });
     setPage("canceled");
   };
+
+  // const handleUpdateProductStock = (user: IUserDetails) => {
+  //   user?.items.map(async (item) => {
+  //     const { stock, totalQuantity, size } = item;
+  //     const quantity = user?.items.filter((i) => i.size === size).length;
+  //     const newStock = stock.map((stockItem: Stock) => {
+  //       return { ...stockItem, quantity: stockItem.quantity - quantity };
+  //     });
+  //     const newTotalQuantity = totalQuantity - quantity;
+  //     await createDocument("Products", {
+  //       ...item,
+  //       stock: newStock,
+  //       totalQuantity: newTotalQuantity,
+  //     });
+  //   });
+  // };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserDetails({
@@ -202,6 +229,7 @@ const Page: React.FC = () => {
             label="Full name"
             value={userDetails?.fullName}
             onChange={handleChange}
+            disabled={isLoading}
             fullWidth
             required
           />
@@ -211,6 +239,7 @@ const Page: React.FC = () => {
             label="Email"
             value={userDetails?.email}
             onChange={handleChange}
+            disabled={isLoading}
             fullWidth
             required
           />
@@ -221,6 +250,7 @@ const Page: React.FC = () => {
               label="Phone number"
               value={userDetails?.phoneNumber}
               onChange={handleChange}
+              disabled={isLoading}
               fullWidth
               required
               placeholder="e.g: 0123456789"
@@ -242,6 +272,7 @@ const Page: React.FC = () => {
             label="Address (Line 1)"
             value={userDetails?.addressLine1}
             onChange={handleChange}
+            disabled={isLoading}
             fullWidth
             required
             placeholder="e.g: 69 Jalan 1, 50088 Kuala Lumpur, Malaysia"
@@ -252,6 +283,7 @@ const Page: React.FC = () => {
             label="Address (Line 2)"
             value={userDetails?.addressLine2}
             onChange={handleChange}
+            disabled={isLoading}
             fullWidth
             placeholder="Optional"
           />
@@ -262,6 +294,7 @@ const Page: React.FC = () => {
               required
               value={userDetails?.state}
               onChange={handleStateChange}
+              disabled={isLoading}
               options={malaysiaStates.sort().map((state) => {
                 return {
                   label: state,
@@ -275,6 +308,7 @@ const Page: React.FC = () => {
               label="Postcode"
               value={userDetails?.postcode}
               onChange={handleChange}
+              disabled={isLoading}
               fullWidth
               required
               placeholder="e.g: 50088"
