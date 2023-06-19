@@ -120,6 +120,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
         open={openToast.open}
         onClose={handleOpenToast}
         type={openToast.type}
+        timeout={2}
       >
         <Typography variant="p" textTransform="uppercase">
           {openToast.message}

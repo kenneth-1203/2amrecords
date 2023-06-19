@@ -6,7 +6,7 @@ import {
   faTriangleExclamation,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { Container, ToastContainer } from "./styles";
+import { Container, ToastContainer, ToastProgress } from "./styles";
 
 interface PropTypes extends React.PropsWithChildren {
   open: boolean;
@@ -50,6 +50,12 @@ const Toast: React.FC<PropTypes> = ({
             exit={"hidden"}
             variants={variants}
           >
+            <ToastProgress 
+              initial={{ width: "0" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: timeout ?? 5 }}
+              type={type}
+            />
             {type === "warning" ? (
               <FontAwesomeIcon
                 icon={faTriangleExclamation}
