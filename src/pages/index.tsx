@@ -78,6 +78,7 @@ const Landing: React.FC = () => {
         loading="lazy"
       />
       <motion.img
+        style={{ zIndex: 10 }}
         src={"/bg-2.png"}
         whileHover={{ scale: 1.05, filter: "saturate(1)" }}
         transition={{ duration: 0.4 }}
