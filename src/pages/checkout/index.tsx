@@ -1,7 +1,8 @@
 import { useEffect, useContext, useState } from "react";
-import { useRouter } from "next/router";
+import Head from "next/head";
 import Link from "next/link";
 import _ from "lodash";
+import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import {
   IBagItem,
@@ -60,7 +61,6 @@ const Page: React.FC = () => {
         handleCanceled(user as IUserDetails, orderId as string);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, userDetails]);
 
   if (_.isEmpty(userDetails?.items)) return null;
@@ -95,7 +95,7 @@ const Page: React.FC = () => {
       console.log("Removing local storage items...");
       localStorage.removeItem("items");
       window.dispatchEvent(new Event("storage"));
-      setOrderDetails({ id: orderId, customer: { fullName: "User" } });
+      setOrderDetails({ id: orderId, customer: { fullName: "Customer" } });
     }
     // Update products stock state
     // handleUpdateProductStock(user);
@@ -217,244 +217,245 @@ const Page: React.FC = () => {
   };
 
   return (
-    <Container initial={"hidden"} animate={"visible"} variants={variants}>
-      {page === "checkout" && userDetails ? (
-        <ShippingForm onSubmit={handleSubmit}>
-          <Typography variant="h3" fontWeight={500} paddingBottom={"1rem"}>
-            Delivery information
-          </Typography>
-          <InputField
-            id="fullName"
-            type="text"
-            label="Full name"
-            value={userDetails?.fullName}
-            onChange={handleChange}
-            disabled={isLoading}
-            fullWidth
-            required
-          />
-          <InputField
-            id="email"
-            type="email"
-            label="Email"
-            value={userDetails?.email}
-            onChange={handleChange}
-            disabled={isLoading}
-            fullWidth
-            required
-          />
-          <InputWrapper>
+    <>
+      <Head>
+        <title>2AMRECORDS - Checkout</title>
+      </Head>
+      <Container initial={"hidden"} animate={"visible"} variants={variants}>
+        {page === "checkout" && userDetails ? (
+          <ShippingForm onSubmit={handleSubmit}>
+            <Typography variant="h3" fontWeight={500} paddingBottom={"1rem"}>
+              Delivery information
+            </Typography>
             <InputField
-              id="phoneNumber"
+              id="fullName"
               type="text"
-              label="Phone number"
-              value={userDetails?.phoneNumber}
+              label="Full name"
+              value={userDetails?.fullName}
               onChange={handleChange}
               disabled={isLoading}
               fullWidth
               required
-              placeholder="e.g: 0123456789"
             />
             <InputField
-              id="country"
-              type="text"
-              label="Country"
-              value={"Malaysia"}
-              fullWidth
-              required
-              disabled={true}
-              placeholder="e.g: Malaysia"
-            />
-          </InputWrapper>
-          <InputField
-            id="addressLine1"
-            type="text"
-            label="Address (Line 1)"
-            value={userDetails?.addressLine1}
-            onChange={handleChange}
-            disabled={isLoading}
-            fullWidth
-            required
-            placeholder="e.g: 69 Jalan 1, 50088 Kuala Lumpur, Malaysia"
-          />
-          <InputField
-            id="addressLine2"
-            type="text"
-            label="Address (Line 2)"
-            value={userDetails?.addressLine2}
-            onChange={handleChange}
-            disabled={isLoading}
-            fullWidth
-            placeholder="Optional"
-          />
-          <InputWrapper>
-            <Select
-              label="State"
-              fullWidth
-              required
-              value={userDetails?.state}
-              onChange={handleStateChange}
-              disabled={isLoading}
-              options={malaysiaStates.sort().map((state) => {
-                return {
-                  label: state,
-                  value: state,
-                };
-              })}
-            />
-            <InputField
-              id="postcode"
-              type="number"
-              label="Postcode"
-              value={userDetails?.postcode}
+              id="email"
+              type="email"
+              label="Email"
+              value={userDetails?.email}
               onChange={handleChange}
               disabled={isLoading}
               fullWidth
               required
-              placeholder="e.g: 50088"
             />
-          </InputWrapper>
-          <Summary>
-            <SummaryItem>
-              <Typography variant="p" textTransform="uppercase">
-                Delivery fees
-              </Typography>
-              <Typography variant="p" textTransform="uppercase">
-                {_.isEmpty(userDetails?.state)
-                  ? "-"
-                  : getDeliveryFees() === 0
-                  ? "FREE"
-                  : `RM ${getDeliveryFees().toFixed(2)}`}
-              </Typography>
-            </SummaryItem>
-            <SummaryItem>
-              <Typography variant="p" textTransform="uppercase">
-                In bag
-              </Typography>
-              <Typography variant="p" textTransform="uppercase">
-                RM {getBagTotalAmount()}
-              </Typography>
-            </SummaryItem>
-            <SummaryItem>
-              <Typography
-                variant="h3"
-                textTransform="uppercase"
-                fontWeight={500}
-              >
-                Total amount
-              </Typography>
-              <Typography
-                variant="h3"
-                textTransform="uppercase"
-                fontWeight={500}
-              >
-                RM {getTotalAmount()}
-              </Typography>
-            </SummaryItem>
-            <Button variant="contained" disabled={isLoading}>
-              <Typography variant="p" textTransform="uppercase">
-                {isLoading ? (
-                  <motion.div
-                    animate={{ rotateZ: 360 }}
-                    transition={{
-                      repeat: Infinity,
-                      repeatType: "loop",
-                      duration: 1,
-                      ease: "linear",
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faSpinner} />
-                  </motion.div>
-                ) : (
-                  "Proceed to payment"
-                )}
-              </Typography>
-            </Button>
-          </Summary>
-        </ShippingForm>
-      ) : page === "success" ? (
-        <StatusContainer
-          initial={"hidden"}
-          animate={"visible"}
-          variants={variants}
-        >
-          <AnimatedCheckArrow />
-          <Typography variant="h2" fontWeight={500}>
-            Dear {orderDetails?.customer?.fullName},
-          </Typography>
-          <Typography variant="h3" fontWeight={500}>
-            Congratulations on your successful purchase!
-          </Typography>
-          <Typography variant="p">
-            We are thrilled to confirm that your order has been received and is
-            being processed. Kindly allow a duration of <b>2-3</b> business days
-            for the delivery process to be successfully finalized.
-          </Typography>
-          <Typography variant="p">
-            Thank you for choosing us for your purchase. Our team is working
-            diligently to ensure a smooth and timely fulfillment of your order.
-          </Typography>
-          <Typography variant="h3" fontWeight={500}>
-            ORDER ID: {orderDetails?.id}
-          </Typography>
-          <Wrapper>
-            <Link href={"/"}>
-              <Button variant="outlined">
+            <InputWrapper>
+              <InputField
+                id="phoneNumber"
+                type="text"
+                label="Phone number"
+                value={userDetails?.phoneNumber}
+                onChange={handleChange}
+                disabled={isLoading}
+                fullWidth
+                required
+                placeholder="e.g: 0123456789"
+              />
+              <InputField
+                id="country"
+                type="text"
+                label="Country"
+                value={"Malaysia"}
+                fullWidth
+                required
+                disabled={true}
+                placeholder="e.g: Malaysia"
+              />
+            </InputWrapper>
+            <InputField
+              id="addressLine1"
+              type="text"
+              label="Address (Line 1)"
+              value={userDetails?.addressLine1}
+              onChange={handleChange}
+              disabled={isLoading}
+              fullWidth
+              required
+              placeholder="e.g: 69 Jalan 1, 50088 Kuala Lumpur, Malaysia"
+            />
+            <InputField
+              id="addressLine2"
+              type="text"
+              label="Address (Line 2)"
+              value={userDetails?.addressLine2}
+              onChange={handleChange}
+              disabled={isLoading}
+              fullWidth
+              placeholder="Optional"
+            />
+            <InputWrapper>
+              <Select
+                label="State"
+                fullWidth
+                required
+                value={userDetails?.state}
+                onChange={handleStateChange}
+                disabled={isLoading}
+                options={malaysiaStates.sort().map((state) => {
+                  return {
+                    label: state,
+                    value: state,
+                  };
+                })}
+              />
+              <InputField
+                id="postcode"
+                type="number"
+                label="Postcode"
+                value={userDetails?.postcode}
+                onChange={handleChange}
+                disabled={isLoading}
+                fullWidth
+                required
+                placeholder="e.g: 50088"
+              />
+            </InputWrapper>
+            <Summary>
+              <SummaryItem>
                 <Typography variant="p" textTransform="uppercase">
-                  Continue
+                  Delivery fees
+                </Typography>
+                <Typography variant="p" textTransform="uppercase">
+                  {_.isEmpty(userDetails?.state)
+                    ? "-"
+                    : getDeliveryFees() === 0
+                    ? "FREE"
+                    : `RM ${getDeliveryFees().toFixed(2)}`}
+                </Typography>
+              </SummaryItem>
+              <SummaryItem>
+                <Typography variant="p" textTransform="uppercase">
+                  In bag
+                </Typography>
+                <Typography variant="p" textTransform="uppercase">
+                  RM {getBagTotalAmount()}
+                </Typography>
+              </SummaryItem>
+              <SummaryItem>
+                <Typography
+                  variant="h3"
+                  textTransform="uppercase"
+                  fontWeight={500}
+                >
+                  Total amount
+                </Typography>
+                <Typography
+                  variant="h3"
+                  textTransform="uppercase"
+                  fontWeight={500}
+                >
+                  RM {getTotalAmount()}
+                </Typography>
+              </SummaryItem>
+              <Button variant="contained" disabled={isLoading}>
+                <Typography variant="p" textTransform="uppercase">
+                  {isLoading ? (
+                    <motion.div
+                      animate={{ rotateZ: 360 }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        duration: 1,
+                        ease: "linear",
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faSpinner} />
+                    </motion.div>
+                  ) : (
+                    "Proceed to payment"
+                  )}
                 </Typography>
               </Button>
-            </Link>
-            {isAuthenticated && (
-              <Link href={"/profile?section=orders"}>
-                <Button variant="contained">
+            </Summary>
+          </ShippingForm>
+        ) : page === "success" ? (
+          <StatusContainer
+            initial={"hidden"}
+            animate={"visible"}
+            variants={variants}
+          >
+            <AnimatedCheckArrow />
+            <Typography variant="h2" fontWeight={500}>
+              Dear {orderDetails?.customer?.fullName},
+            </Typography>
+            <Typography variant="h3" fontWeight={500}>
+              Thank you for shopping with us!
+            </Typography>
+            <Typography variant="p">
+              We are thrilled to confirm that your order has been received and
+              is being processed. Kindly allow a duration of <b>2-3</b> business
+              days for the delivery process to be successfully finalized.
+            </Typography>
+            <Typography variant="h3" fontWeight={500}>
+              ORDER ID: {orderDetails?.id}
+            </Typography>
+            <Wrapper>
+              <Link href={"/"}>
+                <Button variant="outlined">
                   <Typography variant="p" textTransform="uppercase">
-                    View Order
+                    Continue
                   </Typography>
                 </Button>
               </Link>
-            )}
-          </Wrapper>
-        </StatusContainer>
-      ) : page === "canceled" ? (
-        <StatusContainer
-          initial={"hidden"}
-          animate={"visible"}
-          variants={variants}
-        >
-          <AnimatedCross />
-          <Typography variant="h2" fontWeight={500}>
-            Dear {orderDetails?.customer?.fullName},
-          </Typography>
-          <Typography variant="h3" fontWeight={500}>
-            Your payment was unsuccessful!
-          </Typography>
-          <Typography variant="p">
-            If this is a mistake, kindly contact our support team or send us an
-            email. Sorry for any inconvenience caused.
-          </Typography>
-          <Typography variant="h3" fontWeight={500}>
-            ORDER ID: {orderDetails?.id}
-          </Typography>
-          <Wrapper>
-            <Link href={"/"}>
-              <Button variant="outlined">
-                <Typography variant="p" textTransform="uppercase">
-                  Continue
-                </Typography>
-              </Button>
-            </Link>
-            <Link href={"mailto:2amrecordsglobal@gmail.com"}>
-              <Button variant="contained">
-                <Typography variant="p" textTransform="uppercase">
-                  Contact Us
-                </Typography>
-              </Button>
-            </Link>
-          </Wrapper>
-        </StatusContainer>
-      ) : null}
-    </Container>
+              {isAuthenticated && (
+                <Link href={"/profile?section=orders"}>
+                  <Button variant="contained">
+                    <Typography variant="p" textTransform="uppercase">
+                      View Order
+                    </Typography>
+                  </Button>
+                </Link>
+              )}
+            </Wrapper>
+          </StatusContainer>
+        ) : page === "canceled" ? (
+          <StatusContainer
+            initial={"hidden"}
+            animate={"visible"}
+            variants={variants}
+          >
+            <AnimatedCross />
+            <Typography variant="h2" fontWeight={500}>
+              Dear {orderDetails?.customer?.fullName},
+            </Typography>
+            <Typography variant="h3" fontWeight={500}>
+              Your payment was unsuccessful!
+            </Typography>
+            <Typography variant="p">
+              If this is a mistake, kindly contact our support team or send us
+              an email. Sorry for any inconvenience caused.
+            </Typography>
+            <Typography variant="h3" fontWeight={500}>
+              ORDER ID: {orderDetails?.id}
+            </Typography>
+            <Wrapper>
+              <Link href={"/"}>
+                <Button variant="outlined">
+                  <Typography variant="p" textTransform="uppercase">
+                    Continue
+                  </Typography>
+                </Button>
+              </Link>
+              <Link href={"mailto:2amrecordsglobal@gmail.com"}>
+                <Button variant="contained">
+                  <Typography variant="p" textTransform="uppercase">
+                    Contact Us
+                  </Typography>
+                </Button>
+              </Link>
+            </Wrapper>
+          </StatusContainer>
+        ) : null}
+      </Container>
+    </>
   );
 };
 

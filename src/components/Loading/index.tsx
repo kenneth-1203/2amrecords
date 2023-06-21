@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import { UserContext } from "@/lib/context";
 import { LoadingWrapper, LoadingText } from "./styles";
 
-const Loading: React.FC = () => {
+const Loading: React.FC<{ show?: boolean }> = ({ show = false }) => {
   const router = useRouter();
   const { loading, setLoading } = useContext(UserContext);
 
@@ -22,11 +22,11 @@ const Loading: React.FC = () => {
       router.events.off("routeChangeComplete", handleComplete);
       router.events.off("routeChangeError", handleComplete);
     };
-  }, [router, setLoading]);
+  }, [router, setLoading, show]);
 
   return (
     <AnimatePresence>
-      {loading && (
+      {loading || show && (
         <LoadingWrapper
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
