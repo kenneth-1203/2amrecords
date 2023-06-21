@@ -7,7 +7,7 @@ import Loading from "@/components/Loading";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh + 220px);
 `;
 
 const Main = styled.main`

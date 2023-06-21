@@ -4,16 +4,16 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import _ from "lodash";
+import { AnimatePresence } from "framer-motion";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { createDocument, getDocumentRef, getFileURL } from "@/api/index";
 import { UserContext } from "@/lib/context";
-import { IBagItem, IShippingInfo, IUserDetails } from "@/shared/interfaces";
+import { IBagItem, IUserDetails } from "@/shared/interfaces";
 import List from "@/components/List";
 import Typography from "@/components/Typography";
 import Button from "@/components/Button";
-import InputField from "@/components/InputField";
 import {
   ButtonsWrapper,
   Container,
@@ -36,7 +36,7 @@ import {
   SummaryWrapper,
   SummaryTotal,
 } from "@/styles/Bag";
-import { AnimatePresence } from "framer-motion";
+import Loading from "@/components/Loading";
 
 const Page: React.FC = () => {
   const { user, isAuthenticated } = useContext(UserContext);
@@ -55,7 +55,7 @@ const Page: React.FC = () => {
   }, [userDocument, user]);
 
   // TODO: Create UI for loading skeleton
-  if (!userDetails) return <h1>Loading...</h1>;
+  if (!userDetails) return <Loading show />;
 
   return (
     <>

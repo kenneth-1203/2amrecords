@@ -43,6 +43,7 @@ import {
   ProductImageDisplay,
   ProductDetailsWrapper,
 } from "@/styles/Products";
+import Loading from "@/components/Loading";
 
 export const getStaticPaths = async () => {
   const data = await getDocuments("Products");
@@ -109,7 +110,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
   };
 
   // TODO: Create UI for loading skeleton
-  if (!productDetails) return <h1>Loading...</h1>;
+  if (!productDetails) return <Loading show />;
 
   return (
     <>
