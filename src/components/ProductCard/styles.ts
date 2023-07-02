@@ -6,7 +6,11 @@ export const CardContainer = styled(motion.div)`
   box-shadow: 0 4px 8px -4px ${(props) => props.theme.colors.primary[400]};
   min-width: 18rem;
   max-width: 18rem;
-  margin: 0.6rem 1rem;
+  margin: 0.6rem 0;
+
+  :not(:last-child) {
+    margin-right: 2rem;
+  }
 `;
 
 export const CardImage = styled.div`

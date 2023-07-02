@@ -10,7 +10,6 @@ const TOTAL_WIDTH = `${MAIN_IMAGE_WIDTH} + ${SMALL_IMAGE_WIDTH} + ${GAP_SIZE}`;
 
 export const Section = styled.section`
   margin: 2rem 8rem;
-  padding-bottom: 4rem;
 
   ${(props) => props.theme.sizes.tabLand} {
     margin: 2rem 4rem;
@@ -222,4 +221,19 @@ export const SizeChartImage = styled.div<{ height: number }>`
     width: calc(420px / 1.4);
     height: calc(${({ height }) => height}px / 1.4);
   }
+`;
+
+export const RelatedProductsContainer = styled.div`
+  margin: 4rem 0;
+
+  ${(props) => props.theme.sizes.mobile} {
+   margin: 4rem 2rem; 
+  }
+`;
+
+export const Line = styled.span`
+  display: inline-block;
+  width: 100%;
+  height: 1px;
+  background: ${(props) => props.theme.colors.primary[100]};
 `;
