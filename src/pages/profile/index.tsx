@@ -297,7 +297,6 @@ const ProfileOrders: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
 
   return (
     <ProfileOrdersInfo>
-      {/* TODO: Populate orders */}
       <Typography variant="h3" fontWeight={500}>
         Orders
       </Typography>
