@@ -60,7 +60,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ### Priority: MEDIUM
 - [x] Ensure all components and pages are mobile-friendly
 - [x] Change current product list UI (create custom slider or wrapper for the list of products)
-- [ ] Show similar products based on the categories attached to the product from product details page
+- [x] Show similar products based on the categories attached to the product from product details page
 - [x] Create carousel for product lists
 - [x] Add delivery fees for East Malaysia (RM 10) and West Malaysia (RM 15) and only charge below 3 products
 

@@ -1,20 +1,30 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import styled from "styled-components";
 import ProductCard from "@/components/ProductCard";
 import { IProductData } from "@/shared/interfaces";
 import { motion } from "framer-motion";
 
+export const ProductListWrapper = styled(motion.div)<{ justify: string }>`
+  min-width: 100%;
+  display: inline-flex;
+  justify-content: ${({ justify }) => justify};
+`;
+
 interface PropTypes {
   list: IProductData[];
-  slidesPerView?: number;
+  justify?: "start" | "center" | "end";
 }
 
-const ProductList: React.FC<PropTypes> = ({ list, slidesPerView = 3 }) => {
+const ProductList: React.FC<PropTypes> = ({ list, justify = "center" }) => {
   const listRef = useRef(null);
 
   return (
-    <motion.div ref={listRef}>
-      <ProductListWrapper drag={"x"} dragConstraints={listRef}>
+    <motion.div ref={listRef} style={{ overflow: "hidden" }}>
+      <ProductListWrapper
+        justify={justify}
+        drag={"x"}
+        dragConstraints={listRef}
+      >
         {list.map((product, i) => (
           <ProductCard key={i} {...product} />
         ))}
@@ -24,9 +34,3 @@ const ProductList: React.FC<PropTypes> = ({ list, slidesPerView = 3 }) => {
 };
 
 export default ProductList;
-
-export const ProductListWrapper = styled(motion.div)`
-  min-width: 100%;
-  display: inline-flex;
-  justify-content: center;
-`;

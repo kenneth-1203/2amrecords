@@ -13,7 +13,7 @@ export type Category = {
 };
 
 export interface IProductData {
-  id: number;
+  id: string;
   name: string;
   description: string;
   variant: string;

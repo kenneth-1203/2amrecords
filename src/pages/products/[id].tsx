@@ -42,8 +42,11 @@ import {
   SizeChartImage,
   ProductImageDisplay,
   ProductDetailsWrapper,
+  RelatedProductsContainer,
+  Line,
 } from "@/styles/Products";
 import Loading from "@/components/Loading";
+import ProductList from "@/components/ProductList";
 
 export const getStaticPaths = async () => {
   const data = await getDocuments("Products");
@@ -109,7 +112,6 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
     setShowSizeChart(!showSizeChart);
   };
 
-  // TODO: Create UI for loading skeleton
   if (!productDetails) return <Loading show />;
 
   return (
@@ -183,6 +185,10 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
             handleShowSizeChart={handleShowSizeChart}
           />
         </Container>
+        <RelatedProducts
+          productDetails={productDetails}
+          productId={productId}
+        />
       </Section>
     </>
   );
@@ -264,7 +270,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ productImages }) => {
               key={i}
               onClick={() => handleClick(i)}
               animate={selectedIndex === i ? { boxShadow: "0 0 0 1px" } : {}}
-              transition={{ delay: 0.05, duration: .05 }}
+              transition={{ delay: 0.05, duration: 0.05 }}
             >
               <Image
                 src={image.url}
@@ -397,6 +403,47 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         </>
       )}
     </ProductDetailsWrapper>
+  );
+};
+
+interface RelatedProductsProps {
+  productDetails: IProductData;
+  productId: string;
+}
+
+const RelatedProducts: React.FC<RelatedProductsProps> = ({
+  productDetails,
+  productId,
+}) => {
+  const [relatedProducts, setRelatedProducts] = useState<IProductData[]>([]);
+
+  const categoryIds = productDetails.category.map((c) => c.id);
+
+  useEffect(() => {
+    getRelatedProducts();
+  }, []);
+
+  const getRelatedProducts = async () => {
+    const products: IProductData[] = await getDocuments("Products");
+    const related = products.filter((a) => {
+      return categoryIds.some((b) => {
+        return a.id !== productId && a.category.some((c) => c.id === b);
+      });
+    });
+    setRelatedProducts(related);
+  };
+
+  if (_.isEmpty(relatedProducts)) return null;
+
+  return (
+    <RelatedProductsContainer>
+      <Typography variant="h3" fontWeight={500}>
+        You may also like
+      </Typography>
+      <Line />
+      <ProductList justify="start" list={relatedProducts} />
+      <Line />
+    </RelatedProductsContainer>
   );
 };
 
