@@ -129,7 +129,7 @@ const Collection: React.FC<CollectionProps> = ({
                   <Typography variant="h2">{category.name}</Typography>
                 </CategorySelection>
                 <ProductSelection>
-                  <ProductList list={list} slidesPerView={list.length} />
+                  <ProductList list={list} />
                 </ProductSelection>
               </Section>
             </React.Fragment>
