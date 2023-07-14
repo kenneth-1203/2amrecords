@@ -63,23 +63,8 @@ export const StyledButton = styled.button<{
         `
       : css`
           color: ${(props) => props.theme.colors.primary.main} !important;
-          background: ${({ selected }) =>
-            selected
-              ? css`
-                  ${(props) => props.theme.colors.primary[50]}
-                `
-              : css`
-                  ${(props) => props.theme.colors.secondary.main}
-                `};
+          background: transparent;
           border-color: transparent;
-
-          &:active {
-            color: ${(props) => props.theme.colors.primary[600]} !important;
-          }
-
-          &:hover {
-            background: ${(props) => props.theme.colors.primary[50]};
-          }
         `}
 `;
 

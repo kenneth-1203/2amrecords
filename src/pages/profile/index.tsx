@@ -13,6 +13,7 @@ import Typography from "@/components/Typography";
 import Select from "@/components/Select";
 import { malaysiaStates } from "@/data/countries";
 import { IUserDetails } from "@/shared/interfaces";
+import { formatDate } from "@/shared/utils";
 import {
   Container,
   Section,
@@ -31,7 +32,6 @@ import {
   OrderItemContent,
   OrderSummary,
 } from "@/styles/Profile";
-import { formatDate } from "@/shared/utils";
 
 type ProfileSections = "profile" | "orders" | "settings";
 
@@ -77,7 +77,12 @@ const Page: React.FC = () => {
                     onClick={() => handleSelectSection("profile")}
                     selected={currentSection === "profile"}
                     fullWidth
-                    style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
+                    style={{
+                      borderBottom:
+                        currentSection === "profile"
+                          ? "1px solid rgba(0,0,0,1)"
+                          : "1px solid rgba(0,0,0,.2)",
+                    }}
                   >
                     <Typography variant="p" textTransform="uppercase">
                       Profile
@@ -87,22 +92,32 @@ const Page: React.FC = () => {
                     onClick={() => handleSelectSection("orders")}
                     selected={currentSection === "orders"}
                     fullWidth
-                    style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
+                    style={{
+                      borderBottom:
+                        currentSection === "orders"
+                          ? "1px solid rgba(0,0,0,1)"
+                          : "1px solid rgba(0,0,0,.2)",
+                    }}
                   >
                     <Typography variant="p" textTransform="uppercase">
                       Orders
                     </Typography>
                   </Button>
-                  <Button
+                  {/* <Button
                     onClick={() => handleSelectSection("settings")}
                     selected={currentSection === "settings"}
                     fullWidth
-                    style={{ borderBottom: "1px solid rgba(0,0,0,.2)" }}
+                    style={{
+                      borderBottom:
+                        currentSection === "settings"
+                          ? "1px solid rgba(0,0,0,1)"
+                          : "1px solid rgba(0,0,0,.2)",
+                    }}
                   >
                     <Typography variant="p" textTransform="uppercase">
                       Settings
                     </Typography>
-                  </Button>
+                  </Button> */}
                 </ProfileOptionsWrapper>
               </ProfileSelection>
               {currentSection === "profile" && (
@@ -111,7 +126,7 @@ const Page: React.FC = () => {
               {currentSection === "orders" && (
                 <ProfileOrders userDetails={userDetails} />
               )}
-              {currentSection === "settings" && <ProfileSettings />}
+              {/* {currentSection === "settings" && <ProfileSettings />} */}
             </Container>
           </>
         )}
@@ -180,8 +195,7 @@ const ProfileDetails: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
         <Typography variant="small">
           Please note that in order to complete your purchase, we kindly request
           you to update your shipping information at checkout. The information
-          you provide is primarily used for delivery purposes, and we assure you
-          that it will be kept confidential.
+          you provide is primarily used for delivery purposes.
         </Typography>
       </ProfileDetailsWrapper>
       <ShippingInformationWrapper>
@@ -277,7 +291,7 @@ const ProfileDetails: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
 };
 
 const ProfileOrders: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
-  const [expandedIndex, setExpandedIndex] = useState<number>(-1);
+  const [expandedIndex, setExpandedIndex] = useState<number>(0);
 
   const getTotalAmount = (index: number) => {
     let amount = 0;
