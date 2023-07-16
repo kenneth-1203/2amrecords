@@ -15,18 +15,7 @@ import { IProductData } from "@/shared/interfaces";
 import { getFileURL } from "@/api/index";
 
 const ProductCard: React.FC<IProductData> = (props) => {
-  const {
-    id,
-    name,
-    description,
-    variant,
-    sizes,
-    stock,
-    originalPrice,
-    discountedPrice,
-    category,
-    totalQuantity,
-  } = props;
+  const { id, name, description, originalPrice, discountedPrice } = props;
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
@@ -76,7 +65,7 @@ const ProductCard: React.FC<IProductData> = (props) => {
         </CardImage>
         <CardContent>
           <ProductName>
-            <Typography variant="h3" fontWeight={500}>
+            <Typography variant="h3" fontWeight={500} textOverflow="clip" overflow="hidden" whiteSpace="nowrap">
               {name}
             </Typography>
           </ProductName>

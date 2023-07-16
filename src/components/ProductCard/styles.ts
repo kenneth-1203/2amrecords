@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 export const CardContainer = styled(motion.div)`
   display: flex;
   box-shadow: 0 4px 8px -4px ${(props) => props.theme.colors.primary[400]};
-  min-width: 18rem;
-  max-width: 18rem;
+  width: 22rem;
   margin: 0.6rem 0;
 
   :not(:last-child) {

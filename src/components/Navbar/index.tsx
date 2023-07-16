@@ -271,11 +271,11 @@ const Drawer: React.FC<PropTypes> = ({
                           <Typography variant="h2">orders</Typography>
                         </DrawerAction>
                       </Link>
-                      <Link href="/profile?section=settings">
+                      {/* <Link href="/profile?section=settings">
                         <DrawerAction onClick={onClose}>
                           <Typography variant="h2">settings</Typography>
                         </DrawerAction>
-                      </Link>
+                      </Link> */}
                       <Line />
                       <DrawerAction onClick={handleLogout}>
                         <Typography variant="h2">logout</Typography>

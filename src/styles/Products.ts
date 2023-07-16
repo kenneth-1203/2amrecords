@@ -72,6 +72,7 @@ export const ProductImageDisplay = styled.div`
 export const MainImage = styled(motion.div)`
   display: flex;
   overflow-x: scroll;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */

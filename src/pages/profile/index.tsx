@@ -327,12 +327,12 @@ const ProfileOrders: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
               </motion.span>
               <Typography
                 variant="h3"
-                fontWeight={500}
+                fontWeight={300}
                 whiteSpace={"nowrap"}
                 overflow={"hidden"}
                 textOverflow={"ellipsis"}
               >
-                {order.id}
+                {formatDate(order.date)}
               </Typography>
             </OrderItemHeader>
             <OrderItemBody

@@ -1,35 +1,7 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
-export const Background = styled.section`
-  display: grid;
-  width: 100%;
-  overflow: hidden;
-  grid-template-columns: 1fr 1fr 1fr;
-
-  & > * {
-    display: flex;
-    width: 100%;
-    filter: saturate(0);
-    aspect-ratio: 9 / 11;
-  }
-
-  ${(props) => props.theme.sizes.tabPort} {
-    grid-template-columns: 1fr 1fr;
-
-    & > :nth-child(3) {
-      display: none;
-    }
-  }
-
-  ${(props) => props.theme.sizes.mobile} {
-    grid-template-columns: 1fr;
-
-    & > :not(:first-child) {
-      display: none;
-    }
-  }
-`;
+export const Background = styled.section``;
 
 export const Section = styled(motion.section)`
   overflow: hidden;
