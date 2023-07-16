@@ -104,7 +104,7 @@ export const getOfferDuration = (expiry: string | null) => {
     let diff = expDate.getTime() - currentDate.getTime();
 
     // convert the difference to days and hours
-    let days = Math.floor(diff / 86400000);
+    let days = Math.ceil(diff / 86400000);
     let hours = Math.ceil(diff / 3600000); // 1 hour = 60*60*1000 = 3600000 milliseconds
 
     // return a string with the number of days or hours
