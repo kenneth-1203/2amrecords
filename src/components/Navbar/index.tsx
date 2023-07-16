@@ -25,6 +25,7 @@ import {
 import { ILoginForm, ISignUpForm, IUserDetails } from "@/shared/interfaces";
 import Button from "@/components/Button";
 import Modal from "@/components/Modal";
+import Toast from "@/components/Toast";
 import InputField from "@/components/InputField";
 import Typography from "@/components/Typography";
 import {
@@ -45,6 +46,7 @@ import {
   DrawerAction,
   FormContainer,
   Line,
+  ButtonsWrapper,
 } from "./styles";
 
 const Navbar: React.FC = () => {
@@ -105,7 +107,7 @@ const Navbar: React.FC = () => {
                           ? { y: [0, -10, 0] }
                           : { y: 0 }
                       }
-                      transition={{ duration: .15 }}
+                      transition={{ duration: 0.15 }}
                     >
                       {user.items?.length}
                     </ItemCounter>
@@ -137,7 +139,13 @@ interface PropTypes extends React.HTMLAttributes<HTMLDivElement> {
   onClose: () => void;
 }
 
-type MODAL_STATE = "login" | "sign up";
+interface ToastProps {
+  open: boolean;
+  message: string;
+  type: "success" | "warning" | "error";
+}
+
+type MODAL_STATE = "login" | "sign up" | "log out";
 
 const Drawer: React.FC<PropTypes> = ({
   isAuthenticated,
@@ -149,6 +157,11 @@ const Drawer: React.FC<PropTypes> = ({
   const router = useRouter();
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [modalState, setModalState] = useState<MODAL_STATE>("login");
+  const [toast, setToast] = useState<ToastProps>({
+    open: false,
+    message: "",
+    type: "success",
+  });
 
   useEffect(() => {
     if (user) {
@@ -182,6 +195,13 @@ const Drawer: React.FC<PropTypes> = ({
             });
           }
           // TODO: Add a welcome modal/toast
+          setToast({
+            open: true,
+            type: "success",
+            message: isExistingUser
+              ? `Successfully logged in. Welcome back, ${user.displayName}!`
+              : `Successfully logged in. Welcome to the club, ${user.displayName}!`,
+          });
           localStorage.removeItem("items");
           window.dispatchEvent(new Event("storage"));
         })
@@ -196,19 +216,29 @@ const Drawer: React.FC<PropTypes> = ({
   };
 
   const handleLogout = () => {
-    // TODO: Add confirmation modal/toast
     auth.signOut();
     if (router.pathname !== "/") {
       router.replace("/");
     } else {
       router.replace(router.pathname);
     }
-    onClose();
+    setToast({
+      open: true,
+      message: "Successfully logged out.",
+      type: "success",
+    });
   };
 
-  const togglePopup = () => {
+  const handleToggleToast = () => {
+    setToast({
+      ...toast,
+      open: !toast.open,
+    });
+  };
+
+  const togglePopup = (state: MODAL_STATE) => {
     onClose();
-    setModalState("login");
+    setModalState(state);
     setOpenPopup(true);
   };
 
@@ -223,14 +253,43 @@ const Drawer: React.FC<PropTypes> = ({
         <AnimatePresence>
           {modalState === "login" ? (
             <LoginForm
+              setToast={setToast}
               setModalState={setModalState}
               loginWithGoogle={loginWithGoogle}
             />
-          ) : (
-            <SignUpForm setModalState={setModalState} />
-          )}
+          ) : modalState === "sign up" ? (
+            <SignUpForm setToast={setToast} setModalState={setModalState} />
+          ) : modalState === "log out" ? (
+            <FormContainer
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <Typography variant="p" marginBottom={"1rem"}>Are you sure you want to log out?</Typography>
+              <ButtonsWrapper>
+                <Button variant="outlined" onClick={() => setOpenPopup(false)} fullWidth>
+                  <Typography variant="p" textTransform="uppercase">
+                    cancel
+                  </Typography>
+                </Button>
+                <Button variant="contained" onClick={handleLogout} fullWidth>
+                  <Typography variant="p" textTransform="uppercase">
+                    confirm
+                  </Typography>
+                </Button>
+              </ButtonsWrapper>
+            </FormContainer>
+          ) : null}
         </AnimatePresence>
       </Modal>
+      <Toast
+        open={toast.open}
+        onClose={handleToggleToast}
+        type={toast.type}
+        timeout={2}
+      >
+        <Typography variant="p">{toast.message}</Typography>
+      </Toast>
       <AnimatePresence>
         {open && (
           <>
@@ -256,7 +315,7 @@ const Drawer: React.FC<PropTypes> = ({
                 </DrawerCloseButton>
                 <DrawerBody>
                   {!isAuthenticated ? (
-                    <DrawerAction onClick={togglePopup}>
+                    <DrawerAction onClick={() => togglePopup("login")}>
                       <Typography variant="h2">login / signup</Typography>
                     </DrawerAction>
                   ) : (
@@ -277,8 +336,8 @@ const Drawer: React.FC<PropTypes> = ({
                         </DrawerAction>
                       </Link> */}
                       <Line />
-                      <DrawerAction onClick={handleLogout}>
-                        <Typography variant="h2">logout</Typography>
+                      <DrawerAction onClick={() => togglePopup("log out")}>
+                        <Typography variant="h2">log out</Typography>
                       </DrawerAction>
                     </>
                   )}
@@ -293,9 +352,10 @@ const Drawer: React.FC<PropTypes> = ({
 };
 
 const LoginForm: React.FC<{
+  setToast: (toast: ToastProps) => void;
   setModalState: (state: MODAL_STATE) => void;
   loginWithGoogle: () => void;
-}> = ({ setModalState, loginWithGoogle }) => {
+}> = ({ setToast, setModalState, loginWithGoogle }) => {
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ILoginForm>({
     email: "",
@@ -307,6 +367,11 @@ const LoginForm: React.FC<{
     const { results, error } = await signIn(formData);
     if (results) {
       // TODO: Add a welcome modal/toast
+      setToast({
+        open: true,
+        type: "success",
+        message: `Successfully logged in. Welcome back!`,
+      });
       localStorage.removeItem("items");
       window.dispatchEvent(new Event("storage"));
     }
@@ -378,8 +443,9 @@ const LoginForm: React.FC<{
 };
 
 const SignUpForm: React.FC<{
+  setToast: (toast: ToastProps) => void;
   setModalState: (state: MODAL_STATE) => void;
-}> = ({ setModalState }) => {
+}> = ({ setToast, setModalState }) => {
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ISignUpForm>({
     fullName: "",
@@ -394,6 +460,11 @@ const SignUpForm: React.FC<{
       // automatically sign user in
       await signIn({ email: formData.email, password: formData.password });
       // TODO: Add a welcome modal/toast
+      setToast({
+        open: true,
+        type: "success",
+        message: `Successfully logged in. Welcome to the club, ${formData.fullName}!`,
+      });
       localStorage.removeItem("items");
       window.dispatchEvent(new Event("storage"));
     }

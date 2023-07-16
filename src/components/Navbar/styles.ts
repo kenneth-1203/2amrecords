@@ -141,3 +141,9 @@ export const FormContainer = styled(motion.div)`
   flex-direction: column;
   gap: 0.4rem;
 `;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+`;

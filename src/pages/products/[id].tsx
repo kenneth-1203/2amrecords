@@ -100,16 +100,16 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
   const productRef = getDocumentRef(`Products/${productId}`);
   const [productDetails]: any = useDocumentData(productRef);
   const [showSizeChart, setShowSizeChart] = useState<boolean>(false);
-  const [openToast, setOpenToast] = useState<ToastProps>({
+  const [toast, setToast] = useState<ToastProps>({
     open: false,
     message: "",
     type: "success",
   });
 
-  const handleOpenToast = () => {
-    setOpenToast({
-      ...openToast,
-      open: !openToast.open,
+  const handleToggleToast = () => {
+    setToast({
+      ...toast,
+      open: !toast.open,
     });
   };
 
@@ -125,13 +125,13 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
         <title>2AMRECORDS - {productDetails.name}</title>
       </Head>
       <Toast
-        open={openToast.open}
-        onClose={handleOpenToast}
-        type={openToast.type}
+        open={toast.open}
+        onClose={handleToggleToast}
+        type={toast.type}
         timeout={2}
       >
-        <Typography variant="p" textTransform="uppercase">
-          {openToast.message}
+        <Typography variant="p">
+          {toast.message}
         </Typography>
       </Toast>
       <Modal
@@ -186,7 +186,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
           <ProductDisplay productImages={productImages} />
           <ProductDetails
             productDetails={productDetails}
-            setOpenToast={setOpenToast}
+            setToast={setToast}
             handleShowSizeChart={handleShowSizeChart}
           />
         </Container>
@@ -291,13 +291,13 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({ productImages }) => {
 
 interface ProductDetailsProps {
   productDetails: IProductData;
-  setOpenToast: (toast: ToastProps) => void;
+  setToast: (toast: ToastProps) => void;
   handleShowSizeChart: () => void;
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({
   productDetails,
-  setOpenToast,
+  setToast,
   handleShowSizeChart,
 }) => {
   const { user, isAuthenticated } = useContext(UserContext);
@@ -334,7 +334,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
       window.dispatchEvent(new Event("storage"));
     }
     handleSelectSize(-1);
-    setOpenToast({
+    setToast({
       open: true,
       type: "success",
       message: "Great choice! Added to your bag.",

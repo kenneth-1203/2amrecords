@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 export const Container = styled.div`
   position: fixed;
+  top: 40px;
   z-index: 1000;
   width: 100vw;
   display: flex;
@@ -25,9 +26,8 @@ export const ToastContainer = styled(motion.div)`
 export const ToastProgress = styled(motion.span)<{ type: string }>`
   position: absolute;
   bottom: 0;
-  left: 0;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  left: 50%;
+  transform: translateX(-50%);
   height: 3px;
   background: ${({ type }) =>
     type === "success"

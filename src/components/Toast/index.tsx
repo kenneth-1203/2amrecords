@@ -24,7 +24,7 @@ const Toast: React.FC<PropTypes> = ({
 }) => {
   const variants = {
     hidden: { opacity: 0, y: -100 },
-    visible: { opacity: 1, y: -20 },
+    visible: { opacity: 1, y: 0 },
   };
 
   useEffect(() => {
@@ -51,8 +51,8 @@ const Toast: React.FC<PropTypes> = ({
             variants={variants}
           >
             <ToastProgress 
-              initial={{ width: "0" }}
-              animate={{ width: "100%" }}
+              initial={{ width: "100%" }}
+              animate={{ width: "0" }}
               transition={{ duration: timeout ?? 5 }}
               type={type}
             />

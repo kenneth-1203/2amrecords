@@ -4,10 +4,15 @@ export const ChipContainer = styled.div`
   width: fit-content;
   border-radius: 4px;
   box-shadow: 0 2px 6px -2px ${props => props.theme.colors.primary[400]};
-  transition: all .1s;
+  transition: all .2s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
   
   &:active {
-    box-shadow: 0px 0px 1px 0px ${props => props.theme.colors.primary.main};
+    transform: translateY(0px);
+    box-shadow: 0px 0px 1px 0px ${props => props.theme.colors.primary[400]};
   }
 `;
 
