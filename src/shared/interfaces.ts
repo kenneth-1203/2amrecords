@@ -29,8 +29,6 @@ export interface IProductData {
 export interface ICategoryData {
   id: string;
   name: string;
-  title: string;
-  description: string;
   sort: number;
 }
 
