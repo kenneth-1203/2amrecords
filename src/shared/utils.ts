@@ -70,4 +70,52 @@ export const getQuantities = (items: IBagItem[]) => {
   }
 
   return Object.entries(quantities).map(([id, quantity]) => ({ id, quantity }));
-}
+};
+
+export const isDiscountExpired = (
+  price: number | null,
+  expiry: string | null
+) => {
+  if (expiry && price) {
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    let expiryDate = new Date(expiry);
+    expiryDate.setHours(0, 0, 0, 0);
+
+    if (currentDate > expiryDate) {
+      return true;
+    } else if (currentDate < expiryDate) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const getOfferDuration = (expiry: string | null) => {
+  if (expiry !== null) {
+    // get current date and time
+    let currentDate = new Date();
+
+    // get expiry date and time
+    let expDate = new Date(expiry);
+
+    // calculate the difference in milliseconds
+    let diff = expDate.getTime() - currentDate.getTime();
+
+    // convert the difference to days and hours
+    let days = Math.floor(diff / 86400000);
+    let hours = Math.ceil(diff / 3600000); // 1 hour = 60*60*1000 = 3600000 milliseconds
+
+    // return a string with the number of days or hours
+    if (days > 1) {
+      return days + " days";
+    } else if (days === 1 || hours > 24) {
+      return "1 day";
+    } else if (hours > 1) {
+      return hours + " hours";
+    } else if (hours === 1) {
+      return "1 hour";
+    }
+  }
+};

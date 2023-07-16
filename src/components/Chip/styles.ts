@@ -1,9 +1,14 @@
 import styled from "styled-components";
 
 export const ChipContainer = styled.div`
-  border: 1px solid ${(props) => props.theme.colors.primary[500]};
   width: fit-content;
   border-radius: 4px;
+  box-shadow: 0 2px 6px -2px ${props => props.theme.colors.primary[400]};
+  transition: all .1s;
+  
+  &:active {
+    box-shadow: 0px 0px 1px 0px ${props => props.theme.colors.primary.main};
+  }
 `;
 
 export const ChipLabel = styled.p`

@@ -1,6 +1,12 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Typography from "@/components/Typography";
+import { IProductData } from "@/shared/interfaces";
+import { isDiscountExpired, getOfferDuration } from "@/shared/utils";
+import { getFileURL } from "@/api/index";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTag } from "@fortawesome/free-solid-svg-icons";
 import {
   CardContainer,
   CardImage,
@@ -9,24 +15,28 @@ import {
   ProductDescription,
   ProductPrice,
   DiscountPrice,
+  OfferTag,
 } from "./styles";
-import Typography from "@/components/Typography";
-import { IProductData } from "@/shared/interfaces";
-import { getFileURL } from "@/api/index";
 
 const ProductCard: React.FC<IProductData> = (props) => {
-  const { id, name, description, originalPrice, discountedPrice } = props;
+  const {
+    id,
+    name,
+    description,
+    originalPrice,
+    discountedPrice,
+    discountExpiry,
+  } = props;
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  useEffect(() => {
+  useMemo(() => {
     getFileURL(`Products/${id}/1.jpg`).then((data) => {
       if (data.results) {
         setImageUrl(data.results);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   const handleDrag = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
@@ -42,7 +52,7 @@ const ProductCard: React.FC<IProductData> = (props) => {
 
   return (
     <CardContainer
-      whileTap={{ scale: 0.98, boxShadow: "0 0px 4px -2px rgba(0,0,0,.4)" }}
+      whileTap={{ scale: 0.99, boxShadow: "0 0px 4px -2px rgba(0,0,0,.4)" }}
     >
       <Link
         href={`/products/${id}`}
@@ -65,7 +75,13 @@ const ProductCard: React.FC<IProductData> = (props) => {
         </CardImage>
         <CardContent>
           <ProductName>
-            <Typography variant="h3" fontWeight={500} textOverflow="clip" overflow="hidden" whiteSpace="nowrap">
+            <Typography
+              variant="h3"
+              fontWeight={500}
+              textOverflow="clip"
+              overflow="hidden"
+              whiteSpace="nowrap"
+            >
               {name}
             </Typography>
           </ProductName>
@@ -75,11 +91,11 @@ const ProductCard: React.FC<IProductData> = (props) => {
           <ProductPrice>
             <Typography variant="h3" fontWeight={500}>
               RM{" "}
-              {discountedPrice
-                ? discountedPrice.toFixed(2)
+              {!isDiscountExpired(discountedPrice, discountExpiry)
+                ? discountedPrice?.toFixed(2)
                 : originalPrice.toFixed(2)}
             </Typography>
-            {discountedPrice && (
+            {!isDiscountExpired(discountedPrice, discountExpiry) && (
               <DiscountPrice>
                 <Typography variant="h3" textDecoration={"line-through"}>
                   RM {originalPrice.toFixed(2)}
@@ -87,6 +103,22 @@ const ProductCard: React.FC<IProductData> = (props) => {
               </DiscountPrice>
             )}
           </ProductPrice>
+          {!isDiscountExpired(discountedPrice, discountExpiry) && (
+            <OfferTag>
+              <Typography
+                variant="small"
+                fontWeight={700}
+                textTransform="uppercase"
+              >
+                Offer ends in {getOfferDuration(discountExpiry)}
+              </Typography>
+              <FontAwesomeIcon
+                icon={faTag}
+                fontSize={".8rem"}
+                style={{ paddingLeft: ".4rem" }}
+              />
+            </OfferTag>
+          )}
         </CardContent>
       </Link>
     </CardContainer>

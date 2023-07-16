@@ -4,16 +4,24 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import _ from "lodash";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faArrowsUpToLine,
+  faChevronRight,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { createDocument, getDocumentRef, getFileURL } from "@/api/index";
 import { UserContext } from "@/lib/context";
 import { IBagItem, IUserDetails } from "@/shared/interfaces";
+import { isDiscountExpired } from "@/shared/utils";
 import List from "@/components/List";
 import Typography from "@/components/Typography";
 import Button from "@/components/Button";
+import Loading from "@/components/Loading";
+import RelatedProducts from "@/components/RelatedProducts";
 import {
   ButtonsWrapper,
   Container,
@@ -34,12 +42,13 @@ import {
   SummaryItemList,
   SummaryItem,
   SummaryWrapper,
-  SummaryTotal,
+  SummaryItemTotal,
+  IconWrapper,
 } from "@/styles/Bag";
-import Loading from "@/components/Loading";
 
 const Page: React.FC = () => {
   const { user, isAuthenticated } = useContext(UserContext);
+  const router = useRouter();
   // @ts-ignore
   const userRef = getDocumentRef(`Users/${user.id}`);
   const [userDocument] = useDocumentData(userRef);
@@ -54,6 +63,14 @@ const Page: React.FC = () => {
     }
   }, [userDocument, user]);
 
+  const handleContinueShopping = () => {
+    router.replace("/");
+  };
+
+  const handleProceedToCheckout = async () => {
+    router.replace("/checkout");
+  };
+
   if (!userDetails) return <Loading show />;
 
   return (
@@ -66,14 +83,20 @@ const Page: React.FC = () => {
           <BagItemsList
             isAuthenticated={isAuthenticated}
             userDetails={userDetails}
+            handleContinueShopping={handleContinueShopping}
           />
           {!_.isEmpty(userDetails.items) && (
             <CheckoutSummary
               isAuthenticated={isAuthenticated}
               userDetails={userDetails}
+              handleContinueShopping={handleContinueShopping}
+              handleProceedToCheckout={handleProceedToCheckout}
             />
           )}
         </BagContainer>
+        <RelatedProducts
+          productsList={userDetails.items}
+        />
       </Container>
     </>
   );
@@ -82,11 +105,14 @@ const Page: React.FC = () => {
 interface PropTypes {
   userDetails: IUserDetails;
   isAuthenticated: boolean;
+  handleContinueShopping: () => void;
+  handleProceedToCheckout?: () => void;
 }
 
 const BagItemsList: React.FC<PropTypes> = ({
   userDetails,
   isAuthenticated,
+  handleContinueShopping,
 }) => {
   const [itemList, setItemList] = useState<IBagItem[] | []>([]);
   const variants = {
@@ -105,13 +131,14 @@ const BagItemsList: React.FC<PropTypes> = ({
           size: item.size,
           variant: item.variant,
           discountedPrice: item.discountedPrice,
+          discountExpiry: item.discountExpiry,
           originalPrice: item.originalPrice,
           imageURL: results ?? "",
         };
       });
       Promise.all(newList)
         .then((resolvedList) => {
-          setItemList(resolvedList);
+          setItemList(resolvedList as any);
         })
         .catch((error) => {
           console.error(error);
@@ -190,22 +217,6 @@ const BagItemsList: React.FC<PropTypes> = ({
                         </ItemDetails>
                       </Link>
                       <PriceWrapper>
-                        <Typography variant="h3">
-                          RM{" "}
-                          {item.discountedPrice
-                            ? item.discountedPrice.toFixed(2)
-                            : item.originalPrice.toFixed(2)}
-                        </Typography>
-                        {item.discountedPrice && (
-                          <DiscountPrice>
-                            <Typography
-                              variant="h3"
-                              textDecoration={"line-through"}
-                            >
-                              RM {item.originalPrice.toFixed(2)}
-                            </Typography>
-                          </DiscountPrice>
-                        )}
                         <RemoveItemButton
                           onClick={() => handleRemoveItem(item.id)}
                         >
@@ -230,8 +241,22 @@ const BagItemsList: React.FC<PropTypes> = ({
             </Typography>
             <Link href={"/"}>
               <Button
-                variant="outlined"
-                endIcon={<FontAwesomeIcon icon={faChevronRight} />}
+                fullWidth
+                onClick={handleContinueShopping}
+                endIcon={
+                  <motion.div
+                    initial={{ x: 0 }}
+                    animate={{ x: [0, 2, 0] }}
+                    transition={{
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      duration: 1,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faArrowRight} />
+                  </motion.div>
+                }
               >
                 <Typography variant="p" textTransform="uppercase">
                   Continue shopping
@@ -245,24 +270,20 @@ const BagItemsList: React.FC<PropTypes> = ({
   );
 };
 
-const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
-  const router = useRouter();
-
+const CheckoutSummary: React.FC<PropTypes> = ({
+  userDetails,
+  handleContinueShopping,
+  handleProceedToCheckout,
+}) => {
   const getTotalAmount = () => {
     let totalAmount = 0;
-    const priceArray = userDetails.items.map(
-      (item: IBagItem) => item.discountedPrice ?? item.originalPrice
+    const priceArray = userDetails.items.map((item: IBagItem) =>
+      isDiscountExpired(item.discountedPrice, item.discountExpiry)
+        ? item.originalPrice
+        : item.discountedPrice ?? item.originalPrice
     );
     priceArray.forEach((price: number) => (totalAmount += price));
     return Math.round(totalAmount).toFixed(2);
-  };
-
-  const handleContinueShopping = () => {
-    router.replace("/");
-  };
-
-  const handleProceedToCheckout = async () => {
-    router.replace("/checkout");
   };
 
   return (
@@ -283,11 +304,14 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
               <PriceWrapper>
                 <Typography variant="h3">
                   RM{" "}
-                  {item.discountedPrice
-                    ? item.discountedPrice.toFixed(2)
+                  {!isDiscountExpired(item.discountedPrice, item.discountExpiry)
+                    ? item.discountedPrice?.toFixed(2)
                     : item.originalPrice.toFixed(2)}
                 </Typography>
-                {item.discountedPrice && (
+                {!isDiscountExpired(
+                  item.discountedPrice,
+                  item.discountExpiry
+                ) && (
                   <DiscountPrice>
                     <Typography variant="h3" textDecoration={"line-through"}>
                       RM {item.originalPrice.toFixed(2)}
@@ -299,17 +323,38 @@ const CheckoutSummary: React.FC<PropTypes> = ({ userDetails }) => {
           ))}
         </SummaryItemList>
         <SummaryWrapper>
-          <SummaryTotal>
+          <SummaryItemTotal>
             <Typography variant="h3" textTransform="uppercase" fontWeight={500}>
               Total amount
             </Typography>
             <Typography variant="h3" textTransform="uppercase" fontWeight={500}>
               RM {getTotalAmount()}
             </Typography>
-          </SummaryTotal>
-          <Typography variant="small">
-            Get FREE delivery with purchase up to 3 items during checkout.
-          </Typography>
+          </SummaryItemTotal>
+          {3 - userDetails.items.length > 0 && (
+            <>
+              <SummaryItemTotal>
+                <Typography variant="p" textTransform="uppercase" flex={1}>
+                  Estimated Delivery Fees
+                </Typography>
+                <IconWrapper>
+                  <FontAwesomeIcon icon={faArrowsUpToLine} />
+                </IconWrapper>
+                <Typography
+                  variant="p"
+                  textTransform="uppercase"
+                  fontWeight={500}
+                >
+                  RM 10.00
+                </Typography>
+              </SummaryItemTotal>
+              <Typography variant="small" fontWeight={500} opacity={0.4}>
+                Add {3 - userDetails.items.length} more{" "}
+                {3 - userDetails.items.length > 1 ? "items" : "item"} to your
+                bag and get FREE delivery.
+              </Typography>
+            </>
+          )}
           <ButtonsWrapper>
             <Button
               variant="outlined"

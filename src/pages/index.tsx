@@ -2,7 +2,7 @@ import React from "react";
 import { NextPage } from "next/types";
 import Head from "next/head";
 import _ from "lodash";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { useScroll, useSpring } from "framer-motion";
 import { getDocuments } from "@/api/index";
 import { PAGES_TITLE } from "@/shared/enums";
 import { ICategoryData, IProductData } from "@/shared/interfaces";

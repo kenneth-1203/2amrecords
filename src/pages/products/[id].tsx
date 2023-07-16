@@ -17,7 +17,11 @@ import {
   Size,
   Stock,
 } from "@/shared/interfaces";
-import { getSizeValue } from "@/shared/utils";
+import {
+  getOfferDuration,
+  getSizeValue,
+  isDiscountExpired,
+} from "@/shared/utils";
 import Image from "next/image";
 import Typography from "@/components/Typography";
 import Button from "@/components/Button";
@@ -25,6 +29,10 @@ import List from "@/components/List";
 import Toast from "@/components/Toast";
 import Chip from "@/components/Chip";
 import Modal from "@/components/Modal";
+import Loading from "@/components/Loading";
+import RelatedProducts from "@/components/RelatedProducts";
+import { faTag } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Section,
   Container,
@@ -42,11 +50,8 @@ import {
   SizeChartImage,
   ProductImageDisplay,
   ProductDetailsWrapper,
-  RelatedProductsContainer,
-  Line,
+  OfferTag,
 } from "@/styles/Products";
-import Loading from "@/components/Loading";
-import ProductList from "@/components/ProductList";
 
 export const getStaticPaths = async () => {
   const data = await getDocuments("Products");
@@ -185,10 +190,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
             handleShowSizeChart={handleShowSizeChart}
           />
         </Container>
-        <RelatedProducts
-          productDetails={productDetails}
-          productId={productId}
-        />
+        <RelatedProducts productsList={[productDetails]} />
       </Section>
     </>
   );
@@ -347,8 +349,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             {productDetails.name}
           </Typography>
           <CategoriesWrapper>
-            {productDetails.category.map((c: Category) => (
-              <Chip key={c.id}>{c.name}</Chip>
+            {productDetails.category.map((c: Category, index: number) => (
+              <Chip key={c.id} to={`/#${productDetails.category[index].id}`}>
+                {c.name}
+              </Chip>
             ))}
           </CategoriesWrapper>
           <Typography variant="h3">{productDetails.description}</Typography>
@@ -367,21 +371,49 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
               };
             })}
           />
-          <ProductPrice>
-            <Typography variant="h3">
-              RM{" "}
-              {productDetails.discountedPrice
-                ? productDetails.discountedPrice.toFixed(2)
-                : productDetails.originalPrice.toFixed(2)}
-            </Typography>
-            {productDetails.discountedPrice && (
-              <DiscountPrice>
-                <Typography variant="h3" textDecoration={"line-through"}>
-                  RM {productDetails.originalPrice.toFixed(2)}
+          <div>
+            <ProductPrice>
+              <Typography variant="h3">
+                RM{" "}
+                {!isDiscountExpired(
+                  productDetails.discountedPrice,
+                  productDetails.discountExpiry
+                )
+                  ? productDetails.discountedPrice?.toFixed(2)
+                  : productDetails.originalPrice.toFixed(2)}
+              </Typography>
+              {!isDiscountExpired(
+                productDetails.discountedPrice,
+                productDetails.discountExpiry
+              ) && (
+                <DiscountPrice>
+                  <Typography variant="h3" textDecoration={"line-through"}>
+                    RM {productDetails.originalPrice.toFixed(2)}
+                  </Typography>
+                </DiscountPrice>
+              )}
+            </ProductPrice>
+            {!isDiscountExpired(
+              productDetails.discountedPrice,
+              productDetails.discountExpiry
+            ) && (
+              <OfferTag>
+                <Typography
+                  variant="small"
+                  fontWeight={700}
+                  textTransform="uppercase"
+                >
+                  Offer ends in{" "}
+                  {getOfferDuration(productDetails.discountExpiry)}
                 </Typography>
-              </DiscountPrice>
+                <FontAwesomeIcon
+                  icon={faTag}
+                  fontSize={".8rem"}
+                  style={{ paddingLeft: ".4rem" }}
+                />
+              </OfferTag>
             )}
-          </ProductPrice>
+          </div>
           <Wrapper>
             <ButtonWrapper>
               <Button
@@ -403,47 +435,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         </>
       )}
     </ProductDetailsWrapper>
-  );
-};
-
-interface RelatedProductsProps {
-  productDetails: IProductData;
-  productId: string;
-}
-
-const RelatedProducts: React.FC<RelatedProductsProps> = ({
-  productDetails,
-  productId,
-}) => {
-  const [relatedProducts, setRelatedProducts] = useState<IProductData[]>([]);
-
-  const categoryIds = productDetails.category.map((c) => c.id);
-
-  useEffect(() => {
-    getRelatedProducts();
-  }, []);
-
-  const getRelatedProducts = async () => {
-    const products: IProductData[] = await getDocuments("Products");
-    const related = products.filter((a) => {
-      return categoryIds.some((b) => {
-        return a.id !== productId && a.category.some((c) => c.id === b);
-      });
-    });
-    setRelatedProducts(related);
-  };
-
-  if (_.isEmpty(relatedProducts)) return null;
-
-  return (
-    <RelatedProductsContainer>
-      <Typography variant="h3" fontWeight={500}>
-        You may also like
-      </Typography>
-      <Line />
-      <ProductList justify="start" list={relatedProducts} />
-      <Line />
-    </RelatedProductsContainer>
   );
 };
 

@@ -2,11 +2,10 @@ import styled from "styled-components";
 
 export const FooterContainer = styled.footer`
   width: 100%;
-  // background-color: ${(props) => props.theme.colors.primary[900]};
   margin-top: 4rem;
   border-top: 1px solid ${(props) => props.theme.colors.primary[100]};
   padding: 2rem;
-  color: ${(props) => props.theme.colors.primary[500]};
+  color: ${(props) => props.theme.colors.primary[300]};
 `;
 
 export const FooterSection = styled.div`

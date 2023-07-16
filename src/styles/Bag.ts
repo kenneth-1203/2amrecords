@@ -140,7 +140,7 @@ export const TextWrapper = styled.div<{ lineClamp: number }>`
 export const RemoveItemButton = styled.div`
   padding: 0.4rem;
   cursor: pointer;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   margin-top: auto;
 
   & > svg {
@@ -236,7 +236,7 @@ export const SummaryItem = styled.div`
   // }
 `;
 
-export const SummaryTotal = styled.div`
+export const SummaryItemTotal = styled.div`
   display: flex;
   justify-content: space-between;
 `;
@@ -255,5 +255,12 @@ export const ButtonsWrapper = styled.div`
   ${(props) => props.theme.sizes.mobile} {
     flex-direction: column;
     gap: 0.8rem;
+  }
+`;
+
+export const IconWrapper = styled.div`
+  & > svg {
+    margin: 0 .4rem;
+    color: ${props => props.theme.colors.red.main};
   }
 `;

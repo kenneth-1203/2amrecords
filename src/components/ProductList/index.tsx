@@ -8,14 +8,18 @@ export const ProductListWrapper = styled(motion.div)<{ justify: string }>`
   min-width: 100%;
   display: inline-flex;
   justify-content: ${({ justify }) => justify};
+  margin-left: .4rem;
+  ${({ justify }) =>
+    justify === "center" &&
+    `
+    & > :first-child {
+      margin-left: 2rem;
+    }
 
-  & > :first-child {
-    margin-left: 2rem;
-  }
-
-  & > :last-child {
-    margin-right: 2rem;
-  }
+    & > :last-child {
+      margin-right: 2rem;
+    }
+  `}
 `;
 
 interface PropTypes {

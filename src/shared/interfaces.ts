@@ -21,6 +21,7 @@ export interface IProductData {
   stock: Stock[];
   totalQuantity: number;
   discountedPrice: number | null;
+  discountExpiry: string | null;
   originalPrice: number;
   category: Category[];
 }
@@ -75,13 +76,14 @@ export interface IUserDetails extends IShippingInfo {
   createdAt: Date;
 }
 
-export interface IBagItem {
+export interface IBagItem extends IProductData {
   id: string;
   name: string;
   variant: string;
   description: string;
   originalPrice: number;
   discountedPrice: number | null;
+  discountExpiry: string;
   size: string;
   imageURL: string;
 }
