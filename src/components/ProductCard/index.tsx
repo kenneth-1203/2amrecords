@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Typography from "@/components/Typography";
+import Chip from "@/components/Chip";
 import { IProductData } from "@/shared/interfaces";
 import { isDiscountExpired, getOfferDuration } from "@/shared/utils";
 import { getFileURL } from "@/api/index";
@@ -15,7 +16,6 @@ import {
   ProductDescription,
   ProductPrice,
   DiscountPrice,
-  OfferTag,
 } from "./styles";
 
 const ProductCard: React.FC<IProductData> = (props) => {
@@ -88,6 +88,33 @@ const ProductCard: React.FC<IProductData> = (props) => {
           <ProductDescription>
             <Typography>{description}</Typography>
           </ProductDescription>
+          {!isDiscountExpired(discountedPrice, discountExpiry) && (
+            <div style={{ display: "flex", gap: ".4rem", marginTop: "auto" }}>
+              {/* <Chip variant="secondary" color="red">
+                <Typography
+                  variant="small"
+                  fontWeight={500}
+                  textTransform="uppercase"
+                >
+                  NEW
+                </Typography>
+              </Chip> */}
+              <Chip variant="secondary" color="orange">
+                <Typography
+                  variant="small"
+                  fontWeight={500}
+                  textTransform="uppercase"
+                >
+                  Limited time offer
+                </Typography>
+                <FontAwesomeIcon
+                  icon={faTag}
+                  fontSize={".8rem"}
+                  style={{ paddingLeft: ".4rem", opacity: 0.8 }}
+                />
+              </Chip>
+            </div>
+          )}
           <ProductPrice>
             <Typography variant="h3" fontWeight={500}>
               RM{" "}
@@ -103,22 +130,6 @@ const ProductCard: React.FC<IProductData> = (props) => {
               </DiscountPrice>
             )}
           </ProductPrice>
-          {!isDiscountExpired(discountedPrice, discountExpiry) && (
-            <OfferTag>
-              <Typography
-                variant="small"
-                fontWeight={700}
-                textTransform="uppercase"
-              >
-                Offer ends in {getOfferDuration(discountExpiry)}
-              </Typography>
-              <FontAwesomeIcon
-                icon={faTag}
-                fontSize={".8rem"}
-                style={{ paddingLeft: ".4rem" }}
-              />
-            </OfferTag>
-          )}
         </CardContent>
       </Link>
     </CardContainer>

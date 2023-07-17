@@ -117,7 +117,7 @@ export const ProductImage = styled(motion.div)`
   }
 
   ${(props) => props.theme.sizes.mobile} {
-    min-width: 18vw;
+    min-width: min(calc(${MAIN_IMAGE_WIDTH} / 1.2), 25vw);
     height: calc((${MAIN_IMAGE_HEIGHT}) / 1.2);
   }
 `;
@@ -157,7 +157,7 @@ export const DiscountPrice = styled.div`
 
 export const ProductPrice = styled.div`
   display: flex;
-  gap: 0.4rem;
+  gap: 0.6rem;
 `;
 
 export const ButtonWrapper = styled.div`
@@ -231,4 +231,7 @@ export const OfferTag = styled.div`
   padding: 0 0.2rem;
   margin-top: 0.4rem;
   border-radius: 2px;
+  box-shadow: 
+    0 4px 8px -4px ${(props) => props.theme.colors.primary[200]},
+    0 0px 3px 0px ${(props) => props.theme.colors.primary[50]};
 `;

@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 
 export const CardContainer = styled(motion.div)`
   display: flex;
-  box-shadow: 
-    0 4px 8px -4px ${(props) => props.theme.colors.primary[200]},
+  box-shadow: 0 4px 8px -4px ${(props) => props.theme.colors.primary[200]},
     0 0px 3px 0px ${(props) => props.theme.colors.primary[50]};
   width: 22rem;
   margin: 0.6rem 0;
@@ -42,19 +41,10 @@ export const ProductDescription = styled.div`
 
 export const ProductPrice = styled.div`
   display: flex;
-  gap: 0.4rem;
+  gap: 0.6rem;
   margin-top: auto;
 `;
 
 export const DiscountPrice = styled.div`
   opacity: 0.3;
-`;
-
-export const OfferTag = styled.div`
-  background: ${(props) => props.theme.colors.green.main};
-  color: ${(props) => props.theme.colors.secondary.main};
-  width: fit-content;
-  padding: 0 0.2rem;
-  margin-top: 0.4rem;
-  border-radius: 2px;
 `;

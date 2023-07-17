@@ -31,7 +31,7 @@ import Chip from "@/components/Chip";
 import Modal from "@/components/Modal";
 import Loading from "@/components/Loading";
 import RelatedProducts from "@/components/RelatedProducts";
-import { faTag } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faTag } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Section,
@@ -50,7 +50,6 @@ import {
   SizeChartImage,
   ProductImageDisplay,
   ProductDetailsWrapper,
-  OfferTag,
 } from "@/styles/Products";
 
 export const getStaticPaths = async () => {
@@ -130,9 +129,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
         type={toast.type}
         timeout={2}
       >
-        <Typography variant="p">
-          {toast.message}
-        </Typography>
+        <Typography variant="p">{toast.message}</Typography>
       </Toast>
       <Modal
         open={showSizeChart}
@@ -356,7 +353,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             ))}
           </CategoriesWrapper>
           <Typography variant="h3">{productDetails.description}</Typography>
-          <Typography variant="h3">{productDetails.variant}</Typography>
+          <Typography variant="h3" fontWeight={500}>
+            {productDetails.variant}
+          </Typography>
           <List
             onSelect={handleSelectSize}
             value={selectedSize}
@@ -372,8 +371,28 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             })}
           />
           <div>
+            {!isDiscountExpired(
+              productDetails.discountedPrice,
+              productDetails.discountExpiry
+            ) && (
+              <Chip variant="secondary" color="orange" marginBottom={".6rem"} active>
+                <Typography
+                  variant="p"
+                  fontWeight={500}
+                  textTransform="uppercase"
+                >
+                  Offer ends in{" "}
+                  {getOfferDuration(productDetails.discountExpiry)}
+                </Typography>
+                <FontAwesomeIcon
+                  icon={faClock}
+                  fontSize={".8rem"}
+                  style={{ paddingLeft: ".4rem" }}
+                />
+              </Chip>
+            )}
             <ProductPrice>
-              <Typography variant="h3">
+              <Typography variant="h3" fontWeight={500}>
                 RM{" "}
                 {!isDiscountExpired(
                   productDetails.discountedPrice,
@@ -387,32 +406,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
                 productDetails.discountExpiry
               ) && (
                 <DiscountPrice>
-                  <Typography variant="h3" textDecoration={"line-through"}>
+                  <Typography
+                    variant="h3"
+                    textDecoration={"line-through"}
+                    fontWeight={500}
+                  >
                     RM {productDetails.originalPrice.toFixed(2)}
                   </Typography>
                 </DiscountPrice>
               )}
             </ProductPrice>
-            {!isDiscountExpired(
-              productDetails.discountedPrice,
-              productDetails.discountExpiry
-            ) && (
-              <OfferTag>
-                <Typography
-                  variant="small"
-                  fontWeight={700}
-                  textTransform="uppercase"
-                >
-                  Offer ends in{" "}
-                  {getOfferDuration(productDetails.discountExpiry)}
-                </Typography>
-                <FontAwesomeIcon
-                  icon={faTag}
-                  fontSize={".8rem"}
-                  style={{ paddingLeft: ".4rem" }}
-                />
-              </OfferTag>
-            )}
           </div>
           <Wrapper>
             <ButtonWrapper>
