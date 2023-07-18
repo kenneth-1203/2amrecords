@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Image from "next/image";
@@ -13,7 +13,13 @@ import {
   faChevronRight,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { createDocument, getDocumentRef, getFileURL } from "@/api/index";
+import {
+  createDocument,
+  getDocument,
+  getDocumentRef,
+  getDocumentsById,
+  getFileURL,
+} from "@/api/index";
 import { UserContext } from "@/lib/context";
 import { IBagItem, IUserDetails } from "@/shared/interfaces";
 import { isDiscountExpired } from "@/shared/utils";
@@ -53,6 +59,7 @@ const Page: React.FC = () => {
   const userRef = getDocumentRef(`Users/${user.id}`);
   const [userDocument] = useDocumentData(userRef);
   const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
+  const [userItems, setUserItems] = useState<IBagItem[] | []>([]);
 
   useEffect(() => {
     if (userDocument) {
@@ -62,6 +69,33 @@ const Page: React.FC = () => {
       setUserDetails(user as IUserDetails);
     }
   }, [userDocument, user]);
+
+  useMemo(() => {
+    if (userDetails?.items) {
+      const newList = userDetails?.items.map(async (item: IBagItem) => {
+        const updatedItem: any = await getDocument("Products", item.id);
+        const { results } = await getFileURL(`Products/${item.id}/1.jpg`);
+        return {
+          id: item.id,
+          name: updatedItem.name,
+          description: updatedItem.description,
+          size: item.size,
+          variant: updatedItem.variant,
+          discountedPrice: updatedItem.discountedPrice,
+          discountExpiry: updatedItem.discountExpiry,
+          originalPrice: updatedItem.originalPrice,
+          imageURL: results ?? "",
+        };
+      });
+      Promise.all(newList ?? [])
+        .then((resolvedList) => {
+          setUserItems(resolvedList as any);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [userDetails]);
 
   const handleContinueShopping = () => {
     router.replace("/");
@@ -83,71 +117,44 @@ const Page: React.FC = () => {
           <BagItemsList
             isAuthenticated={isAuthenticated}
             userDetails={userDetails}
+            userItems={userItems}
             handleContinueShopping={handleContinueShopping}
           />
           {!_.isEmpty(userDetails.items) && (
             <CheckoutSummary
-              isAuthenticated={isAuthenticated}
-              userDetails={userDetails}
+              userItems={userItems}
               handleContinueShopping={handleContinueShopping}
               handleProceedToCheckout={handleProceedToCheckout}
             />
           )}
         </BagContainer>
-        <RelatedProducts
-          productsList={userDetails.items}
-        />
+        {/* <RelatedProducts productsList={userDetails.items} /> */}
       </Container>
     </>
   );
 };
 
-interface PropTypes {
+interface BagItemsListProps {
   userDetails: IUserDetails;
+  userItems: IBagItem[];
   isAuthenticated: boolean;
   handleContinueShopping: () => void;
   handleProceedToCheckout?: () => void;
 }
 
-const BagItemsList: React.FC<PropTypes> = ({
+const BagItemsList: React.FC<BagItemsListProps> = ({
+  userItems,
   userDetails,
   isAuthenticated,
   handleContinueShopping,
 }) => {
-  const [itemList, setItemList] = useState<IBagItem[] | []>([]);
   const variants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 },
   };
 
-  useEffect(() => {
-    if (userDetails.items) {
-      const newList = userDetails.items.map(async (item: IBagItem) => {
-        const { results } = await getFileURL(`Products/${item.id}/1.jpg`);
-        return {
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          size: item.size,
-          variant: item.variant,
-          discountedPrice: item.discountedPrice,
-          discountExpiry: item.discountExpiry,
-          originalPrice: item.originalPrice,
-          imageURL: results ?? "",
-        };
-      });
-      Promise.all(newList)
-        .then((resolvedList) => {
-          setItemList(resolvedList as any);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, [userDetails.items]);
-
   const handleRemoveItem = async (itemId: string) => {
-    const newItemsList = userDetails.items;
+    const newItemsList = userItems;
     const index = newItemsList.findIndex(
       (item: IBagItem) => item.id === itemId
     );
@@ -167,13 +174,13 @@ const BagItemsList: React.FC<PropTypes> = ({
     <BagItemsContainer>
       <TitleWrapper>
         <Typography variant="h3" fontWeight={500}>
-          Your shopping bag ({itemList.length})
+          Your shopping bag ({userItems.length})
         </Typography>
       </TitleWrapper>
       <ItemListContainer>
-        {!_.isEmpty(itemList) ? (
+        {!_.isEmpty(userItems) ? (
           <List
-            items={itemList.map((item) => {
+            items={userItems.map((item) => {
               return {
                 label: (
                   <AnimatePresence>
@@ -270,15 +277,21 @@ const BagItemsList: React.FC<PropTypes> = ({
   );
 };
 
-const CheckoutSummary: React.FC<PropTypes> = ({
-  userDetails,
+interface CheckoutSummaryProps {
+  userItems: IBagItem[];
+  handleContinueShopping: () => void;
+  handleProceedToCheckout?: () => void;
+}
+
+const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
+  userItems,
   handleContinueShopping,
   handleProceedToCheckout,
 }) => {
   const getTotalAmount = () => {
     let totalAmount = 0;
-    const priceArray = userDetails.items.map((item: IBagItem) =>
-      isDiscountExpired(item.discountedPrice, item.discountExpiry)
+    const priceArray = userItems.map((item: IBagItem) =>
+      isDiscountExpired(item.discountExpiry)
         ? item.originalPrice
         : item.discountedPrice ?? item.originalPrice
     );
@@ -294,7 +307,7 @@ const CheckoutSummary: React.FC<PropTypes> = ({
           setShippingData={setShippingData}
         /> */}
         <SummaryItemList>
-          {userDetails.items.map((item: IBagItem, i: number) => (
+          {userItems.map((item: IBagItem, i: number) => (
             <SummaryItem key={i}>
               <TextWrapper lineClamp={1}>
                 <Typography variant="p" textTransform="uppercase">
@@ -304,14 +317,11 @@ const CheckoutSummary: React.FC<PropTypes> = ({
               <PriceWrapper>
                 <Typography variant="h3">
                   RM{" "}
-                  {!isDiscountExpired(item.discountedPrice, item.discountExpiry)
+                  {!isDiscountExpired(item.discountExpiry)
                     ? item.discountedPrice?.toFixed(2)
-                    : item.originalPrice.toFixed(2)}
+                    : item.originalPrice?.toFixed(2)}
                 </Typography>
-                {!isDiscountExpired(
-                  item.discountedPrice,
-                  item.discountExpiry
-                ) && (
+                {!isDiscountExpired(item.discountExpiry) && (
                   <DiscountPrice>
                     <Typography variant="h3" textDecoration={"line-through"}>
                       RM {item.originalPrice.toFixed(2)}
@@ -331,7 +341,7 @@ const CheckoutSummary: React.FC<PropTypes> = ({
               RM {getTotalAmount()}
             </Typography>
           </SummaryItemTotal>
-          {3 - userDetails.items.length > 0 && (
+          {3 - userItems.length > 0 && (
             <>
               <SummaryItemTotal>
                 <Typography variant="p" textTransform="uppercase" flex={1}>
@@ -349,9 +359,9 @@ const CheckoutSummary: React.FC<PropTypes> = ({
                 </Typography>
               </SummaryItemTotal>
               <Typography variant="small" fontWeight={500} opacity={0.4}>
-                Add {3 - userDetails.items.length} more{" "}
-                {3 - userDetails.items.length > 1 ? "items" : "item"} to your
-                bag and get FREE delivery.
+                Add {3 - userItems.length} more{" "}
+                {3 - userItems.length > 1 ? "items" : "item"} to your bag and
+                get FREE delivery.
               </Typography>
             </>
           )}

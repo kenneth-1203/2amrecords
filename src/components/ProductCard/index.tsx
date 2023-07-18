@@ -88,7 +88,7 @@ const ProductCard: React.FC<IProductData> = (props) => {
           <ProductDescription>
             <Typography>{description}</Typography>
           </ProductDescription>
-          {!isDiscountExpired(discountedPrice, discountExpiry) && (
+          {!isDiscountExpired(discountExpiry ?? "") && (
             <div style={{ display: "flex", gap: ".4rem", marginTop: "auto" }}>
               {/* <Chip variant="secondary" color="red">
                 <Typography
@@ -118,11 +118,11 @@ const ProductCard: React.FC<IProductData> = (props) => {
           <ProductPrice>
             <Typography variant="h3" fontWeight={500}>
               RM{" "}
-              {!isDiscountExpired(discountedPrice, discountExpiry)
+              {!isDiscountExpired(discountExpiry ?? "")
                 ? discountedPrice?.toFixed(2)
                 : originalPrice.toFixed(2)}
             </Typography>
-            {!isDiscountExpired(discountedPrice, discountExpiry) && (
+            {!isDiscountExpired(discountExpiry ?? "") && (
               <DiscountPrice>
                 <Typography variant="h3" textDecoration={"line-through"}>
                   RM {originalPrice.toFixed(2)}

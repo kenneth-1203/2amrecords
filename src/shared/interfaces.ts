@@ -1,5 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
+export type Collections = "Products" | "Users" | "Categories" | "Orders";
+
 export type Size = "S" | "M" | "L" | "XL";
 
 export type Stock = {

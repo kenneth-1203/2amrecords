@@ -21,11 +21,11 @@ import {
   AuthErrorCodes,
 } from "firebase/auth";
 import { firestore, auth, storage } from "@/lib/firebase";
-import { ILoginForm, ISignUpForm } from "@/shared/interfaces";
+import { Collections, ILoginForm, ISignUpForm } from "@/shared/interfaces";
 import { removeFileExtension } from "@/shared/utils";
 import { prefix } from "./config";
 
-export const getDocuments = async (collectionName: string) => {
+export const getDocuments = async (collectionName: Collections) => {
   try {
     const response = await getDocs(
       collection(firestore, prefix + collectionName)
@@ -33,6 +33,23 @@ export const getDocuments = async (collectionName: string) => {
     const results: any = [];
     response.forEach((doc: any) => {
       results.push(doc.data());
+    });
+    return results;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getDocumentsById = async (
+  collectionName: Collections,
+  ids: string[]
+) => {
+  try {
+    const collectionRef = collection(firestore, prefix + collectionName);
+    const snapshot = await getDocs(collectionRef);
+    let results: any = [];
+    snapshot.forEach((doc) => {
+      if (ids.includes(doc.id)) results.push(doc.data());
     });
     return results;
   } catch (error) {
@@ -63,7 +80,7 @@ export const getDocumentRef = (path: string) => {
 };
 
 export const checkDocumentExists = async (
-  collectionName: string,
+  collectionName: Collections,
   documentId: string
 ) => {
   try {
@@ -75,7 +92,10 @@ export const checkDocumentExists = async (
   }
 };
 
-export const createDocument = async (collectionName: string, docData: any) => {
+export const createDocument = async (
+  collectionName: Collections,
+  docData: any
+) => {
   try {
     const collectionRef = collection(firestore, prefix + collectionName);
     const docRef = doc(collectionRef);
@@ -102,7 +122,7 @@ export const createDocument = async (collectionName: string, docData: any) => {
 };
 
 export const deleteDocument = async (
-  collectionName: string,
+  collectionName: Collections,
   documentId: string
 ) => {
   try {

@@ -72,24 +72,20 @@ export const getQuantities = (items: IBagItem[]) => {
   return Object.entries(quantities).map(([id, quantity]) => ({ id, quantity }));
 };
 
-export const isDiscountExpired = (
-  price: number | null,
-  expiry: string | null
-) => {
-  if (expiry && price) {
-    let currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
+export const isDiscountExpired = (expiry: string) => {
+  let currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
 
-    let expiryDate = new Date(expiry);
-    expiryDate.setHours(0, 0, 0, 0);
+  let expiryDate = new Date(expiry);
+  expiryDate.setHours(0, 0, 0, 0);
 
-    if (currentDate > expiryDate) {
-      return true;
-    } else if (currentDate < expiryDate) {
-      return false;
-    }
+  if (currentDate > expiryDate) {
+    return true;
+  } else if (currentDate < expiryDate) {
+    return false;
+  } else {
+    return true;
   }
-  return true;
 };
 
 export const getOfferDuration = (expiry: string | null) => {

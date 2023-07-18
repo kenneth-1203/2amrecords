@@ -187,7 +187,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
             handleShowSizeChart={handleShowSizeChart}
           />
         </Container>
-        <RelatedProducts productsList={[productDetails]} />
+        {/* <RelatedProducts productsList={[productDetails]} /> */}
       </Section>
     </>
   );
@@ -313,7 +313,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
       const newItems = [
         // @ts-ignore
         ...user.items,
-        newItem,
+        {
+          id: newItem.id,
+          size: newItem.size,
+        },
       ];
       // Update user items' state
       await createDocument("Users", {
@@ -323,7 +326,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
     } else {
       const guestItems = localStorage.getItem("items");
       if (guestItems) {
-        const updatedItems = [...JSON.parse(guestItems), newItem];
+        const updatedItems = [
+          ...JSON.parse(guestItems),
+          {
+            id: newItem.id,
+            size: newItem.size,
+          },
+        ];
         localStorage.setItem("items", JSON.stringify(updatedItems));
       } else {
         localStorage.setItem("items", JSON.stringify([newItem]));
@@ -371,11 +380,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             })}
           />
           <div>
-            {!isDiscountExpired(
-              productDetails.discountedPrice,
-              productDetails.discountExpiry
-            ) && (
-              <Chip variant="secondary" color="orange" marginBottom={".6rem"} active>
+            {!isDiscountExpired(productDetails.discountExpiry ?? "") && (
+              <Chip
+                variant="secondary"
+                color="orange"
+                marginBottom={".6rem"}
+                active
+              >
                 <Typography
                   variant="p"
                   fontWeight={500}
@@ -394,17 +405,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             <ProductPrice>
               <Typography variant="h3" fontWeight={500}>
                 RM{" "}
-                {!isDiscountExpired(
-                  productDetails.discountedPrice,
-                  productDetails.discountExpiry
-                )
+                {!isDiscountExpired(productDetails.discountExpiry ?? "")
                   ? productDetails.discountedPrice?.toFixed(2)
                   : productDetails.originalPrice.toFixed(2)}
               </Typography>
-              {!isDiscountExpired(
-                productDetails.discountedPrice,
-                productDetails.discountExpiry
-              ) && (
+              {!isDiscountExpired(productDetails.discountExpiry ?? "") && (
                 <DiscountPrice>
                   <Typography
                     variant="h3"
