@@ -89,30 +89,31 @@ const Collection: React.FC<CollectionProps> = ({
 
   return (
     <>
-      {productList.length > 0 &&
-        categoryList &&
+      {categoryList &&
         categoryList.map((category, i) => {
           const list = productList.filter((product) =>
-            product.category.some((p) => p.id === category.id)
+            product.category.some((p) => p.id === category.id && product.active)
           );
-          return (
-            <React.Fragment key={i}>
-              <ScrollTo id={category.id} />
-              <Section
-                initial={"hidden"}
-                whileInView={"visible"}
-                variants={variants}
-                transition={transition}
-              >
-                <CategorySelection>
-                  <Typography variant="h2">{category.name}</Typography>
-                </CategorySelection>
-                <ProductSelection>
-                  <ProductList list={list} />
-                </ProductSelection>
-              </Section>
-            </React.Fragment>
-          );
+          if (list.length > 0) {
+            return (
+              <React.Fragment key={i}>
+                <ScrollTo id={category.id} />
+                <Section
+                  initial={"hidden"}
+                  whileInView={"visible"}
+                  variants={variants}
+                  transition={transition}
+                >
+                  <CategorySelection>
+                    <Typography variant="h2">{category.name}</Typography>
+                  </CategorySelection>
+                  <ProductSelection>
+                    <ProductList list={list} />
+                  </ProductSelection>
+                </Section>
+              </React.Fragment>
+            );
+          }
         })}
     </>
   );
