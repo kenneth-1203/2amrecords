@@ -7,6 +7,7 @@ interface PropTypes extends React.CSSProperties {
   variant?: "primary" | "secondary";
   color?: "blue" | "green" | "orange" | "red";
   active?: boolean;
+  disabled?: boolean;
 }
 
 const Chip: React.FC<PropTypes> = ({
@@ -15,14 +16,15 @@ const Chip: React.FC<PropTypes> = ({
   variant = "primary",
   color = "blue",
   active = false,
+  disabled = false,
   ...props
 }) => {
   return (
     <div style={{ ...props }}>
-      {to ? (
+      {to && !disabled ? (
         <Link href={to}>
           {variant === "primary" ? (
-            <ChipContainer>
+            <ChipContainer disabled={disabled}>
               <ChipLabel>{children}</ChipLabel>
             </ChipContainer>
           ) : variant === "secondary" ? (
@@ -34,7 +36,7 @@ const Chip: React.FC<PropTypes> = ({
       ) : (
         <>
           {variant === "primary" ? (
-            <ChipContainer>
+            <ChipContainer disabled={disabled}>
               <ChipLabel>{children}</ChipLabel>
             </ChipContainer>
           ) : variant === "secondary" ? (

@@ -54,11 +54,19 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
         <Categories>
           <Wrapper>
             {categoryList &&
-              categoryList.map((category: ICategoryData) => (
-                <Chip key={category.id} to={`#${category.id}`}>
-                  {category.name}
-                </Chip>
-              ))}
+              categoryList.map((category: ICategoryData) => {
+                const list = productList.filter((product) =>
+                  product.category.some(
+                    (p) => p.id === category.id && product.active
+                  )
+                );
+                const isActive = list.length > 0;
+                return (
+                  <Chip key={category.id} to={`#${category.id}`} disabled={!isActive}>
+                    {category.name}
+                  </Chip>
+                );
+              })}
           </Wrapper>
           <LinearProgress style={{ scaleX }} />
         </Categories>

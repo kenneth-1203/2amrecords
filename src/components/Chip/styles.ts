@@ -1,19 +1,29 @@
 import styled, { css } from "styled-components";
 
-export const ChipContainer = styled.div`
+export const ChipContainer = styled.div<{ disabled: boolean }>`
   width: fit-content;
   border-radius: 4px;
-  box-shadow: 0 2px 6px -2px ${(props) => props.theme.colors.primary[400]};
   transition: all 0.2s;
 
-  &:hover {
-    transform: translateY(-2px);
-  }
+  ${({ disabled }) =>
+    disabled
+      ? css`
+          opacity: 0.4;
+          border: 1px solid ${(props) => props.theme.colors.primary[200]};
+        `
+      : css`
+          box-shadow: 0 2px 6px -2px ${(props) => props.theme.colors.primary[400]};
 
-  &:active {
-    transform: translateY(0px);
-    box-shadow: 0px 0px 1px 0px ${(props) => props.theme.colors.primary[400]};
-  }
+          &:hover {
+            transform: translateY(-2px);
+          }
+
+          &:active {
+            transform: translateY(0px);
+            box-shadow: 0px 0px 1px 0px
+              ${(props) => props.theme.colors.primary[400]};
+          }
+        `}
 `;
 
 export const ChipLabel = styled.p`
