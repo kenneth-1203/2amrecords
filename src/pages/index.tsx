@@ -69,10 +69,7 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
 };
 
 const Landing: React.FC = () => {
-  return (
-    <Background>
-    </Background>
-  );
+  return <Background></Background>;
 };
 
 interface CollectionProps {
@@ -92,7 +89,8 @@ const Collection: React.FC<CollectionProps> = ({
 
   return (
     <>
-      {categoryList &&
+      {productList.length > 0 &&
+        categoryList &&
         categoryList.map((category, i) => {
           const list = productList.filter((product) =>
             product.category.some((p) => p.id === category.id)

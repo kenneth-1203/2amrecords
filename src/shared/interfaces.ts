@@ -24,6 +24,8 @@ export interface IProductData {
   discountExpiry: string | null;
   originalPrice: number;
   category: Category[];
+  active: boolean;
+  createdAt: Date;
 }
 
 export interface ICategoryData {

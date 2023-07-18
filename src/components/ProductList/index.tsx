@@ -8,7 +8,9 @@ export const ProductListWrapper = styled(motion.div)<{ justify: string }>`
   min-width: 100%;
   display: inline-flex;
   justify-content: ${({ justify }) => justify};
-  margin-left: .4rem;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+
   ${({ justify }) =>
     justify === "center" &&
     `
@@ -37,9 +39,9 @@ const ProductList: React.FC<PropTypes> = ({ list, justify = "center" }) => {
         drag={"x"}
         dragConstraints={listRef}
       >
-        {list.map((product, i) => (
-          <ProductCard key={i} {...product} />
-        ))}
+        {list.map((product, i) =>
+          product.active ? <ProductCard key={i} {...product} /> : null
+        )}
       </ProductListWrapper>
     </motion.div>
   );

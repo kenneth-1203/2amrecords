@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import _ from "lodash";
 import { getDocuments } from "@/api/index";
 import { IBagItem, IProductData } from "@/shared/interfaces";
