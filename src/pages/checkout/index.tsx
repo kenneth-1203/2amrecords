@@ -185,7 +185,7 @@ const Page: React.FC = () => {
   const getBagTotalAmount = () => {
     let totalAmount = 0;
     const priceArray = userDetails?.items?.map((item: IBagItem) =>
-      isDiscountExpired(item.discountedPrice, item.discountExpiry)
+      isDiscountExpired(item.discountExpiry)
         ? item.originalPrice
         : item.discountedPrice ?? item.originalPrice
     );
