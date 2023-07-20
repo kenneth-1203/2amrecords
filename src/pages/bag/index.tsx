@@ -17,7 +17,6 @@ import {
   createDocument,
   getDocument,
   getDocumentRef,
-  getDocumentsById,
   getFileURL,
 } from "@/api/index";
 import { UserContext } from "@/lib/context";
@@ -77,8 +76,10 @@ const Page: React.FC = () => {
         const { results } = await getFileURL(`Products/${item.id}/1.jpg`);
         return {
           id: item.id,
+          active: updatedItem.active,
           name: updatedItem.name,
           description: updatedItem.description,
+          category: updatedItem.category,
           size: item.size,
           variant: updatedItem.variant,
           discountedPrice: updatedItem.discountedPrice,
@@ -89,7 +90,19 @@ const Page: React.FC = () => {
       });
       Promise.all(newList ?? [])
         .then((resolvedList) => {
-          setUserItems(resolvedList as any);
+          const activeItems = resolvedList.filter(
+            (item) =>
+              item.active && {
+                id: item.id,
+                category: item.category,
+                size: item.size,
+              }
+          );
+          createDocument("Users", {
+            ...userDetails,
+            items: activeItems,
+          });
+          setUserItems(activeItems as IBagItem[]);
         })
         .catch((error) => {
           console.error(error);

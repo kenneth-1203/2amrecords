@@ -23,14 +23,13 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ productsList }) => {
       const productIds = productsList.map((product) => product.id);
 
       const related = products.filter((product: IProductData | IBagItem) => {
-        if (productIds.includes(product.id)) {
+        if (productIds.includes(product.id) || !product.active) {
           return false;
         }
         return product.category.some((category) =>
           categoryIds.includes(category.id)
         );
       });
-
       setRelatedProducts(related);
     }
   }, [productsList]);

@@ -72,7 +72,8 @@ export const getQuantities = (items: IBagItem[]) => {
   return Object.entries(quantities).map(([id, quantity]) => ({ id, quantity }));
 };
 
-export const isDiscountExpired = (expiry: string) => {
+export const isDiscountExpired = (expiry: string | null) => {
+  if (!expiry) return true;
   let currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
 

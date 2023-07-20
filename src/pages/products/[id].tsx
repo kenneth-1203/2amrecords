@@ -187,7 +187,7 @@ const Page: NextPage<PropTypes> = ({ productId, productImages }) => {
             handleShowSizeChart={handleShowSizeChart}
           />
         </Container>
-        {/* <RelatedProducts productsList={[productDetails]} /> */}
+        <RelatedProducts productsList={[productDetails]} />
       </Section>
     </>
   );
@@ -316,6 +316,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         {
           id: newItem.id,
           size: newItem.size,
+          category: newItem.category,
         },
       ];
       // Update user items' state
@@ -331,6 +332,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           {
             id: newItem.id,
             size: newItem.size,
+            category: newItem.category,
           },
         ];
         localStorage.setItem("items", JSON.stringify(updatedItems));
