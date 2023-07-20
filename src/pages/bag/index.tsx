@@ -128,7 +128,7 @@ const Page: React.FC = () => {
             />
           )}
         </BagContainer>
-        {/* <RelatedProducts productsList={userDetails.items} /> */}
+        <RelatedProducts productsList={userDetails.items} />
       </Container>
     </>
   );
@@ -302,10 +302,6 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   return (
     <CheckoutContainer>
       <SummaryContainer>
-        {/* <ShippingDetails
-          shippingData={shippingData}
-          setShippingData={setShippingData}
-        /> */}
         <SummaryItemList>
           {userItems.map((item: IBagItem, i: number) => (
             <SummaryItem key={i}>
