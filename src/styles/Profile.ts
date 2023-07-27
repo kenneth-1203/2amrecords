@@ -101,7 +101,8 @@ export const OrderItemHeader = styled.div`
 
 export const OrderItem = styled.div`
   padding: 1rem;
-  border: 1px solid black;
+  box-shadow: 0 2px 6px -2px ${(props) => props.theme.colors.primary[200]},
+    0 4px 20px -10px ${(props) => props.theme.colors.primary[100]};
 `;
 
 export const OrderItemBody = styled(motion.div)`

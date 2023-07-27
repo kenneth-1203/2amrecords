@@ -332,7 +332,7 @@ const ProfileOrders: React.FC<PropsWithUserDetails> = ({ userDetails }) => {
                 overflow={"hidden"}
                 textOverflow={"ellipsis"}
               >
-                {formatDate(order.date)}
+                {order.id}
               </Typography>
             </OrderItemHeader>
             <OrderItemBody

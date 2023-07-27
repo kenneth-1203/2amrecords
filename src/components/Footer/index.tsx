@@ -1,5 +1,4 @@
-import Link from "next/link";
-import Image from "next/image";
+
 import Typography from "@/components/Typography";
 import {
   FooterContainer,
@@ -25,14 +24,6 @@ const Footer: React.FC = () => {
         INSPIRATION WHEN DEVELOPING OUR PRODUCTS. THE PRODUCT ARE MADE TO
         INSPIRE OTHERS TO WEAR OUR DESIGN TO EXPRESS THEIR EMOTION. WE BELIEVE OUR BRAND AND PEOPLE'S EMOTION ARE CONNECTED.`}
         </Typography>
-        {/* <Typography
-          variant="h3"
-          fontWeight={700}
-          letterSpacing={".2rem"}
-          paddingBottom={"1rem"}
-        >
-          {`2AMRECORDS`}
-        </Typography> */}
       </FooterAbout>
     </FooterContainer>
   );
