@@ -31,6 +31,7 @@ import Toast from "@/components/Toast";
 import Chip from "@/components/Chip";
 import Modal from "@/components/Modal";
 import Loading from "@/components/Loading";
+import Timer from "@/components/Timer";
 import RelatedProducts from "@/components/RelatedProducts";
 import { faClock, faTag } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -52,7 +53,6 @@ import {
   ProductImageDisplay,
   ProductDetailsWrapper,
 } from "@/styles/Products";
-import Timer from "@/components/Timer";
 
 export const getStaticPaths = async () => {
   const data = await getDocuments("Products");
