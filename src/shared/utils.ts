@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { Timestamp } from "firebase/firestore";
 import { IBagItem } from "./interfaces";
 
@@ -84,8 +85,19 @@ export const isDiscountExpired = (expiry: string | null) => {
     return true;
   } else if (currentDate < expiryDate) {
     return false;
-  } else {
+  }
+};
+
+export const isReleased = (date: string) => {
+  if (_.isEmpty(date)) return true;
+  
+  let currentDate = new Date();
+  let releaseDate = new Date(date);
+
+  if (currentDate > releaseDate) {
     return true;
+  } else {
+    return false;
   }
 };
 

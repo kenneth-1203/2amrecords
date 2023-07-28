@@ -21,6 +21,7 @@ export interface IProductData {
   variant: string;
   sizes: Size[];
   stock: Stock[];
+  releaseDate: string;
   totalQuantity: number;
   discountedPrice: number | null;
   discountExpiry: string | null;

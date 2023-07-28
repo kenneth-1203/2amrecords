@@ -45,13 +45,26 @@ export default async function handler(
         });
       }
 
+      const customer = await stripe.customers.create({
+        name: user.fullName,
+        phone: user.phoneNumber,
+        email: user.email,
+        address: {
+          country: "MY",
+          line1: user.addressLine1,
+          line2: user.addressLine2,
+          postal_code: user.postcode,
+          state: user.state,
+        },
+      });
+
       const session = await stripe.checkout.sessions.create({
         line_items,
+        customer: customer.id,
         mode: "payment",
         invoice_creation: {
           enabled: true,
         },
-        customer_email: user.email,
         success_url: `${req.headers.origin}/checkout?orderId=${orderId}&success=true`,
         cancel_url: `${req.headers.origin}/checkout?orderId=${orderId}&canceled=true`,
       });

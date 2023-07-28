@@ -21,6 +21,7 @@ import {
   getOfferDuration,
   getSizeValue,
   isDiscountExpired,
+  isReleased,
 } from "@/shared/utils";
 import Image from "next/image";
 import Typography from "@/components/Typography";
@@ -51,6 +52,7 @@ import {
   ProductImageDisplay,
   ProductDetailsWrapper,
 } from "@/styles/Products";
+import Timer from "@/components/Timer";
 
 export const getStaticPaths = async () => {
   const data = await getDocuments("Products");
@@ -426,14 +428,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           </div>
           <Wrapper>
             <ButtonWrapper>
+              {!isReleased(productDetails.releaseDate) && (
+                <Timer targetDate={productDetails.releaseDate} />
+              )}
               <Button
                 variant="contained"
-                disabled={selectedSize === -1}
+                disabled={
+                  selectedSize === -1 || !isReleased(productDetails.releaseDate)
+                }
                 style={{ justifyContent: "center" }}
                 onClick={handleAddToBag}
                 fullWidth
               >
-                <Typography variant="p">ADD TO BAG</Typography>
+                {!isReleased(productDetails.releaseDate) ? (
+                  <Typography variant="p">COMING SOON</Typography>
+                ) : (
+                  <Typography variant="p">ADD TO BAG</Typography>
+                )}
               </Button>
             </ButtonWrapper>
             <ViewSizeChart>
