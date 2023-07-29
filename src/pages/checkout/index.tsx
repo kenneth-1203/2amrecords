@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { collection, doc } from "firebase/firestore";
 import { firestore } from "@/lib/firebase";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   IBagItem,
   IOrderDetails,
@@ -177,6 +177,9 @@ const Page: React.FC = () => {
       case "Sarawak":
       case "Labuan":
         return 15;
+      case "":
+      case undefined:
+        return 0;
       default:
         return 10;
     }
@@ -339,18 +342,24 @@ const Page: React.FC = () => {
               />
             </InputWrapper>
             <Summary>
-              <SummaryItem>
-                <Typography variant="p" textTransform="uppercase">
-                  Delivery fees
-                </Typography>
-                <Typography variant="p" textTransform="uppercase">
-                  {_.isEmpty(userDetails?.state)
-                    ? "-"
-                    : getDeliveryFees() === 0
-                    ? "FREE"
-                    : `RM ${getDeliveryFees().toFixed(2)}`}
-                </Typography>
-              </SummaryItem>
+              <AnimatePresence>
+                {!_.isEmpty(userDetails?.state) && (
+                  <SummaryItem
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                  >
+                    <Typography variant="p" textTransform="uppercase">
+                      Delivery fees
+                    </Typography>
+                    <Typography variant="p" textTransform="uppercase">
+                      {getDeliveryFees() === 0
+                        ? "FREE"
+                        : `RM ${getDeliveryFees().toFixed(2)}`}
+                    </Typography>
+                  </SummaryItem>
+                )}
+              </AnimatePresence>
               <SummaryItem>
                 <Typography variant="p" textTransform="uppercase">
                   In bag

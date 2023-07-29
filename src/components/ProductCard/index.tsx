@@ -65,10 +65,10 @@ const ProductCard: React.FC<IProductData> = (props) => {
             <Image
               src={imageUrl}
               style={{ objectFit: "cover" }}
+              loading="lazy"
               fill
               sizes="100%"
               alt=""
-              priority
               draggable={false}
             />
           )}

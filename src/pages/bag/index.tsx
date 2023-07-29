@@ -207,6 +207,7 @@ const BagItemsList: React.FC<BagItemsListProps> = ({
                           <Image
                             src={item.imageURL}
                             style={{ objectFit: "contain" }}
+                            loading="lazy"
                             alt=""
                             fill
                             sizes="@media query (max-width: 1200px) 100px 160px"

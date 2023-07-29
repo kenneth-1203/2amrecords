@@ -147,3 +147,36 @@ export const ButtonsWrapper = styled.div`
   width: 100%;
   gap: 1rem;
 `;
+
+export const HelpContainer = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  padding-top: 1rem;
+  list-style: none;
+`;
+
+export const HelpOption = styled.li`
+  padding: .8rem;
+  border-radius: 4px;
+  border: 1px solid ${props => props.theme.colors.primary[200]};
+  transition: .2s;
+  cursor: pointer;
+  
+  &:hover {
+    border-color: ${props => props.theme.colors.primary.main};
+  }
+`;
+
+export const TextArea = styled.textarea`
+  resize: none;
+  width: 100%;
+  height: 10rem;
+  outline: none;
+  border-radius: 4px;
+  padding: .8rem;
+  margin: .4rem 0;
+  font-family: inherit;
+  font-weight: 300;
+  border: 1px solid ${props => props.theme.colors.primary[200]};
+`;

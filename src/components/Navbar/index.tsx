@@ -47,7 +47,11 @@ import {
   FormContainer,
   Line,
   ButtonsWrapper,
+  HelpContainer,
+  HelpOption,
+  TextArea,
 } from "./styles";
+import List from "../List";
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated } = useContext<any>(UserContext);
@@ -145,7 +149,7 @@ interface ToastProps {
   type: "success" | "warning" | "error";
 }
 
-type MODAL_STATE = "login" | "sign up" | "log out";
+type MODAL_STATE = "login" | "sign up" | "log out" | "contact";
 
 const Drawer: React.FC<PropTypes> = ({
   isAuthenticated,
@@ -242,11 +246,15 @@ const Drawer: React.FC<PropTypes> = ({
     setOpenPopup(true);
   };
 
+  const handleCloseModal = () => {
+    setOpenPopup(false);
+  };
+
   return (
     <>
       <Modal
         open={openPopup}
-        onClose={() => setOpenPopup(false)}
+        onClose={handleCloseModal}
         title={modalState}
         position={"absolute"}
       >
@@ -260,14 +268,16 @@ const Drawer: React.FC<PropTypes> = ({
           ) : modalState === "sign up" ? (
             <SignUpForm setToast={setToast} setModalState={setModalState} />
           ) : modalState === "log out" ? (
-            <FormContainer
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <Typography variant="p" marginBottom={"1rem"}>Are you sure you want to log out?</Typography>
+            <>
+              <Typography variant="p" marginBottom={"1rem"}>
+                Are you sure you want to log out?
+              </Typography>
               <ButtonsWrapper>
-                <Button variant="outlined" onClick={() => setOpenPopup(false)} fullWidth>
+                <Button
+                  variant="outlined"
+                  onClick={() => setOpenPopup(false)}
+                  fullWidth
+                >
                   <Typography variant="p" textTransform="uppercase">
                     cancel
                   </Typography>
@@ -278,7 +288,9 @@ const Drawer: React.FC<PropTypes> = ({
                   </Typography>
                 </Button>
               </ButtonsWrapper>
-            </FormContainer>
+            </>
+          ) : modalState === "contact" ? (
+            <Contact />
           ) : null}
         </AnimatePresence>
       </Modal>
@@ -341,6 +353,9 @@ const Drawer: React.FC<PropTypes> = ({
                       </DrawerAction>
                     </>
                   )}
+                  {/* <DrawerAction onClick={() => togglePopup("contact")}>
+                    <Typography variant="h2">contact us</Typography>
+                  </DrawerAction> */}
                 </DrawerBody>
               </DrawerContents>
             </DrawerContainer>
@@ -534,6 +549,58 @@ const SignUpForm: React.FC<{
       >
         <Typography fontWeight={500}>Go back</Typography>
       </Button>
+    </FormContainer>
+  );
+};
+
+const Contact: React.FC = () => {
+  const [helpState, setHelpState] = useState<number>(2);
+
+  const getHelpSupport = (type: number) => {
+    setHelpState(type);
+  };
+
+  const handleSubmit = () => {
+    // TODO: Implement email sender using SendGrid/EmailJS
+  }
+
+  return (
+    <FormContainer
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      {helpState === 0 ? (
+        <>
+          <Typography variant="h3" textTransform="none">
+            What do you need help with?
+          </Typography>
+          <HelpContainer>
+            <HelpOption onClick={() => getHelpSupport(1)}>
+              I need help with recent order
+            </HelpOption>
+            <HelpOption onClick={() => getHelpSupport(2)}>Other</HelpOption>
+          </HelpContainer>
+        </>
+      ) : helpState === 1 ? (
+        <>
+          <Typography variant="h3" textTransform="none">
+            Which order did you need help with?
+          </Typography>
+
+        </>
+      ) : helpState === 2 ? (
+        <>
+          <Typography variant="h3" textTransform="none">
+            {/* Tell us more about the issue you are facing. */}
+            What do you need help with?
+          </Typography>
+          <TextArea />
+          <Button variant="contained" onClick={handleSubmit}>
+            <Typography variant="p" textTransform="uppercase">Submit</Typography>
+          </Button>
+        </>
+      ) : null}
     </FormContainer>
   );
 };
