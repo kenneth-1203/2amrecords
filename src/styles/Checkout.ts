@@ -30,7 +30,7 @@ export const Summary = styled.div`
   gap: 0.8rem;
 `;
 
-export const SummaryItem = styled.div`
+export const SummaryItem = styled(motion.div)`
   display: flex;
   justify-content: space-between;
 `;

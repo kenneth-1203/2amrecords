@@ -66,6 +66,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [x] Add expiry dates for discounted products
 - [x] Update the cart items so that it takes the latest product list instead of storing the state when first added to bag
 - [ ] Use page route APIs and write only necessary API calls to each page
+- [ ] Implement send email with custom library
 
 ### Priority: LOW
 - [ ] Handle lazy loading for images (create a skeleton/placeholder for loading images)
@@ -74,3 +75,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - [x] Change image load behavior to increase performance
 - [ ] Add a subscribe to newsletter section in homepage
 - [x] Remove uneccessary profile image upload and display
+- [ ] Optimize web performance

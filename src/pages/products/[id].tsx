@@ -315,11 +315,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
       const newItems = [
         // @ts-ignore
         ...user.items,
-        {
-          id: newItem.id,
-          size: newItem.size,
-          category: newItem.category,
-        },
+        newItem,
       ];
       // Update user items' state
       await createDocument("Users", {
@@ -329,14 +325,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
     } else {
       const guestItems = localStorage.getItem("items");
       if (guestItems) {
-        const updatedItems = [
-          ...JSON.parse(guestItems),
-          {
-            id: newItem.id,
-            size: newItem.size,
-            category: newItem.category,
-          },
-        ];
+        const updatedItems = [...JSON.parse(guestItems), newItem];
         localStorage.setItem("items", JSON.stringify(updatedItems));
       } else {
         localStorage.setItem("items", JSON.stringify([newItem]));
