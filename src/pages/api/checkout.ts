@@ -24,7 +24,7 @@ export default async function handler(
           price_data: {
             currency: "MYR",
             product_data: {
-              name: item.name,
+              name: `${item.name} (Size ${item.size})`,
               description: item.description,
             },
             unit_amount: (item.discountedPrice ?? item.originalPrice) * 100,
