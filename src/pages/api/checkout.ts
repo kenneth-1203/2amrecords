@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { IBagItem } from "@/shared/interfaces";
 import { stripeSecretKey } from "@/api/config";
+import { isDiscountExpired } from "@/shared/utils";
 
 const stripe = require("stripe")(stripeSecretKey);
 
@@ -19,6 +20,9 @@ export default async function handler(
       let line_items: any = [];
 
       user.items.map((item: IBagItem) => {
+        const unit_amount = isDiscountExpired(item.discountExpiry)
+          ? item.originalPrice
+          : item.discountedPrice;
         line_items.push({
           quantity: 1,
           price_data: {
@@ -27,7 +31,7 @@ export default async function handler(
               name: `${item.name} (Size ${item.size})`,
               description: item.description,
             },
-            unit_amount: (item.discountedPrice ?? item.originalPrice) * 100,
+            unit_amount: unit_amount,
           },
         });
       });
