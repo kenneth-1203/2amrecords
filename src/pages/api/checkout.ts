@@ -31,7 +31,7 @@ export default async function handler(
               name: `${item.name} (Size ${item.size})`,
               description: item.description,
             },
-            unit_amount: unit_amount,
+            unit_amount: Number(unit_amount) * 100,
           },
         });
       });
