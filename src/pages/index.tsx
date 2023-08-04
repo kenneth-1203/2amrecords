@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NextPage } from "next/types";
 import Head from "next/head";
 import _ from "lodash";
-import { useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { getDocuments } from "@/api/index";
 import { PAGES_TITLE } from "@/shared/enums";
 import { ICategoryData, IProductData } from "@/shared/interfaces";
@@ -50,7 +50,7 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
         <title>{PAGES_TITLE.Home}</title>
       </Head>
       <main>
-        <Landing />
+        {/* <Landing /> */}
         <Categories>
           <Wrapper>
             {categoryList &&
@@ -62,7 +62,11 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
                 );
                 const isActive = list.length > 0;
                 return (
-                  <Chip key={category.id} to={`#${category.id}`} disabled={!isActive}>
+                  <Chip
+                    key={category.id}
+                    to={`#${category.id}`}
+                    disabled={!isActive}
+                  >
                     {category.name}
                   </Chip>
                 );
@@ -77,7 +81,32 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
 };
 
 const Landing: React.FC = () => {
-  return <Background></Background>;
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [1, 0], ["0%", "100%"]);
+
+  // To ensure initial scale is applied
+  useEffect(() => {
+    scrollYProgress.set(0);
+  }, [scrollYProgress]);
+
+  return (
+    <div style={{ height: "100vh" }}>
+      <motion.div
+        style={{
+          position: "absolute",
+          overflow: "hidden",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100vh",
+          backgroundImage: "url('/bg-2.jpg')",
+          backgroundSize: "cover",
+          backgroundPositionX: "50%",
+          backgroundPositionY: y,
+        }}
+      />
+    </div>
+  );
 };
 
 interface CollectionProps {

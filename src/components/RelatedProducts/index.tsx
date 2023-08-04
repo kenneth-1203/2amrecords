@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import _ from "lodash";
 import { getDocuments } from "@/api/index";
 import { IBagItem, IProductData } from "@/shared/interfaces";
@@ -13,26 +13,49 @@ interface RelatedProductsProps {
 const RelatedProducts: React.FC<RelatedProductsProps> = ({ productsList }) => {
   const [relatedProducts, setRelatedProducts] = useState<IProductData[]>([]);
 
-  useMemo(async () => {
-    if (productsList) {
+  const [products, setProducts] = useState<IProductData[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const fetchedProducts: IProductData[] = await getDocuments("Products");
+      setProducts(fetchedProducts);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (productsList && products.length) {
       const categoryIds = productsList?.flatMap((product) =>
         product.category.map((c) => c.id)
       );
 
-      const products: IProductData[] = await getDocuments("Products");
       const productIds = productsList.map((product) => product.id);
 
-      const related = products.filter((product: IProductData | IBagItem) => {
-        if (productIds.includes(product.id) || !product.active) {
-          return false;
-        }
-        return product.category.some((category) =>
+      const sortedProducts = [...products].sort((a, b) => {
+        const aIsInCategory = a.category.some((category) =>
           categoryIds.includes(category.id)
         );
+        const bIsInCategory = b.category.some((category) =>
+          categoryIds.includes(category.id)
+        );
+
+        if (aIsInCategory && !bIsInCategory) {
+          return -1;
+        }
+        if (!aIsInCategory && bIsInCategory) {
+          return 1;
+        }
+        return 0;
       });
+
+      const related = sortedProducts.filter(
+        (product: IProductData | IBagItem) => {
+          return !productIds.includes(product.id) && product.active;
+        }
+      );
+
       setRelatedProducts(related);
     }
-  }, [productsList]);
+  }, [productsList, products]);
 
   if (_.isEmpty(relatedProducts)) return null;
 
