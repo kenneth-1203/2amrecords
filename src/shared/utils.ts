@@ -123,3 +123,14 @@ export const getOfferDuration = (expiry: string | null) => {
     }
   }
 };
+
+export const getDiscountPercentage = (discountedPrice: number | null, originalPrice: number): number => {
+  // Check if discountedPrice argument is not null, otherwise return 0.
+  if (discountedPrice === null) return 0;
+
+  // Calculate the percentage of discount.
+  let discountPercentage = ((originalPrice - discountedPrice) / originalPrice) * 100;
+
+  // Round off percentage to 2 numerical digits with no decimals.
+  return Math.round(discountPercentage);
+};

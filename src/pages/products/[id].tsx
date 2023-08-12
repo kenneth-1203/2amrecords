@@ -18,6 +18,7 @@ import {
   Stock,
 } from "@/shared/interfaces";
 import {
+  getDiscountPercentage,
   getOfferDuration,
   getSizeValue,
   isDiscountExpired,
@@ -374,26 +375,34 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           />
           <div>
             {!isDiscountExpired(productDetails.discountExpiry) && (
-              <Chip
-                variant="secondary"
-                color="orange"
-                style={{ marginBottom: ".6rem" }}
-                active
+              <div
+                style={{ display: "flex", gap: ".8rem", marginBottom: ".6rem" }}
               >
-                <Typography
-                  variant="p"
-                  fontWeight={500}
-                  textTransform="uppercase"
-                >
-                  Offer ends in{" "}
-                  {getOfferDuration(productDetails.discountExpiry)}
-                </Typography>
-                <FontAwesomeIcon
-                  icon={faClock}
-                  fontSize={".8rem"}
-                  style={{ paddingLeft: ".4rem" }}
-                />
-              </Chip>
+                <Chip variant="secondary" color="red" active>
+                  <Typography variant="p" fontWeight={500}>
+                    {getDiscountPercentage(
+                      productDetails.discountedPrice,
+                      productDetails.originalPrice
+                    )}
+                    % OFF
+                  </Typography>
+                </Chip>
+                <Chip variant="secondary" color="orange" active>
+                  <Typography
+                    variant="p"
+                    fontWeight={500}
+                    textTransform="uppercase"
+                  >
+                    Offer ends in{" "}
+                    {getOfferDuration(productDetails.discountExpiry)}
+                  </Typography>
+                  <FontAwesomeIcon
+                    icon={faClock}
+                    fontSize={".8rem"}
+                    style={{ paddingLeft: ".4rem" }}
+                  />
+                </Chip>
+              </div>
             )}
             <ProductPrice>
               <Typography variant="h3" fontWeight={500}>
