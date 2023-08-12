@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ChipContainer, ChipLabel, OfferTag } from "./styles";
 
-interface PropTypes extends React.CSSProperties {
+interface PropTypes extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   to?: string;
   variant?: "primary" | "secondary";
@@ -20,7 +20,7 @@ const Chip: React.FC<PropTypes> = ({
   ...props
 }) => {
   return (
-    <div style={{ ...props }}>
+    <div {...props}>
       {to && !disabled ? (
         <Link href={to}>
           {variant === "primary" ? (

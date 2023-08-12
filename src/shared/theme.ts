@@ -116,6 +116,8 @@ body {
   font-family: 'Inter', sans-serif;
   font-weight: 300;
   overflow: overlay;
+  color: ${theme.colors.primary.main};
+  background: ${theme.colors.secondary.main};
 }
 
 a {
@@ -137,6 +139,14 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -100;
 }
 
 ::-webkit-scrollbar {

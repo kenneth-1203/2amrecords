@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 
 export const CardContainer = styled(motion.div)`
   display: flex;
-  box-shadow: 0 4px 8px -4px ${(props) => props.theme.colors.primary[200]},
+  background: ${props => props.theme.colors.secondary.main}; 
+  box-shadow: 0 2px 16px -8px ${(props) => props.theme.colors.primary[200]},
     0 0px 3px 0px ${(props) => props.theme.colors.primary[50]};
   width: 22rem;
-  margin: 0.6rem 0;
+  margin: 0.8rem 0;
 
   :not(:last-child) {
     margin-right: 2rem;

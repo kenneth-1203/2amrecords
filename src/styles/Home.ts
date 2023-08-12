@@ -1,9 +1,7 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
-export const Background = styled.section``;
-
-export const Section = styled(motion.section)`
+export const CollectionSection = styled(motion.section)`
   overflow: hidden;
   display: grid;
   grid-template-columns: 1fr;
@@ -53,7 +51,7 @@ export const Categories = styled.nav`
   top: 3.6rem;
   background-color: ${(props) => props.theme.colors.secondary.main};
   border-bottom: 1px solid ${(props) => props.theme.colors.primary[200]};
-  z-index: 10;
+  z-index: 11;
 `;
 
 export const ScrollTo = styled.span`
@@ -63,4 +61,26 @@ export const ScrollTo = styled.span`
   ${(props) => props.theme.sizes.mobile} {
     margin-top: -4rem;
   }
+`;
+
+export const Section = styled.section`
+  position: relative;
+  z-index: 10;
+  background: ${(props) => props.theme.colors.secondary.main};
+`;
+
+export const HeroContainer = styled(motion.div)`
+  position: fixed;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+export const ButtonsWrapper = styled(motion.div)`
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1.2rem;
 `;

@@ -6,7 +6,7 @@ import _ from "lodash";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { AnimatePresence, motion } from "framer-motion";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { faGoogle, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBagShopping,
@@ -43,6 +43,7 @@ import {
   DrawerCloseButton,
   DrawerContents,
   DrawerBody,
+  DrawerFooter,
   DrawerAction,
   FormContainer,
   Line,
@@ -50,8 +51,8 @@ import {
   HelpContainer,
   HelpOption,
   TextArea,
+  InstagramButton,
 } from "./styles";
-import List from "../List";
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated } = useContext<any>(UserContext);
@@ -198,7 +199,6 @@ const Drawer: React.FC<PropTypes> = ({
               orderHistory: [],
             });
           }
-          // TODO: Add a welcome modal/toast
           setToast({
             open: true,
             type: "success",
@@ -357,6 +357,21 @@ const Drawer: React.FC<PropTypes> = ({
                     <Typography variant="h2">contact us</Typography>
                   </DrawerAction> */}
                 </DrawerBody>
+                <DrawerFooter>
+                  <a
+                    target="_blank"
+                    href="https://www.instagram.com/2amrecords_/"
+                  >
+                    <InstagramButton>
+                      <FontAwesomeIcon
+                        icon={faInstagram}
+                        color="#cc2366"
+                        size={"lg"}
+                      />
+                      <Typography variant="p" fontWeight={500} fontSize={"1.2rem"}>2amrecords_</Typography>
+                    </InstagramButton>
+                  </a>
+                </DrawerFooter>
               </DrawerContents>
             </DrawerContainer>
           </>
@@ -381,7 +396,6 @@ const LoginForm: React.FC<{
     e.preventDefault();
     const { results, error } = await signIn(formData);
     if (results) {
-      // TODO: Add a welcome modal/toast
       setToast({
         open: true,
         type: "success",
@@ -474,7 +488,7 @@ const SignUpForm: React.FC<{
     if (results) {
       // automatically sign user in
       await signIn({ email: formData.email, password: formData.password });
-      // TODO: Add a welcome modal/toast
+
       setToast({
         open: true,
         type: "success",
@@ -562,7 +576,7 @@ const Contact: React.FC = () => {
 
   const handleSubmit = () => {
     // TODO: Implement email sender using SendGrid/EmailJS
-  }
+  };
 
   return (
     <FormContainer
@@ -587,7 +601,6 @@ const Contact: React.FC = () => {
           <Typography variant="h3" textTransform="none">
             Which order did you need help with?
           </Typography>
-
         </>
       ) : helpState === 2 ? (
         <>
@@ -597,7 +610,9 @@ const Contact: React.FC = () => {
           </Typography>
           <TextArea />
           <Button variant="contained" onClick={handleSubmit}>
-            <Typography variant="p" textTransform="uppercase">Submit</Typography>
+            <Typography variant="p" textTransform="uppercase">
+              Submit
+            </Typography>
           </Button>
         </>
       ) : null}

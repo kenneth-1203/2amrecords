@@ -10,8 +10,7 @@ export const StyledButton = styled.button<{
   position: relative;
   outline: none;
   border: none;
-  border-width: 1px;
-  border-style: solid;
+  border-radius: 4px;
   padding: 0.8rem;
   cursor: pointer;
   display: flex;
@@ -19,7 +18,7 @@ export const StyledButton = styled.button<{
   justify-content: center;
   min-height: 2.4rem;
   gap: 8px;
-  transition: all 0.2s;
+  transition: all 0.15s;
 
   & > :last-child {
     width: ${({ fullWidth }) => fullWidth && `100%`};
@@ -28,17 +27,20 @@ export const StyledButton = styled.button<{
   :disabled {
     pointer-events: none;
     opacity: 0.2;
+    box-shadow: none;
   }
 
   ${({ variant }) =>
     variant === "outlined"
       ? css`
           background: ${(props) => props.theme.colors.secondary.main};
-          border-color: ${(props) => props.theme.colors.primary.main};
+          box-shadow: 0px 0px 2px -1px ${props => props.theme.colors.primary[900]}, 
+                      0px 0px 18px -9px ${props => props.theme.colors.primary[300]};
           color: ${(props) => props.theme.colors.primary.main} !important;
 
           &:hover {
-            background: ${(props) => props.theme.colors.primary[50]};
+            box-shadow: 0px 0px 2px -1px ${props => props.theme.colors.primary[900]}, 
+                      0px 0px 1px 0px ${props => props.theme.colors.primary[900]};
           }
 
           &:active {
@@ -50,6 +52,7 @@ export const StyledButton = styled.button<{
       ? css`
           background: ${(props) => props.theme.colors.primary.main};
           border-color: ${(props) => props.theme.colors.primary.main};
+          box-shadow: 0px 2px 10px -2px ${props => props.theme.colors.primary[300]};
           color: ${(props) => props.theme.colors.secondary.main} !important;
 
           &:hover {

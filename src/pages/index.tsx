@@ -1,21 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { NextPage } from "next/types";
 import Head from "next/head";
 import _ from "lodash";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import {
+  animate,
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import { getDocuments } from "@/api/index";
 import { PAGES_TITLE } from "@/shared/enums";
 import { ICategoryData, IProductData } from "@/shared/interfaces";
 import Typography from "@/components/Typography";
 import ProductList from "@/components/ProductList";
 import Chip from "@/components/Chip";
+import Button from "@/components/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import {
   Categories,
-  Background,
-  Section,
+  HeroContainer,
+  CollectionSection,
   CategorySelection,
   ProductSelection,
+  Section,
   Wrapper,
+  ButtonsWrapper,
   LinearProgress,
   ScrollTo,
 } from "@/styles/Home";
@@ -44,13 +55,26 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
     restDelta: 0.001,
   });
 
+  const handleClick = (category: ICategoryData) => () => {
+    const element = document.getElementById(category.id);
+
+    if (!element) return;
+
+    const y = element.getBoundingClientRect().top + window.scrollY;
+
+    animate(window.scrollY, y, {
+      duration: 0,
+      onUpdate: (y) => window.scrollTo(0, y),
+    });
+  };
+
   return (
     <>
       <Head>
         <title>{PAGES_TITLE.Home}</title>
       </Head>
       <main>
-        {/* <Landing /> */}
+        <Landing />
         <Categories>
           <Wrapper>
             {categoryList &&
@@ -64,7 +88,7 @@ const Page: NextPage<PropTypes> = ({ productList, categoryList }) => {
                 return (
                   <Chip
                     key={category.id}
-                    to={`#${category.id}`}
+                    onClick={handleClick(category)}
                     disabled={!isActive}
                   >
                     {category.name}
@@ -84,28 +108,89 @@ const Landing: React.FC = () => {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [1, 0], ["0%", "100%"]);
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      letterSpacing: ".8rem",
+      transition: {
+        staggerChildren: 0.5,
+        duration: 1.5,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 80 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 1,
+        ease: [0.1, 0.1, 0.1, 1],
+      },
+    },
+  };
+
   // To ensure initial scale is applied
   useEffect(() => {
     scrollYProgress.set(0);
   }, [scrollYProgress]);
 
+  const handleClick = () => {
+    const element = document.getElementById("browse-start");
+
+    if (!element) return;
+
+    const y = element.getBoundingClientRect().top + window.scrollY;
+
+    animate(window.scrollY, y, {
+      duration: 0,
+      onUpdate: (y) => window.scrollTo(0, y),
+    });
+  };
+
   return (
-    <div style={{ height: "100vh" }}>
-      <motion.div
-        style={{
-          position: "absolute",
-          overflow: "hidden",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100vh",
-          backgroundImage: "url('/bg-2.jpg')",
-          backgroundSize: "cover",
-          backgroundPositionX: "50%",
-          backgroundPositionY: y,
-        }}
-      />
-    </div>
+    <section
+      style={{ position: "relative", height: "100vh", overflow: "hidden" }}
+    >
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <HeroContainer variants={container} initial="hidden" animate="show">
+          <video playsInline autoPlay muted loop>
+            <source src="/bg-video.mp4" type="video/mp4" />
+          </video>
+          <motion.div variants={item}>
+            <Typography variant="h1" fontWeight={700} color="white">
+              2AMRECORDS
+            </Typography>
+          </motion.div>
+          <motion.div variants={item}>
+            <Typography variant="h3" fontWeight={300} color="white">
+              Timeless era.
+            </Typography>
+          </motion.div>
+          <ButtonsWrapper variants={item}>
+            <Button variant="text" onClick={handleClick}>
+              <Typography variant="p" color="white">
+                Browse
+              </Typography>
+              <motion.span
+                initial={{ y: -1 }}
+                animate={{ y: [-1, 1, -1] }}
+                transition={{
+                  repeat: Infinity,
+                  repeatType: "loop",
+                  duration: 1,
+                  ease: "easeInOut",
+                }}
+              >
+                <FontAwesomeIcon icon={faArrowDown} color="white" />
+              </motion.span>
+            </Button>
+          </ButtonsWrapper>
+        </HeroContainer>
+      </div>
+    </section>
   );
 };
 
@@ -125,7 +210,8 @@ const Collection: React.FC<CollectionProps> = ({
   const transition = { duration: 0.5 };
 
   return (
-    <>
+    <Section>
+      <ScrollTo id={"browse-start"} />
       {categoryList &&
         categoryList.map((category, i) => {
           const list = productList.filter((product) =>
@@ -134,8 +220,8 @@ const Collection: React.FC<CollectionProps> = ({
           if (list.length > 0) {
             return (
               <React.Fragment key={i}>
-                <ScrollTo id={category.id} />
-                <Section
+                <ScrollTo id={category.id} key={i} />
+                <CollectionSection
                   initial={"hidden"}
                   whileInView={"visible"}
                   variants={variants}
@@ -147,12 +233,12 @@ const Collection: React.FC<CollectionProps> = ({
                   <ProductSelection>
                     <ProductList list={list} />
                   </ProductSelection>
-                </Section>
+                </CollectionSection>
               </React.Fragment>
             );
           }
         })}
-    </>
+    </Section>
   );
 };
 

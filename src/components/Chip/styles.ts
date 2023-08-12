@@ -4,6 +4,7 @@ export const ChipContainer = styled.div<{ disabled: boolean }>`
   width: fit-content;
   border-radius: 4px;
   transition: all 0.2s;
+  cursor: pointer;
 
   ${({ disabled }) =>
     disabled
@@ -16,6 +17,7 @@ export const ChipContainer = styled.div<{ disabled: boolean }>`
 
           &:hover {
             transform: translateY(-2px);
+            box-shadow: 0 6px 12px -6px ${(props) => props.theme.colors.primary[400]};
           }
 
           &:active {

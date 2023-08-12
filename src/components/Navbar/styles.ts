@@ -6,7 +6,7 @@ export const Container = styled.nav`
   width: 100%;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   background-color: ${(props) => props.theme.colors.secondary.main};
 `;
 
@@ -102,7 +102,10 @@ export const DrawerCloseButton = styled.div`
 
 export const DrawerContents = styled.div`
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   width: 28rem;
+  height: 100%;
 
   ${(props) => props.theme.sizes.mobile} {
     width: 20rem;
@@ -110,8 +113,7 @@ export const DrawerContents = styled.div`
 `;
 
 export const DrawerBody = styled.div`
-  display: flex;
-  flex-direction: column;
+  flex: 1;
 `;
 
 export const DrawerAction = styled(motion.div)`
@@ -179,4 +181,55 @@ export const TextArea = styled.textarea`
   font-family: inherit;
   font-weight: 300;
   border: 1px solid ${props => props.theme.colors.primary[200]};
+`;
+
+export const DrawerFooter = styled.div`
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid ${props => props.theme.colors.primary[200]};
+`; 
+
+export const InstagramButton = styled.button`
+  min-width: 6rem;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 2.4rem;
+  padding: 0.8rem;
+  margin: 0.8rem;
+  border-radius: 4px;
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+  background-size: cover;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  
+  & > svg {
+    font-size: 1.8rem;
+  }
+
+  // &:before {
+  //   position: absolute;
+  //   content: "";
+  //   border-radius: 8px;
+  //   width: calc(100% + .2rem);
+  //   height: calc(100% + .2rem);
+  //   filter: blur(1px);
+  //   z-index: -1;
+  //   background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+  // }
+
+  // &:after {
+  //   position: absolute;
+  //   content: "";
+  //   border-radius: 6px;
+  //   width: 100%;
+  //   height: 100%;
+  //   z-index: -1;
+  //   background: ${props => props.theme.colors.secondary.main};
+  // }
 `;

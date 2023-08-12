@@ -377,7 +377,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
               <Chip
                 variant="secondary"
                 color="orange"
-                marginBottom={".6rem"}
+                style={{ marginBottom: ".6rem" }}
                 active
               >
                 <Typography

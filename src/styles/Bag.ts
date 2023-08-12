@@ -58,6 +58,7 @@ export const TitleWrapper = styled.div`
 
 export const ItemListContainer = styled.div`
   overflow-y: auto;
+  height: 50vh;
 
   & > ul {
     border-color: ${(props) => props.theme.colors.primary[100]};
@@ -162,6 +163,7 @@ export const NoItemsWrapper = styled(motion.div)`
   padding: 2rem 0;
   color: ${(props) => props.theme.colors.primary[300]};
   border-top: 1px solid ${(props) => props.theme.colors.primary[100]};
+  overflow: hidden;
 
   & > svg {
     font-size: 12rem;

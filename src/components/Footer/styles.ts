@@ -2,10 +2,10 @@ import styled from "styled-components";
 
 export const FooterContainer = styled.footer`
   width: 100%;
-  margin-top: 4rem;
-  border-top: 1px solid ${(props) => props.theme.colors.primary[100]};
-  padding: 2rem;
+  padding: 6rem 2rem 2rem 2rem;
   color: ${(props) => props.theme.colors.primary[300]};
+  background: ${props => props.theme.colors.secondary.main};
+  z-index: 100;
 `;
 
 export const FooterSection = styled.div`
@@ -29,12 +29,3 @@ export const FooterAbout = styled.div`
     width: 100%;
   }
 `;
-
-// export const SocialHandle = styled(motion.span)`
-//   background: linear-gradient(to right, #505DD1 0%, #F76D35 50%, #DB2E78 100%);
-//   background-size: cover;
-//   -webkit-background-clip: text;
-//   -webkit-text-fill-color: transparent;
-//   font-weight: 500;
-//   text-overflow: clip;
-// `;
