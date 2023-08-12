@@ -77,6 +77,7 @@ export const HeroContainer = styled(motion.div)`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  filter: saturate(0);
 `;
 
 export const ButtonsWrapper = styled(motion.div)`
