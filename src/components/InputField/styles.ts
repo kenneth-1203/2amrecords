@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 export const InputComponent = styled.input`
   border: 1px solid ${(props) => props.theme.colors.primary.main};
   padding: 0.8rem;
-  border-radius: 0;
+  border-radius: 4px;
   outline: none;
   font-size: 1rem;
   margin-bottom: 0.4rem;

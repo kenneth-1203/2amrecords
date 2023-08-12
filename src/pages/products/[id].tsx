@@ -373,7 +373,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             })}
           />
           <div>
-            {!isDiscountExpired(productDetails.discountExpiry ?? "") && (
+            {!isDiscountExpired(productDetails.discountExpiry) && (
               <Chip
                 variant="secondary"
                 color="orange"
@@ -398,11 +398,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             <ProductPrice>
               <Typography variant="h3" fontWeight={500}>
                 RM{" "}
-                {!isDiscountExpired(productDetails.discountExpiry ?? "")
+                {!isDiscountExpired(productDetails.discountExpiry)
                   ? productDetails.discountedPrice?.toFixed(2)
                   : productDetails.originalPrice.toFixed(2)}
               </Typography>
-              {!isDiscountExpired(productDetails.discountExpiry ?? "") && (
+              {!isDiscountExpired(productDetails.discountExpiry) && (
                 <DiscountPrice>
                   <Typography
                     variant="h3"

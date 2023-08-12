@@ -4,7 +4,7 @@ import Image from "next/image";
 import Typography from "@/components/Typography";
 import Chip from "@/components/Chip";
 import { IProductData } from "@/shared/interfaces";
-import { isDiscountExpired, getOfferDuration } from "@/shared/utils";
+import { isDiscountExpired } from "@/shared/utils";
 import { getFileURL } from "@/api/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTag } from "@fortawesome/free-solid-svg-icons";
@@ -88,7 +88,7 @@ const ProductCard: React.FC<IProductData> = (props) => {
           <ProductDescription>
             <Typography>{description}</Typography>
           </ProductDescription>
-          {!isDiscountExpired(discountExpiry ?? "") && (
+          {!isDiscountExpired(discountExpiry) && (
             <div style={{ display: "flex", gap: ".4rem", marginTop: "auto" }}>
               {/* <Chip variant="secondary" color="red">
                 <Typography
@@ -118,11 +118,11 @@ const ProductCard: React.FC<IProductData> = (props) => {
           <ProductPrice>
             <Typography variant="h3" fontWeight={500}>
               RM{" "}
-              {!isDiscountExpired(discountExpiry ?? "")
+              {!isDiscountExpired(discountExpiry)
                 ? discountedPrice?.toFixed(2)
                 : originalPrice.toFixed(2)}
             </Typography>
-            {!isDiscountExpired(discountExpiry ?? "") && (
+            {!isDiscountExpired(discountExpiry) && (
               <DiscountPrice>
                 <Typography variant="h3" textDecoration={"line-through"}>
                   RM {originalPrice.toFixed(2)}

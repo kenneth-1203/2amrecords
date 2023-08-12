@@ -60,7 +60,7 @@ export const StyledButton = styled.button<{
           }
 
           &:active {
-            background: ${(props) => props.theme.colors.secondary.main};
+            background: ${(props) => props.theme.colors.primary[600]};
             color: ${(props) => props.theme.colors.primary.main};
           }
         `

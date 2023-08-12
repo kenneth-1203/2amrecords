@@ -45,6 +45,7 @@ export const SelectLabel = styled.label`
   height: 3rem;
   align-items: center;
   gap: 0.4rem;
+  border-radius: 4px;
   border: 1px solid ${(props) => props.theme.colors.primary[600]};
   justify-content: space-between;
 `;

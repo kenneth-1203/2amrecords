@@ -75,18 +75,13 @@ export const getQuantities = (items: IBagItem[]) => {
 
 export const isDiscountExpired = (expiry: string | null) => {
   if (!expiry) return true;
-  let currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0);
 
   let expiryDate = new Date(expiry);
-  expiryDate.setHours(0, 0, 0, 0);
+  let currentDate = new Date();
 
-  if (currentDate > expiryDate) {
-    return true;
-  } else if (currentDate < expiryDate) {
-    return false;
-  }
+  return currentDate > expiryDate;
 };
+
 
 export const isReleased = (date: string) => {
   if (_.isEmpty(date)) return true;

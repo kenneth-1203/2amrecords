@@ -78,10 +78,11 @@ const Page: React.FC = () => {
                     selected={currentSection === "profile"}
                     fullWidth
                     style={{
+                      borderRadius: 0,
                       borderBottom:
                         currentSection === "profile"
-                          ? "1px solid rgba(0,0,0,1)"
-                          : "1px solid rgba(0,0,0,.2)",
+                          ? "2px solid rgba(0,0,0,1)"
+                          : "2px solid rgba(0,0,0,.1)",
                     }}
                   >
                     <Typography variant="p" textTransform="uppercase">
@@ -93,10 +94,11 @@ const Page: React.FC = () => {
                     selected={currentSection === "orders"}
                     fullWidth
                     style={{
+                      borderRadius: 0,
                       borderBottom:
                         currentSection === "orders"
-                          ? "1px solid rgba(0,0,0,1)"
-                          : "1px solid rgba(0,0,0,.2)",
+                          ? "2px solid rgba(0,0,0,1)"
+                          : "2px solid rgba(0,0,0,.1)",
                     }}
                   >
                     <Typography variant="p" textTransform="uppercase">
