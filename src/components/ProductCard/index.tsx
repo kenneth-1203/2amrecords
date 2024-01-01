@@ -78,9 +78,10 @@ const ProductCard: React.FC<IProductData> = (props) => {
             <Typography
               variant="h3"
               fontWeight={500}
-              textOverflow="clip"
+              textOverflow="ellipsis"
               overflow="hidden"
               whiteSpace="nowrap"
+              width={"288px"}
             >
               {name}
             </Typography>

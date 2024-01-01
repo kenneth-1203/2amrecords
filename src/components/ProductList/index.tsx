@@ -31,6 +31,10 @@ interface PropTypes {
 
 const ProductList: React.FC<PropTypes> = ({ list, justify = "center" }) => {
   const listRef = useRef(null);
+  const sortedList = list.sort(
+    (a, b) =>
+      new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+  );
 
   return (
     <motion.div ref={listRef} style={{ overflow: "hidden" }}>
@@ -39,7 +43,7 @@ const ProductList: React.FC<PropTypes> = ({ list, justify = "center" }) => {
         drag={"x"}
         dragConstraints={listRef}
       >
-        {list.map((product, i) =>
+        {sortedList.map((product, i) =>
           product.active ? <ProductCard key={i} {...product} /> : null
         )}
       </ProductListWrapper>
