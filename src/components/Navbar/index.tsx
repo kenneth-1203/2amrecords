@@ -363,12 +363,14 @@ const Drawer: React.FC<PropTypes> = ({
                     href="https://www.instagram.com/2amrecords_/"
                   >
                     <InstagramButton>
-                      <FontAwesomeIcon
-                        icon={faInstagram}
-                        color="#cc2366"
-                        size={"lg"}
-                      />
-                      <Typography variant="p" fontWeight={500} fontSize={"1.2rem"}>2amrecords_</Typography>
+                      <FontAwesomeIcon icon={faInstagram} color="#cc2366" size="xl" />
+                      <Typography
+                        variant="p"
+                        fontWeight={500}
+                        fontSize={"1rem"}
+                      >
+                        2amrecords_
+                      </Typography>
                     </InstagramButton>
                   </a>
                 </DrawerFooter>

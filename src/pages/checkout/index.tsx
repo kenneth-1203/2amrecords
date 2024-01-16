@@ -3,8 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import _ from "lodash";
 import { useRouter } from "next/router";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { collection, doc } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { firestore } from "@/lib/firebase";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -37,7 +36,6 @@ import { isDiscountExpired } from "@/shared/utils";
 const Page: React.FC = () => {
   const router = useRouter();
   const query = collection(firestore, prefix + "Orders");
-  const [snapshot, loading, error] = useCollection(query);
   const { user, isAuthenticated } = useContext(UserContext);
   const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
   const [orderDetails, setOrderDetails] = useState<IOrderDetails | null>(null);
@@ -50,18 +48,6 @@ const Page: React.FC = () => {
     hidden: { opacity: 0, y: 20, transition: { duration: 0.2 } },
     visible: { opacity: 1, y: 0, transition: { duration: 0.2 } },
   };
-
-  useEffect(() => {
-    if (!loading && !error) {
-      snapshot?.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          const newData = change.doc.data();
-          const orderedItems = newData.items;
-          // update the stocks by filtering the product ID and size
-        }
-      });
-    }
-  }, [error, loading, snapshot]);
 
   useEffect(() => {
     if (isPageLoading && !_.isEmpty(user)) {

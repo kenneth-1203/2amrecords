@@ -207,10 +207,6 @@ export const InstagramButton = styled.button`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
-  
-  & > svg {
-    font-size: 1.8rem;
-  }
 
   // &:before {
   //   position: absolute;
