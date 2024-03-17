@@ -7,7 +7,7 @@ import { IProductData } from "@/shared/interfaces";
 import { isDiscountExpired } from "@/shared/utils";
 import { getFileURL } from "@/api/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTag } from "@fortawesome/free-solid-svg-icons";
+import { faTag, faFireFlameCurved } from "@fortawesome/free-solid-svg-icons";
 import {
   CardContainer,
   CardImage,
@@ -16,6 +16,8 @@ import {
   ProductDescription,
   ProductPrice,
   DiscountPrice,
+  SoldOutMessage,
+  TrendChip,
 } from "./styles";
 
 const ProductCard: React.FC<IProductData> = (props) => {
@@ -26,6 +28,8 @@ const ProductCard: React.FC<IProductData> = (props) => {
     originalPrice,
     discountedPrice,
     discountExpiry,
+    totalQuantity,
+    trend,
   } = props;
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -50,15 +54,42 @@ const ProductCard: React.FC<IProductData> = (props) => {
     }
   };
 
+  const renderTrendingChips = useMemo(() => {
+    return trend
+      ? trend.map((code, index) => {
+          switch (code) {
+            case "hot-selling":
+              return (
+                <TrendChip index={index} code={code}>
+                  HOT
+                  <FontAwesomeIcon icon={faFireFlameCurved} fontSize={"12px"} />
+                </TrendChip>
+              );
+            case "new":
+              return (
+                <TrendChip index={index} code={code}>
+                  NEW
+                </TrendChip>
+              );
+            default:
+              return null;
+          }
+        })
+      : null;
+  }, [trend]);
+
   return (
     <CardContainer
       whileTap={{ scale: 0.99, boxShadow: "0 0px 4px -2px rgba(0,0,0,.4)" }}
+      disabled={totalQuantity === 0}
     >
+      {renderTrendingChips}
       <Link
         href={`/products/${id}`}
         draggable={true}
         onDragStart={handleDrag}
         onClick={handleClick}
+        style={{ overflow: "hidden" }}
       >
         <CardImage>
           {imageUrl && (
@@ -117,18 +148,26 @@ const ProductCard: React.FC<IProductData> = (props) => {
             </div>
           )}
           <ProductPrice>
-            <Typography variant="h3" fontWeight={500}>
-              RM{" "}
-              {!isDiscountExpired(discountExpiry)
-                ? discountedPrice?.toFixed(2)
-                : originalPrice.toFixed(2)}
-            </Typography>
-            {!isDiscountExpired(discountExpiry) && (
-              <DiscountPrice>
-                <Typography variant="h3" textDecoration={"line-through"}>
-                  RM {originalPrice.toFixed(2)}
+            {totalQuantity !== 0 ? (
+              <>
+                <Typography variant="h3" fontWeight={500}>
+                  RM{" "}
+                  {!isDiscountExpired(discountExpiry)
+                    ? discountedPrice?.toFixed(2)
+                    : originalPrice.toFixed(2)}
                 </Typography>
-              </DiscountPrice>
+                <>
+                  {!isDiscountExpired(discountExpiry) && (
+                    <DiscountPrice>
+                      <Typography variant="h3" textDecoration={"line-through"}>
+                        RM {originalPrice.toFixed(2)}
+                      </Typography>
+                    </DiscountPrice>
+                  )}
+                </>
+              </>
+            ) : (
+              <SoldOutMessage>SOLD OUT</SoldOutMessage>
             )}
           </ProductPrice>
         </CardContent>

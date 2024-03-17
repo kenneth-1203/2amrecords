@@ -170,7 +170,10 @@ const Landing: React.FC = () => {
             </Typography>
           </motion.div>
           <ButtonsWrapper variants={item}>
-            <div style={{ textAlign: "center", opacity: .4, cursor: "pointer" }} onClick={handleClick}>
+            <div
+              style={{ textAlign: "center", opacity: 0.4, cursor: "pointer" }}
+              onClick={handleClick}
+            >
               <motion.div
                 initial={{ y: -4, opacity: 1 }}
                 animate={{ y: [-4, 4, -4], opacity: [1, 0, 1] }}
@@ -179,7 +182,7 @@ const Landing: React.FC = () => {
                   repeatType: "loop",
                   duration: 1,
                   ease: "easeInOut",
-                  repeatDelay: 2
+                  repeatDelay: 2,
                 }}
               >
                 <Typography variant="p" color="white" letterSpacing={"initial"}>

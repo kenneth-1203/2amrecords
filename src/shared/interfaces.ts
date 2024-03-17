@@ -29,6 +29,7 @@ export interface IProductData {
   category: Category[];
   active: boolean;
   createdAt: Date;
+  trend: string[];
 }
 
 export interface ICategoryData {
